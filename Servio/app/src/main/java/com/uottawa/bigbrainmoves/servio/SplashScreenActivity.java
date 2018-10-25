@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -80,7 +81,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             }
                             CurrentUser currentUser = new CurrentUser();
                             currentUser.setCurrentUser(user);
-
+                            Toast.makeText(getApplicationContext(),"Logged In", Toast.LENGTH_LONG).show();
                             Intent openCorrectUi = UiUtil.getIntentFromType(getApplicationContext(),
                                     user.getType());
                             startActivity(openCorrectUi);
