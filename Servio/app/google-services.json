@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "224585205287",
+    "firebase_url": "https://bigbrainmovesservio.firebaseio.com",
+    "project_id": "bigbrainmovesservio",
+    "storage_bucket": "bigbrainmovesservio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224585205287:android:6953eac4da83db73",
+        "android_client_info": {
+          "package_name": "com.uottawa.bigbrainmoves.servio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "224585205287-3q6mv8ot3dlrbr4lr8dp063upe88k4jd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkzxayXTn8RFNq0b0U8_M2GaPTyReNFHk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
