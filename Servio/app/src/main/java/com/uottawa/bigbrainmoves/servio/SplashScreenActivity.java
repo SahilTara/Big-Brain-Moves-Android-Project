@@ -72,8 +72,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                     //
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        //TODO: ADD A TOAST SAYING THEY LOGGED IN
                         if (dataSnapshot != null) {
+                            Toast.make(getApplicationContext(), "User logged in.", Toast.LONG_LENGTH).show();
                             User user = dataSnapshot.getValue(User.class);
                             if (user == null) {
                                 notLoggedIn();
