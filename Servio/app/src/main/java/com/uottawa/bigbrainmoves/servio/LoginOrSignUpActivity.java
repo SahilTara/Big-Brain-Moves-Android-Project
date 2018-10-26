@@ -102,7 +102,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             // TODO: Add .show() to the end of the toast
-                                Toast.make(getApplicationContext(), "Sign In Successful", Toast.LONG_LENGTH);
+                                Toast.make(getApplicationContext(), "Sign In Successful", Toast.LONG_LENGTH).show();
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 getUserFromDataBase(user.getUid());
 
