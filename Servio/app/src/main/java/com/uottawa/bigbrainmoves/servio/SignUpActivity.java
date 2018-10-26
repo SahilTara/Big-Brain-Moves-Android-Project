@@ -183,7 +183,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 return;
                             } else if (!password.matches("^(?=\\S+$).{6,}$")) {
                                 Toast.makeText(getApplicationContext(),
-                                        "Password must have length >= 6",
+                                        "Password must have length >= 6 and contain no spaces",
                                         Toast.LENGTH_LONG).show();
                                 return;
                             }
