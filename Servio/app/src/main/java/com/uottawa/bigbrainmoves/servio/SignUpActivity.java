@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -164,6 +166,27 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // user already exists
                         if (!dataSnapshot.exists()) {
+                            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Invalid Email Address",
+                                        Toast.LENGTH_LONG).show();
+                                return;
+                            } else if (!username.matches("\\b[a-zA-Z][a-zA-Z0-9\\-._]{3,}\\b")) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Username must have length >= 3, Alphanumeric or .-_",
+                                        Toast.LENGTH_LONG).show();
+                                return;
+                            } else if (!displayName.matches("(([A-Za-z]+\\s?)+)")) {
+                                Toast.makeText(getApplicationContext(),
+                                        "DisplayName must contain only A-Z and Spaces.",
+                                        Toast.LENGTH_LONG).show();
+                                return;
+                            } else if (!password.matches("^(?=\\S+$).{6,}$")) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Password must have length >= 6",
+                                        Toast.LENGTH_LONG).show();
+                                return;
+                            }
                             // user does not exist
                             createUser(email, username, password, displayName, typeSelected);
 
