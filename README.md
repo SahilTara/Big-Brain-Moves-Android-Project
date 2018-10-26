@@ -12,3 +12,6 @@ https://github.com/jaredrummler/MaterialSpinner
 Since theres a min password requirement,
 User: admin
 password: admin123
+
+## This Repo's Link (Useful for TAs)
+https://github.com/SahilTara/Big-Brain-Moves-Android-Project
