@@ -23,7 +23,7 @@ public class ServiceMainActivity extends AppCompatActivity {
         TextView welcomeText = findViewById(R.id.welcomeMessageText);
         CurrentUser currentUser = new CurrentUser();
         final String text = "Welcome " + currentUser.getCurrentUser().getDisplayName() +
-                ", current role is";
+                ", current role is Service Owner";
         welcomeText.setText(text);
     }
 

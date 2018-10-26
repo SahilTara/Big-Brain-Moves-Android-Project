@@ -101,13 +101,14 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                                // TODO: Toast
+                            // TODO: Add .show() to the end of the toast
+                                Toast.make(getApplicationContext(), "Sign In Successful", Toast.LONG_LENGTH);
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 getUserFromDataBase(user.getUid());
 
-
                         }  else { // otherwise sign in failed.
-                        // TODO: Toast
+                            //TODO: Add .show() to the end of the toast
+                        Toast.make(getApplicationContext(), "Sign In Failed", Toast.LONG_LENGTH);
                         }
                     }
                 });
