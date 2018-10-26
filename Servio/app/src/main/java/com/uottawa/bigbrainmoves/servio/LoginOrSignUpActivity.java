@@ -108,8 +108,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
                                 getUserFromDataBase(user.getUid());
 
                         }  else { // otherwise sign in failed.
-                            //TODO: Add .show() to the end of the toast
-                            Toast.makeText(getApplicationContext(), "Sign In Failed", Toast.LENGTH_LONG);
+                            Toast.makeText(getApplicationContext(), "Sign In Failed", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
