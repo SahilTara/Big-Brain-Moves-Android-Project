@@ -19,7 +19,6 @@ public class ServiceMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_main);
 
-        //TODO: SET CURRENT ROLE TO SERVICE OWNER
         TextView welcomeText = findViewById(R.id.welcomeMessageText);
         CurrentUser currentUser = new CurrentUser();
         final String text = "Welcome " + currentUser.getCurrentUser().getDisplayName() +

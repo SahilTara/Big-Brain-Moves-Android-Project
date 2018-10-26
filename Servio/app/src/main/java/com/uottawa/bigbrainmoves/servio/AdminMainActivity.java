@@ -3,6 +3,8 @@ package com.uottawa.bigbrainmoves.servio;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.FileInputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class AdminMainActivity extends AppCompatActivity {
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -27,14 +31,12 @@ public class AdminMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_main);
         TextView welcomeText = findViewById(R.id.welcomeMessageText);
         CurrentUser currentUser = new CurrentUser();
-        //TODO: SET CURRENT ROLE TO ADMIN
 
         final String text = "Welcome " + currentUser.getCurrentUser().getDisplayName() +
-                ", current role is";
+                ", current role is Admin";
         welcomeText.setText(text);
 
-        // TODO Add A list of all users, Please look at recycler view and contact if need help.
-
+        putAllUsersInList();
     }
 
     public void onSignoutClick(View view) {
@@ -47,6 +49,9 @@ public class AdminMainActivity extends AppCompatActivity {
 
     }
     private void putAllUsersInList() {
+        final ArrayList<User> users = new ArrayList<>();
+        final RecyclerView recyclerView = findViewById(R.id.userListRecycler);
+        final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
         myRef.child("user_info").addListenerForSingleValueEvent(new ValueEventListener() {
             //
@@ -54,9 +59,15 @@ public class AdminMainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // user exists!
                 if (dataSnapshot != null) {
-                    User user = dataSnapshot.getValue(User.class);
-                    CurrentUser currentUser = new CurrentUser();
-                    currentUser.setCurrentUser(user);
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        User user = snapshot.getValue(User.class);
+                        users.add(user);
+                    }
+                    recyclerView.setHasFixedSize(true);
+                    RecyclerView.Adapter adapter  = new ArrayRecyclerAdapter(users);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(layoutManager);
+
                 }
             }
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -102,13 +103,13 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             // TODO: Add .show() to the end of the toast
-                                Toast.make(getApplicationContext(), "Sign In Successful", Toast.LONG_LENGTH).show();
+                                Toast.makeText(getApplicationContext(), "Sign In Successful", Toast.LENGTH_LONG).show();
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 getUserFromDataBase(user.getUid());
 
                         }  else { // otherwise sign in failed.
                             //TODO: Add .show() to the end of the toast
-                        Toast.make(getApplicationContext(), "Sign In Failed", Toast.LONG_LENGTH);
+                            Toast.makeText(getApplicationContext(), "Sign In Failed", Toast.LENGTH_LONG);
                         }
                     }
                 });

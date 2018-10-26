@@ -83,22 +83,19 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                            User user = new User(displayName, type);
+                            User user = new User(displayName, type, username);
                             writeUserNameToDatabase(username, email);
                             writeUserToDataBase(firebaseUser.getUid(), user);
                             CurrentUser currentUser = new CurrentUser();
                             currentUser.setCurrentUser(user);
 
-                            //TODO: Make toast saying account created.
-                            Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG);
+                            Toast.makeText(getApplicationContext(), "Account created", Toast.LENGTH_LONG).show();
 
                             Intent openCorrectUi = UiUtil.getIntentFromType(getApplicationContext(),
                                     user.getType());
                             startActivity(openCorrectUi);
                         } else {
-                            //TODO: ADD TOAST
-                            Toast.makeText(getApplicationContext(), "Email is taken!", Toast.LENGTH_LONG);
-
+                            Toast.makeText(getApplicationContext(), "Email is taken!", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -172,7 +169,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                         }  else {
                             // TODO: Make Toast saying username taken.
-                            Toast.makeText(getApplicationContext(), "User taken", Toast.LENGTH_LONG);
+                            Toast.makeText(getApplicationContext(), "User taken", Toast.LENGTH_LONG).show();
                         }
                     }
 

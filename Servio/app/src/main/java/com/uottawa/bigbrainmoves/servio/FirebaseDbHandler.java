@@ -121,7 +121,7 @@ public class FirebaseDbHandler implements DbHandler {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                            User user = new User(displayName, type);
+                            User user = new User(displayName, type, username);
                             writeUserNameToDatabase(username, email);
                             writeUserToDataBase(firebaseUser.getUid(), user);
                         } // otherwise sign in not successful
