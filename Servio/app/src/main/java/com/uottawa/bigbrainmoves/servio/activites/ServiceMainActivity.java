@@ -1,16 +1,14 @@
-package com.uottawa.bigbrainmoves.servio;
+package com.uottawa.bigbrainmoves.servio.activites;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
+import com.uottawa.bigbrainmoves.servio.R;
 
 public class ServiceMainActivity extends AppCompatActivity {
 
@@ -20,16 +18,16 @@ public class ServiceMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_service_main);
 
         TextView welcomeText = findViewById(R.id.welcomeMessageText);
-        CurrentUser currentUser = new CurrentUser();
-        final String text = "Welcome " + currentUser.getCurrentUser().getDisplayName() +
+        CurrentAccount currentAccount = CurrentAccount.getInstance();
+        final String text = "Welcome " + currentAccount.getCurrentAccount().getDisplayName() +
                 ", current role is Service Owner";
         welcomeText.setText(text);
     }
 
     public void onSignoutClick(View view) {
         FirebaseAuth.getInstance().signOut();
-        CurrentUser user = new CurrentUser();
-        user.setCurrentUser(null);
+        CurrentAccount user = CurrentAccount.getInstance();
+        user.setCurrentAccount(null);
         Intent intent = new Intent(getApplicationContext(), LoginOrSignUpActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

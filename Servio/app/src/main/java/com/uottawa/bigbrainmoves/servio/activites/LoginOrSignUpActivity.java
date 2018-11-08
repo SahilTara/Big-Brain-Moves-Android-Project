@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio;
+package com.uottawa.bigbrainmoves.servio.activites;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -19,16 +19,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.uottawa.bigbrainmoves.servio.presenters.LoginOrSignUpPresenter;
+import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
+import com.uottawa.bigbrainmoves.servio.repositories.Repository;
+import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
+import com.uottawa.bigbrainmoves.servio.R;
+import com.uottawa.bigbrainmoves.servio.util.UiUtil;
+import com.uottawa.bigbrainmoves.servio.models.Account;
+import com.uottawa.bigbrainmoves.servio.views.LoginOrSignUpView;
 
-public class LoginOrSignUpActivity extends AppCompatActivity {
-    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = mDatabase.getReference(); // gets db ref, then searches for username.
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
+public class LoginOrSignUpActivity extends AppCompatActivity implements LoginOrSignUpView {
+    private Repository repository = new DbHandler();
+    private LoginOrSignUpPresenter presenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_or_signup);
+        presenter = new LoginOrSignUpPresenter(this, repository);
     }
 
 
@@ -39,7 +46,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
         String user = usernameText.getText().toString();
         String password = passwordText.getText().toString();
 
-        login(user, password);
+        presenter.login(user, password);
     }
 
     public void btnSignUpClick(View view) {
@@ -54,6 +61,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
      * @param username username to login with
      *
      */
+    /*
     private void loginWithUsername(final String username, final String password) {
 
         myRef.child("user_ids").child(username)
@@ -78,7 +86,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
                 });
 
     }
-
+*/
 
     /**
      * Attempts to verify user validity, and logs in if valid.
@@ -86,6 +94,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
      * @param input    The email or username of the user
      * @param password the password of the user
      */
+    /*
     public void login(String input, String password) {
 
         // Check if the input isn't an email, and if it isn't we get the email from the username.
@@ -113,12 +122,13 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
                     }
                 });
     }
-
+*/
     /**
-     * Gets a User Object from a firebase id.
+     * Gets a Account Object from a firebase id.
      * @param uid the uid of the firebase user
-     * @return the User object corresponding to the firebase id.
+     * @return the Account object corresponding to the firebase id.
      */
+    /*
     private void getUserFromDataBase(String uid) {
 
         myRef.child("user_info").child(uid)
@@ -128,12 +138,12 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // user exists!
                         if (dataSnapshot != null) {
-                            User user = dataSnapshot.getValue(User.class);
-                            CurrentUser currentUser = new CurrentUser();
-                            currentUser.setCurrentUser(user);
+                            Account account = dataSnapshot.getValue(Account.class);
+                            CurrentAccount currentAccount = CurrentAccount.getInstance();
+                            currentAccount.setCurrentAccount(account);
 
                             Intent openCorrectUi = UiUtil.getIntentFromType(getApplicationContext(),
-                                    currentUser.getCurrentUser().getType());
+                                    currentAccount.getCurrentAccount().getType());
 
                             startActivity(openCorrectUi);
                         }
@@ -146,6 +156,44 @@ public class LoginOrSignUpActivity extends AppCompatActivity {
                 });
 
     }
+*/
 
+    @Override
+    public void displayValidLogin() {
+        Toast.makeText(getApplicationContext(), "Valid Credentials", Toast.LENGTH_SHORT).show();
+        presenter.attemptGettingAccountInfo();
+    }
 
+    @Override
+    public void displayInvalidLogin() {
+        Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void displayNoAccountFound() {
+        Toast.makeText(getApplicationContext(),
+                "Please contact bigbrainmoves@gmail.com, your account's data seems to be corrupted",
+                Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void displayDataError() {
+        Toast.makeText(getApplicationContext(),
+                "Insufficient permissions to communicate with database.",
+                Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Method to be called when the account is found and valid.
+     */
+    @Override
+    public void displayValidAccount() {
+        Account account = CurrentAccount.getInstance().getCurrentAccount();
+        // Account was not null to get here so we can assume that account will be non null.
+        Toast.makeText(getApplicationContext(),"Logged In!", Toast.LENGTH_LONG).show();
+
+        Intent openCorrectUi = UiUtil.getIntentFromType(getApplicationContext(),
+                account.getType());
+        startActivity(openCorrectUi);
+    }
 }

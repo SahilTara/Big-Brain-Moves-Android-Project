@@ -1,0 +1,423 @@
+package com.uottawa.bigbrainmoves.servio.repositories;
+
+import android.util.Patterns;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.uottawa.bigbrainmoves.servio.models.Account;
+import com.uottawa.bigbrainmoves.servio.util.SignupResult;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+
+public class DbHandler implements Repository {
+    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = mDatabase.getReference(); // gets db ref, then searches for username.
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    /**
+     * Method to get the email for a given username from the database.
+     *
+     * @param username username to get the email for.
+     * @return rxjava Observable containing the success status of the login.
+     */
+    private Observable<Boolean> loginWithUsername(final String username, final String password) {
+        return Observable.create(subscriber -> {
+            myRef.child("user_ids").child(username)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        //
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String emailId = "";
+                            if (subscriber.isDisposed())
+                                return;
+                            /*
+                               makes it so empty string email id handles the failure cases. Since
+                               email can never be the empty string.
+                             */
+                            if (dataSnapshot != null) {
+                                emailId = dataSnapshot.getValue(String.class);
+                            }
+
+                            if (emailId == null) {
+                                emailId = "";
+                            }
+
+                            if (emailId.equals("")) {
+                                subscriber.onNext(false);
+                                subscriber.onComplete();
+                            } else {
+                                // handles the successful email case.
+
+                                /* first make the observer which will pass on data from the
+                                   helper loginToAccount method to the current observable.
+                                   Required due to the nested callback.
+                                 */
+                                Observer<Boolean> booleanObserver = new Observer<Boolean>() {
+                                    Disposable disposable;
+
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+                                        disposable = d;
+                                    }
+
+                                    // gets boolean from the login helper.
+                                    @Override
+                                    public void onNext(Boolean bool) {
+                                        subscriber.onNext(bool);
+                                        subscriber.onComplete();
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        subscriber.onError(e);
+                                        disposable.dispose();
+                                        disposable = null;
+                                    }
+
+                                    // do some cleanup
+                                    @Override
+                                    public void onComplete() {
+                                        disposable.dispose();
+                                        disposable = null;
+                                    }
+                                };
+                                // subscribe to the loginToAccount event to return the right thing.
+                                loginToAccount(emailId, password).subscribe(booleanObserver);
+                            }
+                        }
+
+                        @Override // database permission error
+                        public void onCancelled(DatabaseError dbError) {
+                            if (subscriber.isDisposed())
+                                return;
+                            subscriber.onError(new FirebaseException(dbError.getMessage()));
+                        }
+                    });
+        });
+
+    }
+
+    /**
+     * Private helper method to login to the account with the email and password of user.
+     * Used to simplify the logic of the application, simply returns true to the observer if
+     * successful login, false otherwise.
+     * @param email email to attempt login with.
+     * @param password password to attempt login with.
+     * @return rx observable containing the success status of the login.
+     */
+    private Observable<Boolean> loginToAccount(String email, String password) {
+        return Observable.create(subscriber -> {
+
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success
+
+                            subscriber.onNext(true);
+                            subscriber.onComplete();
+                        } else { // otherwise sign in failed.
+                            subscriber.onNext(false);
+                            subscriber.onComplete();
+                        }
+                    });
+        });
+    }
+    /**
+     * Attempts to verify user validity, and logs in if valid.
+     * Returns the success status of the login.
+     *
+     * @param input    The email or username of the user
+     * @param password the password of the user
+     * @return rxjava observable containing the success status of the login.
+     */
+    public Observable<Boolean> login(String input, String password) {
+        // Check if the input isn't an email, and if it isn't we get the email from the username.
+        if (!Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
+            return loginWithUsername(input, password);
+        } else {
+            return loginToAccount(input, password);
+        }
+
+
+    }
+
+
+    /**
+     * Method returns a list of all accounts currently in the database to the observers.
+     * @return a rx observable containing a list of all accounts in the database.
+     */
+    public Observable<List<Account>> getAllUsersFromDataBase() {
+        return Observable.create(subscriber -> {
+            myRef.child("user_info").addListenerForSingleValueEvent(new ValueEventListener() {
+                //
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // We have some users in the database.
+                    if (dataSnapshot != null) {
+                        ArrayList<Account> accounts = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Account account = snapshot.getValue(Account.class);
+                            if (account != null) {
+                                accounts.add(account);
+                            }
+                        }
+                        subscriber.onNext(accounts);
+                    }
+                }
+
+                @Override // Only really called when the database doesn't give enough permissions.
+                public void onCancelled(DatabaseError dbError) {
+                    subscriber.onError(new FirebaseException(dbError.getMessage()));
+                }
+            });
+        });
+
+    }
+
+
+    /**
+     * Gets an Account Object from a firebase id, and returns an observable using that id.
+     * @param uid the uid of the firebase user
+     * @return an rxJava observable of the account.
+     */
+    public Observable<Account> getUserFromDataBase(String uid) {
+        return Observable.create(subscriber -> {
+            myRef.child("user_info").child(uid)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        //
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot != null) {
+                                // if the subscriber is disposed we don't care about result
+                                if (subscriber.isDisposed())
+                                    return;
+
+                                Account account = dataSnapshot.getValue(Account.class);
+
+                                subscriber.onNext(account);
+                                subscriber.onComplete();
+                            }
+                        }
+
+                        @Override // Only really called when the database doesn't give enough permissions.
+                        public void onCancelled(DatabaseError dbError) {
+                            // if the subscriber is disposed we don't care about result
+                            if (subscriber.isDisposed())
+                                return;
+
+                            subscriber.onError(new FirebaseException(dbError.getMessage()));
+                        }
+                    });
+        });
+
+
+    }
+
+    /**
+     * Attempts to create the physical firebase user account,
+     * @param email the email of the account to create
+     * @param password the password of the account to create
+     * @param displayName the display name of the account to create.
+     * @param type the type of the account (Service, Home, Admin)
+     * @return
+     */
+    private Observable<SignupResult> createAccount(final String email,
+                                                   final String username,
+                                                   final String password,
+                                                   final String displayName,
+                                                   final String type) {
+        return Observable.create(subscriber -> {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in account's information
+                            Account account = new Account(displayName, type, username);
+                            writeUserNameToDatabase(username, email);
+                            writeUserToDataBase(getUserId(), account);
+                            subscriber.onNext(SignupResult.ACCOUNT_CREATED);
+                        } else {
+                            subscriber.onNext(SignupResult.EMAIL_TAKEN);
+                        }
+                    });
+        });
+    }
+
+    /**
+     * Adds the displayName, type to the database under the uid.
+     *
+     */
+    private void writeUserToDataBase(String uid, Account account) {
+        myRef.child("user_info").child(uid).setValue(account);
+        if (account.type.equals("admin")) {
+            // If we write admin type to database we have to do some things to make sure no more admins are made.
+            myRef.child("admin_exists").setValue(true);
+        }
+    }
+
+    /**
+     * Writes the username : email to database for username login.
+     * @param username username specified by the user.
+     * @param email email specified by the user.
+     */
+    private void writeUserNameToDatabase(String username, String email) {
+        myRef.child("user_ids").child(username).setValue(email);
+    }
+
+    /**
+     * Method to check if an admin account exists.
+     * @return the existence of an admin account.
+     */
+    public Observable<Boolean> doesAdminAccountExist() {
+
+        return Observable.create(subscriber -> {
+            myRef.child("admin_exists").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (subscriber.isDisposed())
+                        return;
+                    // admin exists!
+                    Boolean bool = false;
+                    if (dataSnapshot.exists()) {
+                        bool = dataSnapshot.getValue(Boolean.class);
+                    }
+
+                    subscriber.onNext(bool);
+
+                }
+
+                @Override // usually due to insufficient permissions
+                public void onCancelled(DatabaseError dbError) {
+                    if (subscriber.isDisposed())
+                        return;
+                    subscriber.onError(new FirebaseException(dbError.getMessage()));
+                }
+            });
+        });
+    }
+
+    /**
+     * Checks if the user exists, if not adds to db.
+     * @param username the username to check.
+     * @param email the email of user
+     * @param password the password of the user.
+     * @param displayName the display name of the user.
+     * @param typeSelected the type of the user.
+     */
+    public Observable<SignupResult> createUserIfNotInDataBase(final String email,
+                                                              final String username,
+                                                              final String password,
+                                                              final String displayName,
+                                                              final String typeSelected) {
+        return Observable.create(subscriber -> {
+            // We make sure that a user does not exist with this uid.
+            myRef.child("user_ids").child(username)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        //
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (subscriber.isDisposed())
+                                return;
+                            // user doesn't exist
+                            if (!dataSnapshot.exists()) {
+                                // user does not exist
+                                Observer<SignupResult> signupObserver = new Observer<SignupResult>() {
+                                    Disposable disposable;
+
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+                                        disposable = d;
+                                    }
+
+                                    // gets boolean from the login helper.
+                                    @Override
+                                    public void onNext(SignupResult result) {
+                                        subscriber.onNext(result);
+                                        subscriber.onComplete();
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        subscriber.onError(e);
+                                        disposable.dispose();
+                                        disposable = null;
+                                    }
+
+                                    // do some cleanup
+                                    @Override
+                                    public void onComplete() {
+                                        disposable.dispose();
+                                        disposable = null;
+                                    }
+                                };
+                                createAccount(email,
+                                              username,
+                                              password,
+                                              displayName,
+                                              typeSelected).subscribe(signupObserver);
+
+                            } else {
+                                /*
+                                Toast.makeText(getApplicationContext(), "Account taken", Toast.LENGTH_LONG).show();
+                                */
+                                subscriber.onNext(SignupResult.USERNAME_TAKEN);
+                            }
+                        }
+
+                        @Override // Some kind of error
+                        public void onCancelled(DatabaseError dbError) {
+                            if (subscriber.isDisposed())
+                                return;
+                            subscriber.onError(new FirebaseException(dbError.getMessage()));
+                        }
+                    });
+        });
+    }
+
+
+
+
+
+    /**
+     * Check if a user is currently logged in to firebase.
+     * @return True if a user is logged in, false otherwise.
+     */
+    public boolean checkIfUserIsLoggedIn() {
+        return mAuth.getCurrentUser() != null;
+    }
+
+    /**
+     * If logged in this method returns the uid of the firebase user,
+     * Otherwise null.
+     * @return String mapping to the firebase user's uid or null if no logged in user.
+     */
+    public String getUserId() {
+        if(checkIfUserIsLoggedIn()) {
+            return mAuth.getCurrentUser().getUid();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Signs out the current firebase user.
+     */
+    public void signOutCurrentUser() {
+        if (getUserId() != null) {
+            mAuth.signOut();
+        }
+    }
+
+
+}
+
+

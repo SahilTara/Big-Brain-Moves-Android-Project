@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".activites.SplashScreenActivity"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,11 +18,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoginOrSignUpActivity" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".ServiceMainActivity" />
-        <activity android:name=".AdminMainActivity"></activity>
+        <activity android:name=".activites.MainActivity" />
+        <activity android:name=".activites.LoginOrSignUpActivity" />
+        <activity android:name=".activites.SignUpActivity" />
+        <activity android:name=".activites.ServiceMainActivity" />
+        <activity android:name=".activites.AdminMainActivity" />
+        <activity android:name=".activites.UserListActivity"></activity>
     </application>
 
 </manifest>

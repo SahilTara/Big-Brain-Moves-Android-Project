@@ -1,7 +1,11 @@
-package com.uottawa.bigbrainmoves.servio;
+package com.uottawa.bigbrainmoves.servio.util;
 
 import android.content.Context;
 import android.content.Intent;
+
+import com.uottawa.bigbrainmoves.servio.activites.AdminMainActivity;
+import com.uottawa.bigbrainmoves.servio.activites.MainActivity;
+import com.uottawa.bigbrainmoves.servio.activites.ServiceMainActivity;
 
 public class UiUtil {
     public static Intent getIntentFromType(Context context, String userType) {

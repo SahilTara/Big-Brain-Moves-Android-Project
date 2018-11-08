@@ -1,16 +1,17 @@
-package com.uottawa.bigbrainmoves.servio;
+package com.uottawa.bigbrainmoves.servio.models;
 
-public class User {
+
+public class Account {
     // NEED TO BE PUBLIC FOR FIREBASE
     public String displayName;
     public String type;
     public String username;
 
-    public User() {
+    public Account() {
         // Needed for DB
     }
 
-    public User(String displayName, String type, String username) {
+    public Account(String displayName, String type, String username) {
         this.displayName = displayName;
         this.type = type;
         this.username = username;

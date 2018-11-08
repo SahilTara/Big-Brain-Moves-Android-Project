@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio;
+package com.uottawa.bigbrainmoves.servio.util;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -7,13 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.uottawa.bigbrainmoves.servio.R;
+import com.uottawa.bigbrainmoves.servio.models.Account;
+
 import java.util.ArrayList;
+import java.util.List;
 
-public class ArrayRecyclerAdapter extends RecyclerView.Adapter<ArrayRecyclerAdapter.ViewHolder> {
-    ArrayList<User> users = new ArrayList<>();
+public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.ViewHolder> {
+    private List<Account> accounts = new ArrayList<>();
 
-    public ArrayRecyclerAdapter(ArrayList<User> users) {
-        this.users.addAll(users);
+    public AccountListAdapter(List<Account> accounts) {
+        this.accounts.addAll(accounts);
     }
 
     @NonNull
@@ -25,14 +29,14 @@ public class ArrayRecyclerAdapter extends RecyclerView.Adapter<ArrayRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        final User user = users.get(position);
-        final String text = "User: " + user.getUsername() + " Type: " + user.getType();
+        final Account account = accounts.get(position);
+        final String text = "Account: " + account.getUsername() + " Type: " + account.getType();
         viewHolder.userTypeText.setText(text);
     }
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return accounts.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
