@@ -44,7 +44,8 @@ public class ServiceTypeListAdapter extends RecyclerView.Adapter<ServiceTypeList
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         final ServiceType serviceType = serviceTypes.get(position);
         viewHolder.serviceTypeNameText.setText(serviceType.getType());
-        viewHolder.serviceRateText.setText(String.valueOf(serviceType.getRate()));
+        final String rateText = "$" + String.valueOf(serviceType.getRate());
+        viewHolder.serviceRateText.setText(rateText);
         viewHolder.parentLayout.setOnClickListener((view) -> {
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
             alertBuilder.setTitle(serviceType.getType()).setPositiveButton("Edit Value", new DialogInterface.OnClickListener() {
@@ -62,6 +63,7 @@ public class ServiceTypeListAdapter extends RecyclerView.Adapter<ServiceTypeList
                         String result = input.getText().toString();
                         try {
                             double val = Double.valueOf(result);
+                            val = Math.round(val * 100.0) / 100.0;
                             if (val <= Double.valueOf("1.7E308")) {
                                 repository.editServiceType(serviceType.getType(), val);
                                 Toast.makeText(context,

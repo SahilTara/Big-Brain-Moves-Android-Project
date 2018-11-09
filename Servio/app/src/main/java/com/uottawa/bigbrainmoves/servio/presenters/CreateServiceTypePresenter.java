@@ -19,6 +19,7 @@ public class CreateServiceTypePresenter {
     public void createServiceType(String name, String value) {
         try {
             double val = Double.valueOf(value);
+            val = Math.round(val * 100.0) / 100.0; // round to 2 decimal places.
             name = name.trim();
             name = name.toLowerCase();
             if (name.equals("") || !name.matches("(([A-Za-z]+\\s?)+)") || name.length() > 30) {
