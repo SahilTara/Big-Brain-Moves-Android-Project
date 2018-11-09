@@ -52,7 +52,9 @@ public class AdminMainActivity extends AppCompatActivity implements MainView {
 
     @Override
     public void displaySignOut() {
-        //TODO: TOAST SAYING "Successfully Signed Out."
+        Toast.makeText(getApplicationContext(),
+                       "Successfully signed out.",
+                       Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getApplicationContext(), LoginOrSignUpActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
