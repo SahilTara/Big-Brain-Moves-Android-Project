@@ -3,6 +3,7 @@ package com.uottawa.bigbrainmoves.servio.util;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -100,7 +101,7 @@ public class ServiceTypeListAdapter extends RecyclerView.Adapter<ServiceTypeList
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView serviceTypeNameText;
         TextView serviceRateText;
-        LinearLayout parentLayout;
+        ConstraintLayout parentLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             serviceTypeNameText = itemView.findViewById(R.id.userText);
