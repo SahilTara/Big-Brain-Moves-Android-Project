@@ -20,6 +20,7 @@ public class CreateServiceTypePresenter {
         try {
             double val = Double.valueOf(value);
             name = name.trim();
+            name = name.toLowerCase();
             if (name.equals("") || !name.matches("(([A-Za-z]+\\s?)+)") || name.length() > 30) {
                 view.displayInvalidName();
             } else if (val < 0 || val > Double.valueOf("1.7E308")) {
