@@ -33,7 +33,8 @@ public class CreateServiceTypeActivity extends AppCompatActivity implements Crea
     @Override
     public void displayInvalidName() {
         Toast.makeText(getApplicationContext(),
-                "Name must not contain numbers, or symbols, and cannot be blank.",
+                "Name must not contain numbers, or symbols,"
+                        + " and cannot be blank and must be less than 30 characters.",
                 Toast.LENGTH_LONG).show();
     }
 

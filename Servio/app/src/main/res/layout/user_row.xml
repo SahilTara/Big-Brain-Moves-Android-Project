@@ -6,17 +6,21 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/userText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/border"/>
+            android:background="@drawable/border"
+            android:textAlignment="center" />
+
         <TextView
             android:id="@+id/typeText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/border"/>
+            android:background="@drawable/border"
+            android:textAlignment="center" />
     </LinearLayout>
 </LinearLayout>
