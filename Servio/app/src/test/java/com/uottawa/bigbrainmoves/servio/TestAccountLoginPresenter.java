@@ -29,6 +29,7 @@ public class TestAccountLoginPresenter {
         Repository repository = mock(Repository.class);
         AccountLoginView view  = mock(AccountLoginView.class);
 
+        // account not logged in
         when(repository.checkIfUserIsLoggedIn()).thenReturn(false);
 
         AccountLoginPresenter presenter = new AccountLoginPresenter(view, repository);
