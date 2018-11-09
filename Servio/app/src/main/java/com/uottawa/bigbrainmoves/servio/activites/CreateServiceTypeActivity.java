@@ -47,7 +47,9 @@ public class CreateServiceTypeActivity extends AppCompatActivity implements Crea
 
     @Override
     public void displayNameTaken() {
-        //Todo: Make a toast saying "Service type already exists!"
+        Toast.makeText(getApplicationContext(),
+                      "Service type already exists!",
+                      Toast.LENGTH_LONG).show();
     }
 
     @Override
