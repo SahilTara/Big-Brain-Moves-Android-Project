@@ -1,6 +1,10 @@
 package com.uottawa.bigbrainmoves.servio.repositories;
 
+import android.graphics.Paint;
+import android.util.Pair;
+
 import com.uottawa.bigbrainmoves.servio.models.Account;
+import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
 
 import java.util.List;
@@ -20,4 +24,9 @@ public interface Repository {
     boolean checkIfUserIsLoggedIn();
     String getUserId();
     void signOutCurrentUser();
+
+    Observable<Boolean> createServiceTypeIfNotInDatabase(String serviceTypeName, double value);
+    Observable<Pair<ServiceType, Boolean>> listenForServiceTypeChanges();
+    void deleteServiceType(String serviceTypeName);
+    void editServiceType(String serviceTypeName, double value);
 }

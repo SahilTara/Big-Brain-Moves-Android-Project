@@ -29,14 +29,14 @@
             android:id="@+id/btnServiceList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="onSignoutClick"
+            android:onClick="onManageServiceTypesClick"
             android:text="Manage Services" />
 
         <Button
             android:id="@+id/btnSignOut3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="onSignoutClick"
+            android:onClick="onSignOutClick"
             android:text="Sign Out" />
 
     </LinearLayout>

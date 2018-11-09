@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.uottawa.bigbrainmoves.servio">
-
+    xmlns:tools="http://schemas.android.com/tools"
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,7 +23,9 @@
         <activity android:name=".activites.SignUpActivity" />
         <activity android:name=".activites.ServiceMainActivity" />
         <activity android:name=".activites.AdminMainActivity" />
-        <activity android:name=".activites.UserListActivity"></activity>
+        <activity android:name=".activites.UserListActivity" />
+        <activity android:name=".activites.ManageServiceTypesActivity" />
+        <activity android:name=".activites.CreateServiceTypeActivity"></activity>
     </application>
 
 </manifest>

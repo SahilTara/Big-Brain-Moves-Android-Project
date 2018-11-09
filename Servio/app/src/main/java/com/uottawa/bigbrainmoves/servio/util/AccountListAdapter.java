@@ -30,8 +30,8 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         final Account account = accounts.get(position);
-        final String text = "Account: " + account.getUsername() + " Type: " + account.getType();
-        viewHolder.userTypeText.setText(text);
+        viewHolder.userText.setText(account.getUsername());
+        viewHolder.typeText.setText(account.getType());
     }
 
     @Override
@@ -40,10 +40,12 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView userTypeText;
+        TextView userText;
+        TextView typeText;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            userTypeText = itemView.findViewById(R.id.userAndTypeText);
+            userText = itemView.findViewById(R.id.userText);
+            typeText = itemView.findViewById(R.id.typeText);
         }
     }
 }

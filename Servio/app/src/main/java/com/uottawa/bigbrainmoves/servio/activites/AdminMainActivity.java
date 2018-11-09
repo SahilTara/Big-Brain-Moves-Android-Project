@@ -14,37 +14,30 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.uottawa.bigbrainmoves.servio.presenters.MainScreenPresenter;
+import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
+import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.AccountListAdapter;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.R;
 import com.uottawa.bigbrainmoves.servio.models.Account;
+import com.uottawa.bigbrainmoves.servio.views.MainView;
 
 import java.util.ArrayList;
 
-public class AdminMainActivity extends AppCompatActivity {
-    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = mDatabase.getReference(); // gets db ref, then searches for username.
-    private  CurrentAccount currentAccount = CurrentAccount.getInstance();
-
+public class AdminMainActivity extends AppCompatActivity implements MainView {
+    MainScreenPresenter presenter;
+    Repository repository = new DbHandler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_main);
-        TextView welcomeText = findViewById(R.id.welcomeMessageText);
-
-
-        final String text = "Welcome " + currentAccount.getCurrentAccount().getDisplayName() +
-                ", current role is Admin";
-        welcomeText.setText(text);
+        presenter = new MainScreenPresenter(this, repository);
+        presenter.showWelcomeMessage();
     }
 
-    public void onSignoutClick(View view) {
-        FirebaseAuth.getInstance().signOut();
-        currentAccount.setCurrentAccount(null);
-        Intent intent = new Intent(getApplicationContext(), LoginOrSignUpActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-
+    public void onSignOutClick(View view) {
+        presenter.signOut();
     }
 
     public void onUserListClick(View view) {
@@ -52,7 +45,24 @@ public class AdminMainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onManageServiceTypesClick(View view) {
+        Intent intent = new Intent(getApplicationContext(), ManageServiceTypesActivity.class);
+        startActivity(intent);
+    }
 
+    @Override
+    public void displaySignOut() {
+        //TODO: TOAST SAYING "Successfully Signed Out."
+        Intent intent = new Intent(getApplicationContext(), LoginOrSignUpActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
 
-
+    @Override
+    public void displayWelcomeText(String displayName) {
+        TextView welcomeText = findViewById(R.id.welcomeMessageText);
+        final String text = "Welcome " + displayName +
+                ", current role is Admin";
+        welcomeText.setText(text);
+    }
 }

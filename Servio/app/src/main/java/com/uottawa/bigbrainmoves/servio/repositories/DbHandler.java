@@ -1,14 +1,20 @@
 package com.uottawa.bigbrainmoves.servio.repositories;
 
+import android.app.Service;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.util.Patterns;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.uottawa.bigbrainmoves.servio.models.Account;
+import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
 
 import java.util.ArrayList;
@@ -22,7 +28,9 @@ public class DbHandler implements Repository {
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = mDatabase.getReference(); // gets db ref, then searches for username.
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
+    /*
+    Begin Account/User related Methods.
+     */
     /**
      * Method to get the email for a given username from the database.
      *
@@ -162,7 +170,7 @@ public class DbHandler implements Repository {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // We have some users in the database.
-                    if (dataSnapshot != null) {
+                    if (dataSnapshot.exists()) {
                         ArrayList<Account> accounts = new ArrayList<>();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Account account = snapshot.getValue(Account.class);
@@ -171,6 +179,7 @@ public class DbHandler implements Repository {
                             }
                         }
                         subscriber.onNext(accounts);
+                        subscriber.onComplete();
                     }
                 }
 
@@ -244,8 +253,10 @@ public class DbHandler implements Repository {
                             writeUserNameToDatabase(username, email);
                             writeUserToDataBase(getUserId(), account);
                             subscriber.onNext(SignupResult.ACCOUNT_CREATED);
+                            subscriber.onComplete();
                         } else {
                             subscriber.onNext(SignupResult.EMAIL_TAKEN);
+                            subscriber.onComplete();
                         }
                     });
         });
@@ -292,7 +303,7 @@ public class DbHandler implements Repository {
                     }
 
                     subscriber.onNext(bool);
-
+                    subscriber.onComplete();
                 }
 
                 @Override // usually due to insufficient permissions
@@ -322,7 +333,6 @@ public class DbHandler implements Repository {
             // We make sure that a user does not exist with this uid.
             myRef.child("user_ids").child(username)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
-                        //
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (subscriber.isDisposed())
@@ -370,6 +380,7 @@ public class DbHandler implements Repository {
                                 Toast.makeText(getApplicationContext(), "Account taken", Toast.LENGTH_LONG).show();
                                 */
                                 subscriber.onNext(SignupResult.USERNAME_TAKEN);
+                                subscriber.onComplete();
                             }
                         }
 
@@ -417,6 +428,108 @@ public class DbHandler implements Repository {
         }
     }
 
+
+    /*
+    End Account/User related Methods.
+     */
+
+    /*
+    Begin Service Related Methods
+     */
+
+    /**
+     * Creates a service type if it doesn't already exist. Returns whether or not the service type was
+     * successfully created.
+     * @param serviceTypeName service type name to create
+     * @param value rate that the service type will go for.
+     * @return rxjava observable containing whether or not the service type was successfully created.
+     */
+    public Observable<Boolean> createServiceTypeIfNotInDatabase(String serviceTypeName, double value) {
+        return Observable.create(subscriber -> {
+            // We make sure that a user does not exist with this uid.
+            myRef.child("service_types").child(serviceTypeName)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (subscriber.isDisposed())
+                                return;
+                            if (!dataSnapshot.exists()) {
+                                writeServiceTypeToDatabase(serviceTypeName, value);
+                                subscriber.onNext(true);
+                                subscriber.onComplete();
+                            } else {
+                                subscriber.onNext(false);
+                                subscriber.onComplete();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError dbError) {
+                            if (subscriber.isDisposed())
+                                return;
+                            subscriber.onError(new FirebaseException(dbError.getMessage()));
+                        }
+                    });
+        });
+    }
+
+    /**
+     * Writes the service type to the database
+     * @param serviceTypeName name of the service type.
+     * @param value the rate of the service type.
+     */
+    private void writeServiceTypeToDatabase(String serviceTypeName, double value) {
+        ServiceType serviceType = new ServiceType(serviceTypeName, value);
+        myRef.child("service_types").child(serviceTypeName).setValue(serviceType);
+    }
+
+
+
+    /**
+     * Method listens for changes in the service types database, and notifies all observers.
+     * @return rxjava containing a service type and whether removed or not.
+     */
+    public Observable<Pair<ServiceType, Boolean>> listenForServiceTypeChanges() {
+        return Observable.create(subscriber -> {
+           myRef.child("service_types").addChildEventListener(new ChildEventListener() {
+               @Override
+               public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                   ServiceType serviceType = dataSnapshot.getValue(ServiceType.class);
+                   subscriber.onNext(new Pair<>(serviceType, false));
+               }
+
+               @Override
+               public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                   ServiceType serviceType = dataSnapshot.getValue(ServiceType.class);
+                   subscriber.onNext(new Pair<>(serviceType, false));
+               }
+
+               @Override
+               public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                   ServiceType serviceType = dataSnapshot.getValue(ServiceType.class);
+                   subscriber.onNext(new Pair<>(serviceType, true));
+               }
+
+               @Override
+               public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+               }
+
+               @Override
+               public void onCancelled(@NonNull DatabaseError databaseError) {
+                   subscriber.onError(new FirebaseException(databaseError.getMessage()));
+               }
+           });
+        });
+    }
+
+    public void deleteServiceType(String serviceTypeName) {
+        myRef.child("service_types").child(serviceTypeName).removeValue();
+    }
+
+    public void editServiceType(String serviceTypeName, double value) {
+        writeServiceTypeToDatabase(serviceTypeName, value);
+    }
 
 }
 
