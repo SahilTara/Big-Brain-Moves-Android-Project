@@ -17,7 +17,6 @@ import com.uottawa.bigbrainmoves.servio.util.ServiceTypeListAdapter;
 import com.uottawa.bigbrainmoves.servio.views.ManageServiceTypesView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ManageServiceTypesActivity extends AppCompatActivity implements ManageServiceTypesView  {

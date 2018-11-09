@@ -1,6 +1,5 @@
 package com.uottawa.bigbrainmoves.servio.repositories;
 
-import android.graphics.Paint;
 import android.util.Pair;
 
 import com.uottawa.bigbrainmoves.servio.models.Account;
@@ -8,11 +7,12 @@ import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.reactivex.Observable;
 
 public interface Repository {
-    Observable<Account> getUserFromDataBase(String uid);
+    Observable<Optional<Account>> getUserFromDataBase(String uid);
     Observable<List<Account>> getAllUsersFromDataBase();
     Observable<Boolean> login(String input, String password);
     Observable<SignupResult> createUserIfNotInDataBase(final String email,

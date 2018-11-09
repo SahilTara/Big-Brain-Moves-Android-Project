@@ -5,6 +5,8 @@ import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.views.AccountLoginView;
 
+import java.util.Optional;
+
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -37,7 +39,7 @@ public class AccountLoginPresenter {
         }
 
         // Simple observer set up.
-        Observer<Account> accountObserver = new Observer<Account>() {
+        Observer<Optional<Account>> accountObserver = new Observer<Optional<Account>>() {
             Disposable disposable;
 
             @Override
@@ -47,11 +49,11 @@ public class AccountLoginPresenter {
 
             // gets account from the repository stream.
             @Override
-            public void onNext(Account account) {
-                if (account == null) { // account may have been deleted somehow
+            public void onNext(Optional<Account> account) {
+                if (!account.isPresent()) { // account may have been deleted somehow
                     view.displayNoAccountFound();
                 } else { // Account is valid!
-                    currentAccount.setCurrentAccount(account);
+                    currentAccount.setCurrentAccount(account.get());
                     view.displayValidAccount();
                 }
 

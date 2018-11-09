@@ -1,6 +1,5 @@
 package com.uottawa.bigbrainmoves.servio.repositories;
 
-import android.app.Service;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -17,8 +16,10 @@ import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
 
+import java.security.cert.PKIXRevocationChecker;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -104,7 +105,7 @@ public class DbHandler implements Repository {
                         }
 
                         @Override // database permission error
-                        public void onCancelled(DatabaseError dbError) {
+                        public void onCancelled(@NonNull DatabaseError dbError) {
                             if (subscriber.isDisposed())
                                 return;
                             subscriber.onError(new FirebaseException(dbError.getMessage()));
@@ -168,7 +169,9 @@ public class DbHandler implements Repository {
             myRef.child("user_info").addListenerForSingleValueEvent(new ValueEventListener() {
                 //
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (subscriber.isDisposed())
+                        return;
                     // We have some users in the database.
                     if (dataSnapshot.exists()) {
                         ArrayList<Account> accounts = new ArrayList<>();
@@ -184,7 +187,9 @@ public class DbHandler implements Repository {
                 }
 
                 @Override // Only really called when the database doesn't give enough permissions.
-                public void onCancelled(DatabaseError dbError) {
+                public void onCancelled(@NonNull DatabaseError dbError) {
+                    if (subscriber.isDisposed())
+                        return;
                     subscriber.onError(new FirebaseException(dbError.getMessage()));
                 }
             });
@@ -198,22 +203,25 @@ public class DbHandler implements Repository {
      * @param uid the uid of the firebase user
      * @return an rxJava observable of the account.
      */
-    public Observable<Account> getUserFromDataBase(String uid) {
+    public Observable<Optional<Account>> getUserFromDataBase(String uid) {
         return Observable.create(subscriber -> {
             myRef.child("user_info").child(uid)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         //
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot != null) {
+                            if (dataSnapshot.exists()) {
                                 // if the subscriber is disposed we don't care about result
                                 if (subscriber.isDisposed())
                                     return;
 
                                 Account account = dataSnapshot.getValue(Account.class);
+                                Optional<Account> accountOptional = Optional.ofNullable(account);
 
-                                subscriber.onNext(account);
+                                subscriber.onNext(accountOptional);
                                 subscriber.onComplete();
+                            } else {
+                                subscriber.onNext(Optional.empty());
                             }
                         }
 

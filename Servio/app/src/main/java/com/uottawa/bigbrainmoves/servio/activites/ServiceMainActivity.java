@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.uottawa.bigbrainmoves.servio.presenters.MainScreenPresenter;
@@ -32,7 +33,9 @@ public class ServiceMainActivity extends AppCompatActivity implements MainView  
 
     @Override
     public void displaySignOut() {
-        Toast.make(getApplicationContext(), "Successfully Signed Out.", Toast.LONG_LENGTH).show();
+        Toast.makeText(getApplicationContext(),
+                "Successfully Signed Out.",
+                Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getApplicationContext(), LoginOrSignUpActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

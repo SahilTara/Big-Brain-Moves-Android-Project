@@ -52,6 +52,7 @@ public class SplashScreenActivity extends AppCompatActivity implements AccountLo
         Toast.makeText(getApplicationContext(),
                 "Insufficient permissions to communicate with database.",
                 Toast.LENGTH_LONG).show();
+        notLoggedIn();
     }
 
     /**
