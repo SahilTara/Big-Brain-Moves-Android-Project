@@ -1,15 +1,15 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/Big-Brain-Moves-Android-Project
+    working_directory: ~/Big-Brain-Moves-Android-Project/Servio
     docker:
       - image: circleci/android:api-28-alpha
     environment:
       JVM_OPTS: -Xmx3200m
     steps:
-      - checkout Servio
+      - checkout
       - restore_cache:
-          key: jars-{{ checksum "/build.gradle" }}-{{ checksum  "/app/build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "/app/build.gradle" }}
       - run:
          name: Chmod permissions  
          command: sudo chmod +x ./gradlew
@@ -18,8 +18,8 @@ jobs:
           command: ./gradlew androidDependencies
       - save_cache:
           paths:
-            - /.gradle
-          key: jars-{{ checksum "/build.gradle" }}-{{ checksum  "/app/build.gradle" }}
+            - .gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "/app/build.gradle" }}
       - run:
           name: Run UnitTest
           command: ./gradlew test
