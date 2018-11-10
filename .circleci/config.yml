@@ -7,7 +7,7 @@ jobs:
     environment:
       JVM_OPTS: -Xmx3200m
     steps:
-      - checkout Servio
+      - checkout
       - restore_cache:
           key: jars-{{ checksum "Servio/build.gradle" }}-{{ checksum  "Servio/app/build.gradle" }}
       - run:
