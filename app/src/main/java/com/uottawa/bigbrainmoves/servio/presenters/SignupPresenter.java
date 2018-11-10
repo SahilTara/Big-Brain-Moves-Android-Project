@@ -1,11 +1,11 @@
 package com.uottawa.bigbrainmoves.servio.presenters;
 
 
-import android.util.Patterns;
-
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
 import com.uottawa.bigbrainmoves.servio.views.SignUpView;
+
+import java.util.regex.Pattern;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -13,6 +13,15 @@ import io.reactivex.disposables.Disposable;
 public class SignupPresenter extends  AccountLoginPresenter {
     private final SignUpView view;
     private final Repository repository;
+    private static final Pattern EMAIL_ADDRESS
+            = Pattern.compile(
+            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                    "\\@" +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                    "(" +
+                    "\\." +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                    ")+");
 
     public SignupPresenter(SignUpView view, Repository repository) {
         super(view, repository);
@@ -20,13 +29,14 @@ public class SignupPresenter extends  AccountLoginPresenter {
         this.repository = repository;
     }
 
+
     public void createAccount(String email,
                               String username,
                               String password,
                               String displayName,
                               String typeSelected) {
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!EMAIL_ADDRESS.matcher(email).matches()) {
             view.displayInvalidEmail();
         } else if (!username.matches("\\b[a-zA-Z][a-zA-Z0-9\\-._]{3,}\\b")) {
             view.displayInvalidUserName();

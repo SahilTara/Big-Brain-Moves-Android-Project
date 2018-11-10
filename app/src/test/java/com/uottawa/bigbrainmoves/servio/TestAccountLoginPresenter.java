@@ -6,11 +6,16 @@ import com.uottawa.bigbrainmoves.servio.presenters.AccountLoginPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.AccountLoginView;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.MockitoRule;
 
 import java.util.Optional;
 
@@ -22,17 +27,27 @@ import static org.junit.Assert.*;
 @RunWith(MockitoJUnitRunner.class)
 public class TestAccountLoginPresenter {
 
+    @Mock
+    private Repository repository;
+    @Mock
+    private AccountLoginView view;
+
+    @InjectMocks
+    private AccountLoginPresenter presenter;
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Captor
     private ArgumentCaptor<String> captor;
+
+    private final String uid = "XdFahga";
+
     @Test
     public void testUserNotAlreadyLoggedIn() {
-        Repository repository = mock(Repository.class);
-        AccountLoginView view  = mock(AccountLoginView.class);
-
         // account not logged in
         when(repository.checkIfUserIsLoggedIn()).thenReturn(false);
 
-        AccountLoginPresenter presenter = new AccountLoginPresenter(view, repository);
         presenter.attemptGettingAccountInfo();
 
         verify(view, atLeastOnce()).displayNoAccountFound();
@@ -43,14 +58,10 @@ public class TestAccountLoginPresenter {
 
     @Test
     public void testUidNoLongerValid() {
-        Repository repository = mock(Repository.class);
-        AccountLoginView view  = mock(AccountLoginView.class);
-
         // Account logged in but null uid.
         when(repository.checkIfUserIsLoggedIn()).thenReturn(true);
         when(repository.getUserId()).thenReturn(null);
 
-        AccountLoginPresenter presenter = new AccountLoginPresenter(view, repository);
         presenter.attemptGettingAccountInfo();
 
         verify(view, atLeastOnce()).displayNoAccountFound();
@@ -61,20 +72,14 @@ public class TestAccountLoginPresenter {
 
     @Test
     public void testDatabaseError() {
-        Repository repository = mock(Repository.class);
-        AccountLoginView view  = mock(AccountLoginView.class);
-        final String uid = "XdFahga";
-
         when(repository.checkIfUserIsLoggedIn()).thenReturn(true);
         when(repository.getUserId()).thenReturn(uid);
 
         // Database encounters error.
-        when(repository.getUserFromDataBase(uid))
+        when(repository.getUserFromDataBase(any(String.class)))
                 .thenReturn(Observable.create(subscriber -> {
                     subscriber.onError(new Exception("hello"));
                 }));
-
-        AccountLoginPresenter presenter = new AccountLoginPresenter(view, repository);
 
         presenter.attemptGettingAccountInfo();
 
@@ -91,20 +96,14 @@ public class TestAccountLoginPresenter {
 
     @Test
     public void testAccountNotFound() {
-        Repository repository = mock(Repository.class);
-        AccountLoginView view  = mock(AccountLoginView.class);
-        final String uid = "XdFahga";
-
         when(repository.checkIfUserIsLoggedIn()).thenReturn(true);
         when(repository.getUserId()).thenReturn(uid);
 
         // Database returns empty optional element (Account not found).
-        when(repository.getUserFromDataBase(uid))
+        when(repository.getUserFromDataBase(any(String.class)))
                 .thenReturn(Observable.create(subscriber -> {
                     subscriber.onNext(Optional.empty());
                 }));
-
-        AccountLoginPresenter presenter = new AccountLoginPresenter(view, repository);
 
         presenter.attemptGettingAccountInfo();
 
@@ -120,20 +119,14 @@ public class TestAccountLoginPresenter {
 
     @Test
     public void testAccountFound() {
-        Repository repository = mock(Repository.class);
-        AccountLoginView view  = mock(AccountLoginView.class);
-        final String uid = "XdFahga";
-
         when(repository.checkIfUserIsLoggedIn()).thenReturn(true);
         when(repository.getUserId()).thenReturn(uid);
 
         // Database returns proper account object inside optional, (Account found)
-        when(repository.getUserFromDataBase(uid))
+        when(repository.getUserFromDataBase(any(String.class)))
                 .thenReturn(Observable.create(subscriber -> {
                     subscriber.onNext(Optional.of(mock(Account.class)));
                 }));
-
-        AccountLoginPresenter presenter = new AccountLoginPresenter(view, repository);
 
         presenter.attemptGettingAccountInfo();
 
