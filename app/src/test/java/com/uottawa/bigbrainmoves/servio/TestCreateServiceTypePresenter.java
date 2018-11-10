@@ -4,6 +4,7 @@ import com.uottawa.bigbrainmoves.servio.presenters.CreateServiceTypePresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.CreateServiceTypeView;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,6 @@ public class TestCreateServiceTypePresenter {
     @Mock
     private CreateServiceTypeView view;
 
-    @InjectMocks
     private CreateServiceTypePresenter presenter;
 
     @Rule
@@ -54,6 +54,10 @@ public class TestCreateServiceTypePresenter {
     @Captor
     private ArgumentCaptor<Double> value;
 
+    @Before
+    public void setup() {
+        presenter = new CreateServiceTypePresenter(view, repository);
+    }
     @Test
     public void testInvalidName() {
         presenter.createServiceType(INVALID_NAME, VALUE);
@@ -104,7 +108,7 @@ public class TestCreateServiceTypePresenter {
         verify(view, atLeastOnce()).displayNameTaken();
 
         assertEquals("Expected type passed to database to be the same as one passed to presenter.",
-                NAME, type.getValue());
+                NAME.toLowerCase(), type.getValue());
         assertEquals("Expected value passed to database to be rounded to two decimal places of one passed",
                 ROUNDED, value.getValue(), 0.000001);
     }
@@ -127,7 +131,7 @@ public class TestCreateServiceTypePresenter {
         verify(view, never()).displayNameTaken();
 
         assertEquals("Expected type passed to database to be the same as one passed to presenter.",
-                NAME, type.getValue());
+                NAME.toLowerCase(), type.getValue());
         assertEquals("Expected value passed to database to be rounded to two decimal places of one passed",
                 ROUNDED, value.getValue(), 0.000001);
     }
