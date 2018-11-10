@@ -73,6 +73,7 @@ public class TestLoginOrSignUpPresenter {
         when(repository.login(any(String.class), any(String.class)))
                 .thenReturn(Observable.create(subscriber -> {
                     subscriber.onNext(false);
+                    subscriber.onComplete();
                 }));
 
         presenter.login(user, password);
@@ -94,6 +95,7 @@ public class TestLoginOrSignUpPresenter {
         when(repository.login(any(String.class), any(String.class)))
                 .thenReturn(Observable.create(subscriber -> {
                     subscriber.onNext(true);
+                    subscriber.onComplete();
                 }));
 
         presenter.login(user, password);

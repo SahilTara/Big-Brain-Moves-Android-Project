@@ -1,7 +1,5 @@
 package com.uottawa.bigbrainmoves.servio;
 
-import android.util.Patterns;
-
 import com.uottawa.bigbrainmoves.servio.presenters.SignupPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
@@ -11,18 +9,18 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
 
-import java.util.regex.Pattern;
-
 import io.reactivex.Observable;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestSignUpPresenter {
@@ -150,6 +148,7 @@ public class TestSignUpPresenter {
                 anyString(),
                 anyString())).thenReturn(Observable.create(subscriber -> {
             subscriber.onNext(SignupResult.USERNAME_TAKEN);
+            subscriber.onComplete();
         }));
         presenter.createAccount(EMAIL, USER, PASSWORD, DISPLAY_NAME, TYPE);
 
@@ -172,6 +171,7 @@ public class TestSignUpPresenter {
                 anyString(),
                 anyString())).thenReturn(Observable.create(subscriber -> {
             subscriber.onNext(SignupResult.EMAIL_TAKEN);
+            subscriber.onComplete();
         }));
         presenter.createAccount(EMAIL, USER, PASSWORD, DISPLAY_NAME, TYPE);
 
@@ -194,6 +194,7 @@ public class TestSignUpPresenter {
                 anyString(),
                 anyString())).thenReturn(Observable.create(subscriber -> {
             subscriber.onNext(SignupResult.ACCOUNT_CREATED);
+            subscriber.onComplete();
         }));
         presenter.createAccount(EMAIL, USER, PASSWORD, DISPLAY_NAME, TYPE);
 
@@ -206,5 +207,41 @@ public class TestSignUpPresenter {
         verify(view, atLeastOnce()).displaySignUpSuccess();
         verify(view, never()).displayUserNameTaken();
         verify(view, never()).displayEmailTaken();
+    }
+
+    @Test
+    public void testAdminDoesNotExist() {
+        when(repository.doesAdminAccountExist()).thenReturn(Observable.create(subscriber -> {
+            subscriber.onNext(false);
+            subscriber.onComplete();
+        }));
+
+        presenter.checkIfAdminExists();
+
+        verify(view, atLeastOnce()).displayAdminDoesNotExist();
+    }
+
+    @Test
+    public void testAdminExists() {
+        when(repository.doesAdminAccountExist()).thenReturn(Observable.create(subscriber -> {
+            subscriber.onNext(true);
+            subscriber.onComplete();
+        }));
+
+        presenter.checkIfAdminExists();
+
+        verify(view, never()).displayAdminDoesNotExist();
+    }
+
+    @Test
+    public void testAdminDataError() {
+        // we want silence for this one.
+        when(repository.doesAdminAccountExist()).thenReturn(Observable.create(subscriber -> {
+            subscriber.onError(new Exception("Test"));
+        }));
+
+        presenter.checkIfAdminExists();
+
+        verify(view, never()).displayDataError();
     }
 }

@@ -103,6 +103,7 @@ public class TestAccountLoginPresenter {
         when(repository.getUserFromDataBase(any(String.class)))
                 .thenReturn(Observable.create(subscriber -> {
                     subscriber.onNext(Optional.empty());
+                    subscriber.onComplete();
                 }));
 
         presenter.attemptGettingAccountInfo();
@@ -126,6 +127,7 @@ public class TestAccountLoginPresenter {
         when(repository.getUserFromDataBase(any(String.class)))
                 .thenReturn(Observable.create(subscriber -> {
                     subscriber.onNext(Optional.of(mock(Account.class)));
+                    subscriber.onComplete();
                 }));
 
         presenter.attemptGettingAccountInfo();

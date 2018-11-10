@@ -2,7 +2,6 @@ package com.uottawa.bigbrainmoves.servio.repositories;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.util.Patterns;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,9 +13,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
+import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
 
-import java.security.cert.PKIXRevocationChecker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

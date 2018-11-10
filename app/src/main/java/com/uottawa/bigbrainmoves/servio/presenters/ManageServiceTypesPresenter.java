@@ -1,10 +1,9 @@
 package com.uottawa.bigbrainmoves.servio.presenters;
 
-import android.util.Pair;
-
 import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
+import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.views.ManageServiceTypesView;
 
 import java.util.Collections;

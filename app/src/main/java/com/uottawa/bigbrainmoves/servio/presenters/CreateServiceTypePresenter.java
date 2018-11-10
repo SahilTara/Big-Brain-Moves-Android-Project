@@ -19,7 +19,6 @@ public class CreateServiceTypePresenter {
     public void createServiceType(String name, String value) {
         try {
             double val = Double.valueOf(value);
-            val = Math.round(val * 100.0) / 100.0; // round to 2 decimal places.
             name = name.trim();
             name = name.toLowerCase();
             if (name.equals("") || !name.matches("(([A-Za-z]+\\s?)+)") || name.length() > 30) {
@@ -27,6 +26,7 @@ public class CreateServiceTypePresenter {
             } else if (val < 0 || val > Double.valueOf("1.7E308")) {
                 view.displayInvalidValue();
             } else {
+                val = Math.round(val * 100.0) / 100.0; // round to 2 decimal places.
                 // Simple observer set up.
                 Observer<Boolean> booleanObserver = new Observer<Boolean>() {
                     Disposable disposable;

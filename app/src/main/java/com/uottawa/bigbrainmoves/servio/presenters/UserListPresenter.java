@@ -4,7 +4,6 @@ import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.UserListView;
 
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -33,11 +32,6 @@ public class UserListPresenter {
 
             @Override
             public void onNext(List<Account> accounts) {
-                // Shouldn't ever be null but in case it somehow is, we should handle like this.
-                if (accounts == null) {
-                    accounts = Collections.emptyList();
-                }
-
                 view.displayUsers(accounts);
             }
 

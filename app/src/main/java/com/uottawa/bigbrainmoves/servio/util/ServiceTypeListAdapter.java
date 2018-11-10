@@ -64,8 +64,8 @@ public class ServiceTypeListAdapter extends RecyclerView.Adapter<ServiceTypeList
                         String result = input.getText().toString();
                         try {
                             double val = Double.valueOf(result);
-                            val = Math.round(val * 100.0) / 100.0;
                             if (val <= Double.valueOf("1.7E308")) {
+                                val = Math.round(val * 100.0) / 100.0;
                                 repository.editServiceType(serviceType.getType(), val);
                                 Toast.makeText(context,
                                         "Value of service type successfully changed",

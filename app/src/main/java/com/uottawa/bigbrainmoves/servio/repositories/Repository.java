@@ -1,9 +1,8 @@
 package com.uottawa.bigbrainmoves.servio.repositories;
 
-import android.util.Pair;
-
 import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
+import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
 
 import java.util.List;
