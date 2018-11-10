@@ -9,17 +9,14 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "Servio/app/build.gradle" }}
-      - run:
-         name: Chmod permissions  
-         command: sudo chmod +x ./gradlew
+          key: jars-{{ checksum "Servio/build.gradle" }}-{{ checksum  "Servio/app/build.gradle" }}
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
           paths:
             - Servio/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "Servio/app/build.gradle" }}
+          key: jars-{{ checksum "Servio/build.gradle" }}-{{ checksum  "Servio/app/build.gradle" }}
       - run:
           name: Run UnitTest
           command: ./gradlew test
