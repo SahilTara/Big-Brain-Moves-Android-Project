@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -24,11 +25,13 @@ import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ServiceTypeListAdapter extends RecyclerView.Adapter<ServiceTypeListAdapter.ViewHolder> {
     private List<ServiceType> serviceTypes = new ArrayList<>();
     private Context context;
-    Repository repository = new DbHandler();
+    private Repository repository = new DbHandler();
+
     public ServiceTypeListAdapter(List<ServiceType> serviceTypes, Context context) {
         this.serviceTypes.addAll(serviceTypes);
         this.context = context;
@@ -37,7 +40,7 @@ public class ServiceTypeListAdapter extends RecyclerView.Adapter<ServiceTypeList
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.user_row, viewGroup, false);
+         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.service_type_list_item, viewGroup, false);
          return new ViewHolder(view);
     }
 
@@ -45,8 +48,9 @@ public class ServiceTypeListAdapter extends RecyclerView.Adapter<ServiceTypeList
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         final ServiceType serviceType = serviceTypes.get(position);
         viewHolder.serviceTypeNameText.setText(serviceType.getType());
-        final String rateText = "$" + String.valueOf(serviceType.getRate());
+        final String rateText = "$" + String.format(Locale.getDefault(), "%.2f",serviceType.getRate());
         viewHolder.serviceRateText.setText(rateText);
+
         viewHolder.parentLayout.setOnClickListener((view) -> {
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
             alertBuilder.setTitle(serviceType.getType()).setPositiveButton("Edit Value", new DialogInterface.OnClickListener() {
@@ -101,12 +105,12 @@ public class ServiceTypeListAdapter extends RecyclerView.Adapter<ServiceTypeList
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView serviceTypeNameText;
         TextView serviceRateText;
-        ConstraintLayout parentLayout;
+        CardView parentLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            serviceTypeNameText = itemView.findViewById(R.id.userText);
-            serviceRateText = itemView.findViewById(R.id.typeText);
-            parentLayout = itemView.findViewById(R.id.userParentLayout);
+            serviceTypeNameText = itemView.findViewById(R.id.itemTypeTextView);
+            serviceRateText = itemView.findViewById(R.id.itemValueTextView);
+            parentLayout = itemView.findViewById(R.id.serviceTypeParentLayout);
         }
     }
 }
