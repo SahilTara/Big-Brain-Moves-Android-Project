@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
     private String typeSelected;
     private SignupPresenter presenter;
     private Repository repository = new DbHandler();
+    private Button signUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         spinner = findViewById(R.id.userTypeSpinner);
         spinner.setItems("", "service", "home");
         typeSelected = "";
+        signUpButton = findViewById(R.id.btnSignUp);
         presenter = new SignupPresenter(this, repository);
         presenter.checkIfAdminExists();
 
@@ -55,13 +58,12 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
     }
 
     public void btnSignUpClick(View view) {
-
+        signUpButton.setEnabled(false);
 
         EditText userText = findViewById(R.id.userText);
         EditText emailText = findViewById(R.id.emailText);
         EditText passwordText = findViewById(R.id.passwordText);
         EditText displayNameText = findViewById(R.id.displayNameText);
-
         String username = userText.getText().toString();
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
@@ -75,6 +77,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "Email is already associated to an account!",
                 Toast.LENGTH_LONG).show();
+        signUpButton.setEnabled(true);
     }
 
     @Override
@@ -82,6 +85,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "Username is already taken!",
                 Toast.LENGTH_LONG).show();
+        signUpButton.setEnabled(true);
     }
 
     @Override
@@ -97,6 +101,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "Invalid Email Address",
                 Toast.LENGTH_LONG).show();
+        signUpButton.setEnabled(true);
     }
 
     @Override
@@ -104,6 +109,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "Username must have length >= 3, Alphanumeric or .-_",
                 Toast.LENGTH_LONG).show();
+        signUpButton.setEnabled(true);
     }
 
     @Override
@@ -111,6 +117,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "DisplayName must contain only A-Z and Spaces.",
                 Toast.LENGTH_LONG).show();
+        signUpButton.setEnabled(true);
     }
 
     @Override
@@ -118,6 +125,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "Password must have length >= 6 and contain no spaces",
                 Toast.LENGTH_LONG).show();
+        signUpButton.setEnabled(true);
     }
 
     @Override
@@ -125,11 +133,13 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "You must select a valid type.",
                 Toast.LENGTH_LONG).show();
+        signUpButton.setEnabled(true);
     }
 
     @Override
     public void displayAdminDoesNotExist() {
         spinner.setItems("", "admin", "user", "service");
+        signUpButton.setEnabled(true);
     }
 
     @Override
@@ -137,6 +147,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "Please contact bigbrainmoves@gmail.com if cannot sign in.",
                 Toast.LENGTH_LONG).show();
+        signUpButton.setEnabled(true);
     }
 
     @Override
@@ -144,6 +155,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "Insufficient permissions to communicate with database.",
                 Toast.LENGTH_LONG).show();
+        signUpButton.setEnabled(true);
     }
 
     @Override

@@ -32,6 +32,7 @@ public class SplashScreenActivity extends AppCompatActivity implements AccountLo
 
     private void notLoggedIn() {
         Intent signUpOrLogin = new Intent(getApplicationContext(), LoginOrSignUpActivity.class);
+        signUpOrLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(signUpOrLogin);
     }
 
