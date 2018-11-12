@@ -6,7 +6,6 @@ import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.views.ManageServiceTypesView;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;

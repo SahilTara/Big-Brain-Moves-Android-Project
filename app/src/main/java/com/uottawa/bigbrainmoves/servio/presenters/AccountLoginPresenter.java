@@ -11,9 +11,9 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 public class AccountLoginPresenter {
-    private AccountLoginView view;
-    private Repository repository;
-    private CurrentAccount currentAccount = CurrentAccount.getInstance();
+    private final AccountLoginView view;
+    private final Repository repository;
+    private final CurrentAccount currentAccount = CurrentAccount.getInstance();
 
     public AccountLoginPresenter(AccountLoginView view, Repository repository) {
         this.view = view;

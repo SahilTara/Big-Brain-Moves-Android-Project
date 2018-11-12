@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio.activites;
+package com.uottawa.bigbrainmoves.servio.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,17 +7,15 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.uottawa.bigbrainmoves.servio.presenters.MainScreenPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
-import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.R;
 import com.uottawa.bigbrainmoves.servio.views.MainView;
 
 public class ServiceMainActivity extends AppCompatActivity implements MainView  {
-    MainScreenPresenter presenter;
-    Repository repository = new DbHandler();
+    private MainScreenPresenter presenter;
+    private Repository repository = new DbHandler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

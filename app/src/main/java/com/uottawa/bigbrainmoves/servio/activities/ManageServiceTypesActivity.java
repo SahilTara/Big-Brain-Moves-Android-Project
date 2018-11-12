@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio.activites;
+package com.uottawa.bigbrainmoves.servio.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +21,9 @@ import java.util.List;
 
 public class ManageServiceTypesActivity extends AppCompatActivity implements ManageServiceTypesView  {
 
-    ManageServiceTypesPresenter presenter;
-    Repository repository = new DbHandler();
-    List<ServiceType> listOfServices = new ArrayList<>();
+    private ManageServiceTypesPresenter presenter;
+    private final Repository repository = new DbHandler();
+    private List<ServiceType> listOfServices = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

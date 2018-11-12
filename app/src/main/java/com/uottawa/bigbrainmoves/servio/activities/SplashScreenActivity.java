@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio.activites;
+package com.uottawa.bigbrainmoves.servio.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +17,7 @@ import com.uottawa.bigbrainmoves.servio.views.AccountLoginView;
 
 public class SplashScreenActivity extends AppCompatActivity implements AccountLoginView {
 
-    private Repository repository = new DbHandler();
+    private final Repository repository = new DbHandler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio.activites;
+package com.uottawa.bigbrainmoves.servio.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +14,8 @@ import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.MainView;
 
 public class MainActivity extends AppCompatActivity implements MainView {
-    Repository repository = new DbHandler();
-    MainScreenPresenter presenter;
+    private Repository repository = new DbHandler();
+    private MainScreenPresenter presenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

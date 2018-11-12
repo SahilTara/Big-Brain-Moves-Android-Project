@@ -35,7 +35,7 @@ public class DbHandler implements Repository {
      * Method to get the email for a given username from the database.
      *
      * @param username username to get the email for.
-     * @return rxjava Observable containing the success status of the login.
+     * @return RxJava Observable containing the success status of the login.
      */
     private Observable<Boolean> loginWithUsername(final String username, final String password) {
         return Observable.create(subscriber -> {
@@ -43,7 +43,7 @@ public class DbHandler implements Repository {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         //
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String emailId = "";
                             if (subscriber.isDisposed())
                                 return;
@@ -51,7 +51,7 @@ public class DbHandler implements Repository {
                                makes it so empty string email id handles the failure cases. Since
                                email can never be the empty string.
                              */
-                            if (dataSnapshot != null) {
+                            if (dataSnapshot.exists()) {
                                 emailId = dataSnapshot.getValue(String.class);
                             }
 
@@ -145,7 +145,7 @@ public class DbHandler implements Repository {
      *
      * @param input    The email or username of the user
      * @param password the password of the user
-     * @return rxjava observable containing the success status of the login.
+     * @return RxJava observable containing the success status of the login.
      */
     public Observable<Boolean> login(String input, String password) {
         // Check if the input isn't an email, and if it isn't we get the email from the username.
@@ -198,8 +198,8 @@ public class DbHandler implements Repository {
 
 
     /**
-     * Gets an Account Object from a firebase id, and returns an observable using that id.
-     * @param uid the uid of the firebase user
+     * Gets an Account Object from a FireBase base id, and returns an observable using that id.
+     * @param uid the uid of the FireBase user
      * @return an rxJava observable of the account.
      */
     public Observable<Optional<Account>> getUserFromDataBase(String uid) {
@@ -208,7 +208,7 @@ public class DbHandler implements Repository {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         //
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 // if the subscriber is disposed we don't care about result
                                 if (subscriber.isDisposed())
@@ -225,7 +225,7 @@ public class DbHandler implements Repository {
                         }
 
                         @Override // Only really called when the database doesn't give enough permissions.
-                        public void onCancelled(DatabaseError dbError) {
+                        public void onCancelled(@NonNull DatabaseError dbError) {
                             // if the subscriber is disposed we don't care about result
                             if (subscriber.isDisposed())
                                 return;
@@ -239,12 +239,12 @@ public class DbHandler implements Repository {
     }
 
     /**
-     * Attempts to create the physical firebase user account,
+     * Attempts to create the physical FireBase user account,
      * @param email the email of the account to create
      * @param password the password of the account to create
      * @param displayName the display name of the account to create.
      * @param type the type of the account (Service, Home, Admin)
-     * @return
+     * @return RxJava observable containing the sign up result.
      */
     private Observable<SignupResult> createAccount(final String email,
                                                    final String username,
@@ -300,7 +300,7 @@ public class DbHandler implements Repository {
             myRef.child("admin_exists").addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (subscriber.isDisposed())
                         return;
                     // admin exists!
@@ -314,7 +314,7 @@ public class DbHandler implements Repository {
                 }
 
                 @Override // usually due to insufficient permissions
-                public void onCancelled(DatabaseError dbError) {
+                public void onCancelled(@NonNull DatabaseError dbError) {
                     if (subscriber.isDisposed())
                         return;
                     subscriber.onError(new FirebaseException(dbError.getMessage()));
@@ -341,13 +341,13 @@ public class DbHandler implements Repository {
             myRef.child("user_ids").child(username)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (subscriber.isDisposed())
                                 return;
                             // user doesn't exist
                             if (!dataSnapshot.exists()) {
                                 // user does not exist
-                                Observer<SignupResult> signupObserver = new Observer<SignupResult>() {
+                                Observer<SignupResult> signUpObserver = new Observer<SignupResult>() {
                                     Disposable disposable;
 
                                     @Override
@@ -380,7 +380,7 @@ public class DbHandler implements Repository {
                                               username,
                                               password,
                                               displayName,
-                                              typeSelected).subscribe(signupObserver);
+                                              typeSelected).subscribe(signUpObserver);
 
                             } else {
                                 /*
@@ -392,7 +392,7 @@ public class DbHandler implements Repository {
                         }
 
                         @Override // Some kind of error
-                        public void onCancelled(DatabaseError dbError) {
+                        public void onCancelled(@NonNull DatabaseError dbError) {
                             if (subscriber.isDisposed())
                                 return;
                             subscriber.onError(new FirebaseException(dbError.getMessage()));
@@ -406,7 +406,7 @@ public class DbHandler implements Repository {
 
 
     /**
-     * Check if a user is currently logged in to firebase.
+     * Check if a user is currently logged in to FireBase.
      * @return True if a user is logged in, false otherwise.
      */
     public boolean checkIfUserIsLoggedIn() {
@@ -414,9 +414,9 @@ public class DbHandler implements Repository {
     }
 
     /**
-     * If logged in this method returns the uid of the firebase user,
+     * If logged in this method returns the uid of the FireBase user,
      * Otherwise null.
-     * @return String mapping to the firebase user's uid or null if no logged in user.
+     * @return String mapping to the FireBase user's uid or null if no logged in user.
      */
     public String getUserId() {
         if(checkIfUserIsLoggedIn()) {
@@ -427,7 +427,7 @@ public class DbHandler implements Repository {
     }
 
     /**
-     * Signs out the current firebase user.
+     * Signs out the current FireBase user.
      */
     public void signOutCurrentUser() {
         if (getUserId() != null) {
@@ -449,7 +449,7 @@ public class DbHandler implements Repository {
      * successfully created.
      * @param serviceTypeName service type name to create
      * @param value rate that the service type will go for.
-     * @return rxjava observable containing whether or not the service type was successfully created.
+     * @return RxJava observable containing whether or not the service type was successfully created.
      */
     public Observable<Boolean> createServiceTypeIfNotInDatabase(String serviceTypeName, double value) {
         return Observable.create(subscriber -> {
@@ -494,7 +494,7 @@ public class DbHandler implements Repository {
 
     /**
      * Method listens for changes in the service types database, and notifies all observers.
-     * @return rxjava containing a service type and whether removed or not.
+     * @return RxJava containing a service type and whether removed or not.
      */
     public Observable<Pair<ServiceType, Boolean>> listenForServiceTypeChanges() {
         return Observable.create(subscriber -> {

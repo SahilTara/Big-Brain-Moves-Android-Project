@@ -11,7 +11,7 @@ public class CurrentAccount {
 
     /**
      * Classic Singleton Get Instance.
-     * @return
+     * @return the instance of the current account class.
      */
     public static CurrentAccount getInstance() {
         if (instance == null) instance = new CurrentAccount();

@@ -3,9 +3,7 @@ package com.uottawa.bigbrainmoves.servio.util;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -13,12 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uottawa.bigbrainmoves.servio.R;
-import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
@@ -30,7 +26,7 @@ import java.util.Locale;
 public class ServiceTypeListAdapter extends RecyclerView.Adapter<ServiceTypeListAdapter.ViewHolder> {
     private List<ServiceType> serviceTypes = new ArrayList<>();
     private Context context;
-    private Repository repository = new DbHandler();
+    private final Repository repository = new DbHandler();
 
     public ServiceTypeListAdapter(List<ServiceType> serviceTypes, Context context) {
         this.serviceTypes.addAll(serviceTypes);
