@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio.activites;
+package com.uottawa.bigbrainmoves.servio.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +17,7 @@ import com.uottawa.bigbrainmoves.servio.views.UserListView;
 import java.util.List;
 
 public class UserListActivity extends AppCompatActivity implements UserListView {
-    Repository repository = new DbHandler();
+    private Repository repository = new DbHandler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

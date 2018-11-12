@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio.activites;
+package com.uottawa.bigbrainmoves.servio.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,8 +13,8 @@ import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.CreateServiceTypeView;
 
 public class CreateServiceTypeActivity extends AppCompatActivity implements CreateServiceTypeView {
-    CreateServiceTypePresenter presenter;
-    Repository repository = new DbHandler();
+    private CreateServiceTypePresenter presenter;
+    final Repository repository = new DbHandler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

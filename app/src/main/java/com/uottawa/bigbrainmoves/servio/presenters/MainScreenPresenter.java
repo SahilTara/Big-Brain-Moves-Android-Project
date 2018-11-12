@@ -7,8 +7,8 @@ import com.uottawa.bigbrainmoves.servio.views.MainView;
 
 public class MainScreenPresenter {
 
-    private MainView view;
-    private Repository repository;
+    private final MainView view;
+    private final Repository repository;
 
     public MainScreenPresenter(MainView view, Repository repository) {
         this.view = view;

@@ -10,8 +10,8 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 public class UserListPresenter {
-    private UserListView view;
-    private Repository repository;
+    private final UserListView view;
+    private final Repository repository;
 
     public UserListPresenter(UserListView view, Repository repository) {
         this.view = view;

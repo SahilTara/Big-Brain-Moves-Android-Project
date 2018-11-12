@@ -12,7 +12,7 @@ https://github.com/jaredrummler/MaterialSpinner
 https://github.com/ReactiveX/RxJava  
 
 ## Admin Login
-Since theres a min password requirement,  
+Since there's a min password requirement,
 User: admin  
 password: admin123  
 
