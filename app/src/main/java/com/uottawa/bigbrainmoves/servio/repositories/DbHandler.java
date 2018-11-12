@@ -3,6 +3,7 @@ package com.uottawa.bigbrainmoves.servio.repositories;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Patterns;
+
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -21,8 +22,6 @@ import java.util.List;
 import java.util.Optional;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 
 public class DbHandler implements Repository {
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -59,48 +58,7 @@ public class DbHandler implements Repository {
                                 emailId = "";
                             }
 
-                            if (emailId.equals("")) {
-                                subscriber.onNext(false);
-                                subscriber.onComplete();
-                            } else {
-                                // handles the successful email case.
-
-                                /* first make the observer which will pass on data from the
-                                   helper loginToAccount method to the current observable.
-                                   Required due to the nested callback.
-                                 */
-                                Observer<Boolean> booleanObserver = new Observer<Boolean>() {
-                                    Disposable disposable;
-
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
-                                        disposable = d;
-                                    }
-
-                                    // gets boolean from the login helper.
-                                    @Override
-                                    public void onNext(Boolean bool) {
-                                        subscriber.onNext(bool);
-                                        subscriber.onComplete();
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        subscriber.onError(e);
-                                        disposable.dispose();
-                                        disposable = null;
-                                    }
-
-                                    // do some cleanup
-                                    @Override
-                                    public void onComplete() {
-                                        disposable.dispose();
-                                        disposable = null;
-                                    }
-                                };
-                                // subscribe to the loginToAccount event to return the right thing.
-                                loginToAccount(emailId, password).subscribe(booleanObserver);
-                            }
+                            subscriber.onNext(emailId);
                         }
 
                         @Override // database permission error
@@ -110,6 +68,23 @@ public class DbHandler implements Repository {
                             subscriber.onError(new FirebaseException(dbError.getMessage()));
                         }
                     });
+        }).flatMap(result -> {
+            /*
+             * We use a flat map to chain in another observer, this is very useful since this allows us
+             * to not have nested observers. Remember "Observer-ception" is bad! This type of style,
+             * is incorporated throughout this class, and should be remembered and preferred over the
+             * nested observer style.
+             *
+             * We return false here if the emailId is empty, that is it is "".
+             */
+           if (result instanceof String && !result.equals("")) {
+               return loginToAccount((String)result, password);
+           } else {
+                return Observable.create(subscriber -> {
+                   subscriber.onNext(false);
+                   subscriber.onComplete();
+                });
+           }
         });
 
     }
@@ -337,7 +312,8 @@ public class DbHandler implements Repository {
                                                               final String displayName,
                                                               final String typeSelected) {
         return Observable.create(subscriber -> {
-            // We make sure that a user does not exist with this uid.
+            // We make sure that a user does not exist with this username.
+            // We will return true if the user exists, false otherwise in this observer.
             myRef.child("user_ids").child(username)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -346,48 +322,11 @@ public class DbHandler implements Repository {
                                 return;
                             // user doesn't exist
                             if (!dataSnapshot.exists()) {
-                                // user does not exist
-                                Observer<SignupResult> signUpObserver = new Observer<SignupResult>() {
-                                    Disposable disposable;
 
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
-                                        disposable = d;
-                                    }
-
-                                    // gets boolean from the login helper.
-                                    @Override
-                                    public void onNext(SignupResult result) {
-                                        subscriber.onNext(result);
-                                        subscriber.onComplete();
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        subscriber.onError(e);
-                                        disposable.dispose();
-                                        disposable = null;
-                                    }
-
-                                    // do some cleanup
-                                    @Override
-                                    public void onComplete() {
-                                        disposable.dispose();
-                                        disposable = null;
-                                    }
-                                };
-                                createAccount(email,
-                                              username,
-                                              password,
-                                              displayName,
-                                              typeSelected).subscribe(signUpObserver);
-
+                                subscriber.onNext(false);
                             } else {
-                                /*
-                                Toast.makeText(getApplicationContext(), "Account taken", Toast.LENGTH_LONG).show();
-                                */
-                                subscriber.onNext(SignupResult.USERNAME_TAKEN);
-                                subscriber.onComplete();
+                                // Username is taken
+                                subscriber.onNext(true);
                             }
                         }
 
@@ -398,6 +337,16 @@ public class DbHandler implements Repository {
                             subscriber.onError(new FirebaseException(dbError.getMessage()));
                         }
                     });
+        }).flatMap(result -> {
+            // if the result is equal to false then
+            if (result instanceof Boolean && result.equals(false)) {
+                return createAccount(email, username, password, displayName, typeSelected);
+            } else {
+                return Observable.create(subscriber -> {
+                    subscriber.onNext(SignupResult.USERNAME_TAKEN);
+                    subscriber.onComplete();
+                });
+            }
         });
     }
 
