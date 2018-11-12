@@ -5,10 +5,10 @@ import com.uottawa.bigbrainmoves.servio.presenters.UserListPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.UserListView;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -34,11 +34,15 @@ public class TestUserListPresenter {
     @Mock
     private UserListView view;
 
-    @InjectMocks
     private UserListPresenter presenter;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+    @Before
+    public void setUp() {
+        presenter = new UserListPresenter(view, repository);
+    }
 
     @Test
     public void testDataError() {
