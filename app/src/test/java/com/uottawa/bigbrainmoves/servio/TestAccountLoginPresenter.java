@@ -6,6 +6,7 @@ import com.uottawa.bigbrainmoves.servio.presenters.AccountLoginPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.AccountLoginView;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,8 +33,8 @@ public class TestAccountLoginPresenter {
     @Mock
     private AccountLoginView view;
 
-    @InjectMocks
     private AccountLoginPresenter presenter;
+
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -43,6 +44,10 @@ public class TestAccountLoginPresenter {
 
     private final String uid = "XdFahga";
 
+    @Before
+    public void setup() {
+         presenter = new AccountLoginPresenter(view, repository);
+    }
     @Test
     public void testUserNotAlreadyLoggedIn() {
         // account not logged in
