@@ -18,6 +18,7 @@ import org.mockito.junit.MockitoRule;
 import io.reactivex.Observable;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -49,6 +50,28 @@ public class TestLoginOrSignUpPresenter {
     private ArgumentCaptor<String> passwordCaptor;
 
     @Test
+    public void testBlankUser() {
+        presenter.login("", password);
+
+        verify(view, atLeastOnce()).displayInvalidUser();
+        verify(view, never()).displayInvalidPassword();
+        verify(view, never()).displayDataError();
+        verify(view, never()).displayInvalidLogin();
+        verify(view, never()).displayValidLogin();
+    }
+
+    @Test
+    public void testBlankPassword() {
+        presenter.login(user, "");
+
+        verify(view, never()).displayInvalidUser();
+        verify(view, atLeastOnce()).displayInvalidPassword();
+        verify(view, never()).displayDataError();
+        verify(view, never()).displayInvalidLogin();
+        verify(view, never()).displayValidLogin();
+    }
+
+    @Test
     public void testDatabaseError() {
         when(repository.login(any(String.class), any(String.class))).thenReturn(Observable.create(subscriber -> {
             subscriber.onError(new Exception("Test"));
@@ -58,6 +81,8 @@ public class TestLoginOrSignUpPresenter {
 
         verify(repository).login(userCaptor.capture(), passwordCaptor.capture());
 
+        verify(view, never()).displayInvalidUser();
+        verify(view, never()).displayInvalidPassword();
         verify(view, atLeastOnce()).displayDataError();
         verify(view, never()).displayInvalidLogin();
         verify(view, never()).displayValidLogin();
@@ -80,6 +105,8 @@ public class TestLoginOrSignUpPresenter {
 
         verify(repository).login(userCaptor.capture(), passwordCaptor.capture());
 
+        verify(view, never()).displayInvalidUser();
+        verify(view, never()).displayInvalidPassword();
         verify(view, never()).displayDataError();
         verify(view, atLeastOnce()).displayInvalidLogin();
         verify(view, never()).displayValidLogin();
@@ -102,7 +129,8 @@ public class TestLoginOrSignUpPresenter {
 
         verify(repository).login(userCaptor.capture(), passwordCaptor.capture());
 
-
+        verify(view, never()).displayInvalidUser();
+        verify(view, never()).displayInvalidPassword();
         verify(view, never()).displayDataError();
         verify(view, never()).displayInvalidLogin();
         verify(view, atLeastOnce()).displayValidLogin();

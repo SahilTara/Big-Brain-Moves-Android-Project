@@ -6,7 +6,8 @@ public interface SignUpView extends AccountLoginView {
     void displaySignUpSuccess();
 
     void displayInvalidEmail();
-    void displayInvalidUserName();
+    void displayInvalidUserNameLength();
+    void displayInvalidUserNameAlphanumeric();
     void displayInvalidDisplayName();
     void displayInvalidPassword();
     void displayInvalidType();
