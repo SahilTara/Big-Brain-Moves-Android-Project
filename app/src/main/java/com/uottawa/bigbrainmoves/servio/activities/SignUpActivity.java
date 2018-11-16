@@ -1,13 +1,15 @@
 package com.uottawa.bigbrainmoves.servio.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.dd.processbutton.iml.ActionProcessButton;
+import com.google.android.material.textfield.TextInputLayout;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.uottawa.bigbrainmoves.servio.presenters.SignupPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
@@ -20,38 +22,104 @@ import com.uottawa.bigbrainmoves.servio.views.SignUpView;
 
 public class SignUpActivity extends AppCompatActivity implements SignUpView {
 
-    private MaterialSpinner spinner;
     private String typeSelected;
     private SignupPresenter presenter;
     private final Repository repository = new DbHandler();
-    private Button signUpButton;
+
+    private MaterialSpinner spinner;
+    private ActionProcessButton signUpButton;
+
+    private TextInputLayout emailInputLayout;
+    private TextInputLayout displayNameInputLayout;
+    private TextInputLayout userInputLayout;
+    private TextInputLayout passwordInputLayout;
+
+    private EditText userText;
+    private EditText emailText;
+    private EditText passwordText;
+    private EditText displayNameText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
         spinner = findViewById(R.id.userTypeSpinner);
         spinner.setItems("", "service", "home");
         typeSelected = "";
+
         signUpButton = findViewById(R.id.btnSignUp);
+        signUpButton.setMode(ActionProcessButton.Mode.ENDLESS);
+
         presenter = new SignupPresenter(this, repository);
         presenter.checkIfAdminExists();
+
+        emailText = findViewById(R.id.emailText);
+        emailInputLayout = findViewById(R.id.emailInputLayout);
+
+        displayNameText = findViewById(R.id.displayNameText);
+        displayNameInputLayout = findViewById(R.id.displayNameInputLayout);
+
+        userText = findViewById(R.id.userText);
+        userInputLayout = findViewById(R.id.usernameInputLayout);
+
+        passwordText = findViewById(R.id.passwordText);
+        passwordInputLayout = findViewById(R.id.passwordInputLayout);
+
+        emailText.setOnFocusChangeListener(this::setFocus);
+        displayNameText.setOnFocusChangeListener(this::setFocus);
+        userText.setOnFocusChangeListener(this::setFocus);
+        passwordText.setOnFocusChangeListener(this::setFocus);
 
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 typeSelected = item;
+                signUpButton.setProgress(0);
             }
         });
     }
 
-    public void btnSignUpClick(View view) {
-        signUpButton.setEnabled(false);
+    /**
+     * Handler method for focus listener, we use this method to reset the message on the button.
+     * @param view a view
+     * @param hasFocus whether the component has received focus or not.
+     */
+    private void setFocus(View view, boolean hasFocus) {
+        if (hasFocus)
+            signUpButton.setProgress(0);
+    }
 
-        EditText userText = findViewById(R.id.userText);
-        EditText emailText = findViewById(R.id.emailText);
-        EditText passwordText = findViewById(R.id.passwordText);
-        EditText displayNameText = findViewById(R.id.displayNameText);
+    /**
+     * Method sets the enable state of btnSignUp, and the many texts.
+     * @param isEnabled specifies whether components should be enabled or disabled.
+     */
+    private void setEnableStateOfSignUpComponents(boolean isEnabled) {
+        signUpButton.setEnabled(isEnabled);
+        emailText.setEnabled(isEnabled);
+        displayNameText.setEnabled(isEnabled);
+        userText.setEnabled(isEnabled);
+        passwordText.setEnabled(isEnabled);
+    }
+
+    /**
+     * Sets all text input layout error messages in current activity
+     * to null when this method is called.
+     */
+    private void resetErrors() {
+        emailInputLayout.setError(null);
+        displayNameInputLayout.setError(null);
+        userInputLayout.setError(null);
+        passwordInputLayout.setError(null);
+        spinner.setError(null, null);
+    }
+
+    public void btnSignUpClick(View view) {
+        setEnableStateOfSignUpComponents(false);
+        resetErrors();
+
+        signUpButton.setProgress(1);
+
         String username = userText.getText().toString();
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
@@ -62,18 +130,16 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
 
     @Override
     public void displayEmailTaken() {
-        Toast.makeText(getApplicationContext(),
-                "Email is already associated to an account!",
-                Toast.LENGTH_LONG).show();
-        signUpButton.setEnabled(true);
+        emailInputLayout.setError("Email is already associated to an account.");
+        setEnableStateOfSignUpComponents(true);
+        signUpButton.setProgress(-1);
     }
 
     @Override
     public void displayUserNameTaken() {
-        Toast.makeText(getApplicationContext(),
-                "Username is already taken!",
-                Toast.LENGTH_LONG).show();
-        signUpButton.setEnabled(true);
+        userInputLayout.setError("Username has already been taken.");
+        setEnableStateOfSignUpComponents(true);
+        signUpButton.setProgress(-1);
     }
 
     @Override
@@ -82,38 +148,44 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
                 "Successfully Signed Up!",
                 Toast.LENGTH_SHORT).show();
         presenter.attemptGettingAccountInfo();
+        signUpButton.setProgress(100);
     }
 
     @Override
     public void displayInvalidEmail() {
-        Toast.makeText(getApplicationContext(),
-                "Invalid Email Address",
-                Toast.LENGTH_LONG).show();
-        signUpButton.setEnabled(true);
+        emailInputLayout.setError("Invalid Email Address");
+        setEnableStateOfSignUpComponents(true);
+        signUpButton.setProgress(-1);
     }
 
     @Override
-    public void displayInvalidUserName() {
-        Toast.makeText(getApplicationContext(),
-                "Username must have length >= 3, Alphanumeric or .-_",
-                Toast.LENGTH_LONG).show();
-        signUpButton.setEnabled(true);
+    public void displayInvalidUserNameLength() {
+        userInputLayout.setError("Username must have minimum length of 3.");
+        setEnableStateOfSignUpComponents(true);
+        signUpButton.setProgress(-1);
+    }
+
+    @Override
+    public void displayInvalidUserNameAlphanumeric() {
+        userInputLayout.setError("Username can only contain alphanumeric or .-_ characters.");
+        setEnableStateOfSignUpComponents(true);
+        signUpButton.setProgress(-1);
     }
 
     @Override
     public void displayInvalidDisplayName() {
-        Toast.makeText(getApplicationContext(),
-                "DisplayName must contain only A-Z and Spaces.",
-                Toast.LENGTH_LONG).show();
-        signUpButton.setEnabled(true);
+        displayNameInputLayout.setError("Display Name must only contain A-Z and spaces.");
+        setEnableStateOfSignUpComponents(true);
+        signUpButton.setProgress(-1);
     }
 
     @Override
     public void displayInvalidPassword() {
-        Toast.makeText(getApplicationContext(),
-                "Password must have length >= 6 and contain no spaces",
-                Toast.LENGTH_LONG).show();
-        signUpButton.setEnabled(true);
+        passwordInputLayout.setError("Passwords must be greater than 6" +
+                                     "characters long and contain no spaces.");
+
+        setEnableStateOfSignUpComponents(true);
+        signUpButton.setProgress(-1);
     }
 
     @Override
@@ -121,13 +193,14 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "You must select a valid type.",
                 Toast.LENGTH_LONG).show();
-        signUpButton.setEnabled(true);
+        spinner.setError("You must select a valid type.");
+        setEnableStateOfSignUpComponents(true);
+        signUpButton.setProgress(-1);
     }
 
     @Override
     public void displayAdminDoesNotExist() {
         spinner.setItems("", "admin", "user", "service");
-        signUpButton.setEnabled(true);
     }
 
     @Override
@@ -135,7 +208,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "Please contact bigbrainmoves@gmail.com if cannot sign in.",
                 Toast.LENGTH_LONG).show();
-        signUpButton.setEnabled(true);
+        setEnableStateOfSignUpComponents(true);
+        signUpButton.setProgress(0);
     }
 
     @Override
@@ -143,7 +217,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         Toast.makeText(getApplicationContext(),
                 "Insufficient permissions to communicate with database.",
                 Toast.LENGTH_LONG).show();
-        signUpButton.setEnabled(true);
+        setEnableStateOfSignUpComponents(true);
+        signUpButton.setProgress(-1);
     }
 
     @Override

@@ -17,6 +17,15 @@ public class LoginOrSignUpPresenter extends AccountLoginPresenter {
     }
 
     public void login(String input, String password) {
+
+        if (input.length() == 0) {
+            view.displayInvalidUser();
+            return;
+        } else if (password.length() == 0) {
+            view.displayInvalidPassword();
+            return;
+        }
+
         // Simple observer set up.
         Observer<Boolean> booleanObserver = new Observer<Boolean>() {
             Disposable disposable;

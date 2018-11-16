@@ -38,12 +38,14 @@ public class SignupPresenter extends  AccountLoginPresenter {
 
         if (!EMAIL_ADDRESS.matcher(email).matches()) {
             view.displayInvalidEmail();
-        } else if (!username.matches("\\b[a-zA-Z][a-zA-Z0-9\\-._]{3,}\\b")) {
-            view.displayInvalidUserName();
+        }  else if (!displayName.matches("(([A-Za-z]+\\s?)+)")) {
+            view.displayInvalidDisplayName();
+        } else if (username.length() < 3) {
+            view.displayInvalidUserNameLength();
+        } else if (!username.matches("\\b[a-zA-Z][a-zA-Z0-9\\-._]{2,}\\b")) {
+            view.displayInvalidUserNameAlphanumeric();
         } else if (!password.matches("^(?=\\S+$).{6,}$")) {
             view.displayInvalidPassword();
-        } else if (!displayName.matches("(([A-Za-z]+\\s?)+)")) {
-            view.displayInvalidDisplayName();
         } else if (typeSelected.equals("")) {
             view.displayInvalidType();
         } else {

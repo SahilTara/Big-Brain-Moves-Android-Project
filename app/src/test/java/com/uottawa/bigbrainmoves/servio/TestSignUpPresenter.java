@@ -39,8 +39,9 @@ public class TestSignUpPresenter {
     private static final String EMAIL = "sahil@hotmail.com";
     private static final String INVALID_EMAIL = "sahil123@hotmail";
 
-    private static final String USER = "supert6593";
-    private static final String INVALID_USER = "supert65 93";
+    private static final String USER = "sup";
+    private static final String INVALID_USER_LENGTH = "su";
+    private static final String INVALID_USER_ALPHA = "supert65 93";
 
     private static final String PASSWORD = "password123";
     private static final String INVALID_PASSWORD = "pass";
@@ -69,22 +70,35 @@ public class TestSignUpPresenter {
     }
 
     @Test
-    public void testInvalidUser() {
-        presenter.createAccount(EMAIL, INVALID_USER, PASSWORD, DISPLAY_NAME, TYPE);
+    public void testInvalidUserLength() {
+        presenter.createAccount(EMAIL, INVALID_USER_LENGTH, PASSWORD, DISPLAY_NAME, TYPE);
 
         verify(view, never()).displayInvalidEmail();
-        verify(view, atLeastOnce()).displayInvalidUserName();
+        verify(view, atLeastOnce()).displayInvalidUserNameLength();
+        verify(view, never()).displayInvalidUserNameAlphanumeric();
         verify(view, never()).displaySignUpSuccess();
         verify(view, never()).displayUserNameTaken();
         verify(view, never()).displayEmailTaken();
     }
 
     @Test
+    public void testInvalidUserSymbols() {
+        presenter.createAccount(EMAIL, INVALID_USER_ALPHA, PASSWORD, DISPLAY_NAME, TYPE);
+
+        verify(view, never()).displayInvalidEmail();
+        verify(view, never()).displayInvalidUserNameLength();
+        verify(view, atLeastOnce()).displayInvalidUserNameAlphanumeric();
+        verify(view, never()).displaySignUpSuccess();
+        verify(view, never()).displayUserNameTaken();
+        verify(view, never()).displayEmailTaken();
+    }
+    @Test
     public void testInvalidPassword() {
         presenter.createAccount(EMAIL, USER, INVALID_PASSWORD, DISPLAY_NAME, TYPE);
 
         verify(view, never()).displayInvalidEmail();
-        verify(view, never()).displayInvalidUserName();
+        verify(view, never()).displayInvalidUserNameLength();
+        verify(view, never()).displayInvalidUserNameAlphanumeric();
         verify(view, atLeastOnce()).displayInvalidPassword();
         verify(view, never()).displaySignUpSuccess();
         verify(view, never()).displayUserNameTaken();
@@ -96,7 +110,8 @@ public class TestSignUpPresenter {
         presenter.createAccount(EMAIL, USER, PASSWORD, INVALID_DISPLAY_NAME, TYPE);
 
         verify(view, never()).displayInvalidEmail();
-        verify(view, never()).displayInvalidUserName();
+        verify(view, never()).displayInvalidUserNameLength();
+        verify(view, never()).displayInvalidUserNameAlphanumeric();
         verify(view, never()).displayInvalidPassword();
         verify(view, atLeastOnce()).displayInvalidDisplayName();
         verify(view, never()).displaySignUpSuccess();
@@ -109,7 +124,8 @@ public class TestSignUpPresenter {
         presenter.createAccount(EMAIL, USER, PASSWORD, DISPLAY_NAME, INVALID_TYPE);
 
         verify(view, never()).displayInvalidEmail();
-        verify(view, never()).displayInvalidUserName();
+        verify(view, never()).displayInvalidUserNameLength();
+        verify(view, never()).displayInvalidUserNameAlphanumeric();
         verify(view, never()).displayInvalidPassword();
         verify(view, never()).displayInvalidDisplayName();
         verify(view, atLeastOnce()).displayInvalidType();
@@ -130,7 +146,8 @@ public class TestSignUpPresenter {
         presenter.createAccount(EMAIL, USER, PASSWORD, DISPLAY_NAME, TYPE);
 
         verify(view, never()).displayInvalidEmail();
-        verify(view, never()).displayInvalidUserName();
+        verify(view, never()).displayInvalidUserNameLength();
+        verify(view, never()).displayInvalidUserNameAlphanumeric();
         verify(view, never()).displayInvalidPassword();
         verify(view, never()).displayInvalidDisplayName();
         verify(view, never()).displayInvalidType();
@@ -153,7 +170,8 @@ public class TestSignUpPresenter {
         presenter.createAccount(EMAIL, USER, PASSWORD, DISPLAY_NAME, TYPE);
 
         verify(view, never()).displayInvalidEmail();
-        verify(view, never()).displayInvalidUserName();
+        verify(view, never()).displayInvalidUserNameLength();
+        verify(view, never()).displayInvalidUserNameAlphanumeric();
         verify(view, never()).displayInvalidPassword();
         verify(view, never()).displayInvalidDisplayName();
         verify(view, never()).displayInvalidType();
@@ -176,7 +194,8 @@ public class TestSignUpPresenter {
         presenter.createAccount(EMAIL, USER, PASSWORD, DISPLAY_NAME, TYPE);
 
         verify(view, never()).displayInvalidEmail();
-        verify(view, never()).displayInvalidUserName();
+        verify(view, never()).displayInvalidUserNameLength();
+        verify(view, never()).displayInvalidUserNameAlphanumeric();
         verify(view, never()).displayInvalidPassword();
         verify(view, never()).displayInvalidDisplayName();
         verify(view, never()).displayInvalidType();
@@ -199,7 +218,8 @@ public class TestSignUpPresenter {
         presenter.createAccount(EMAIL, USER, PASSWORD, DISPLAY_NAME, TYPE);
 
         verify(view, never()).displayInvalidEmail();
-        verify(view, never()).displayInvalidUserName();
+        verify(view, never()).displayInvalidUserNameLength();
+        verify(view, never()).displayInvalidUserNameAlphanumeric();
         verify(view, never()).displayInvalidPassword();
         verify(view, never()).displayInvalidDisplayName();
         verify(view, never()).displayInvalidType();

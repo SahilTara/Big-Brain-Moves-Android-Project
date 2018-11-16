@@ -1,55 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.CreateServiceTypeActivity">
 
-    <EditText
-        android:id="@+id/serviceTypeNameText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/serviceTypeNameInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="80dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
+        android:fontFamily="@font/roboto"
         android:hint="Service Type Name"
-        android:inputType="textPersonName"
+        app:helperText="*Required"
+        app:counterMaxLength="25"
+        app:hintAnimationEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/serviceTypeValueText"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/serviceTypeNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:fontFamily="@font/roboto"
+            android:inputType="textPersonName" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/serviceTypeValueInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="72dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
+        android:fontFamily="@font/roboto"
         android:hint="Service Type Value"
-        android:inputType="numberDecimal"
+        app:helperText="*Required"
+        app:counterMaxLength="25"
+        app:hintAnimationEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/serviceTypeNameText" />
+        app:layout_constraintTop_toBottomOf="@+id/serviceTypeNameInputLayout" >
 
-    <Button
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/serviceTypeValueText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:fontFamily="@font/roboto"
+            android:inputType="numberDecimal"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.dd.processbutton.iml.ActionProcessButton
         android:id="@+id/btnCreateServiceType"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="8dp"
+
+        android:elevation="2dp"
+        android:fontFamily="@font/roboto"
+        android:gravity="center_vertical|center_horizontal|center"
+        android:minWidth="80dp"
         android:onClick="onCreateServiceTypeClick"
+        android:paddingLeft="16dp"
+
+        android:paddingRight="16dp"
+
         android:text="Create Service Type"
+
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:pb_colorComplete="@color/green_complete"
+        app:pb_colorError="@color/red_error"
+        app:pb_colorNormal="@color/colorAccent"
+        app:pb_colorPressed="@color/colorAccentDark"
+        app:pb_colorProgress="@color/purple_progress"
+        app:pb_cornerRadius="4dp"
+        app:pb_textComplete="Success"
+        app:pb_textError="Failed"
+        app:pb_textProgress="Attempting Creation"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/serviceTypeValueText"
-        app:layout_constraintVertical_bias="0.31" />
-</android.support.constraint.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/serviceTypeValueInputLayout"
+        app:layout_constraintVertical_bias="0.31"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

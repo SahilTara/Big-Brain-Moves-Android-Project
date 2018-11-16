@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constrainedLayout"
@@ -7,91 +7,141 @@
     android:layout_height="match_parent"
     tools:context=".activities.LoginOrSignUpActivity">
 
-    <TextView
-        android:id="@+id/passwordTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="36dp"
-        android:text="Password:"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/passwordText"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/userText"
-        android:layout_width="wrap_content"
-        android:layout_height="47dp"
+    <LinearLayout
+        android:id="@+id/parentLoginLinLayout"
+        android:layout_width="338dp"
+        android:layout_height="150dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="120dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="Username"
-        android:inputType="textPersonName"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/emailTextView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/emailTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:text="Username:"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/userText"
-        app:layout_constraintStart_toStartOf="parent" />
+        <LinearLayout
+            android:id="@+id/innerVertLinLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/passwordText"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="24dp"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/passwordTextView"
-        app:layout_constraintTop_toBottomOf="@+id/userText" />
+            <LinearLayout
+                android:id="@+id/loginFirstHorzLinLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/usernameInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:hint="Username"
+                    app:helperText="*Required"
+                    app:hintAnimationEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/userText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:fontFamily="@font/roboto"
+                        android:inputType="textPersonName" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6" />
+
+            <LinearLayout
+                android:id="@+id/loginSecondHorzLinLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/passwordInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:hint="Password"
+                    app:helperText="*Required"
+                    app:hintAnimationEnabled="true"
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/passwordText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:fontFamily="@font/roboto"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="322dp"
-        android:layout_height="208dp"
+        android:layout_width="338dp"
+        android:layout_height="86dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="36dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.478"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordText"
-        app:layout_constraintVertical_bias="0.466">
+        app:layout_constraintTop_toBottomOf="@+id/parentLoginLinLayout"
+        app:layout_constraintVertical_bias="0.176">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="40dp" />
-
-        <Button
+        <!--Following material guidelines -->
+        <com.dd.processbutton.iml.ActionProcessButton
             android:id="@+id/btnSignIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:elevation="2dp"
+            android:fontFamily="@font/roboto"
+            android:gravity="center_vertical|center_horizontal|center"
+            android:minWidth="80dp"
             android:onClick="btnSignInClick"
-            android:text="Sign In" />
+            android:paddingLeft="16dp"
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="24dp" />
+            android:paddingRight="16dp"
 
-        <Button
+            android:text="Sign In"
+
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:pb_colorComplete="@color/green_complete"
+            app:pb_colorError="@color/red_error"
+            app:pb_colorNormal="@color/colorAccent"
+            app:pb_colorPressed="@color/colorAccentDark"
+            app:pb_colorProgress="@color/purple_progress"
+            app:pb_cornerRadius="4dp"
+            app:pb_textComplete="Success"
+            app:pb_textError="Invalid"
+            app:pb_textProgress="Authenticating" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignUp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
             android:onClick="btnSignUpClick"
             android:text="Sign Up" />
 
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
