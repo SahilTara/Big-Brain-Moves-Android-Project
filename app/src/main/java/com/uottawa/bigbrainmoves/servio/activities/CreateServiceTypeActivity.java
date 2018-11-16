@@ -56,7 +56,7 @@ public class CreateServiceTypeActivity extends AppCompatActivity implements Crea
     public void onCreateServiceTypeClick(View view) {
         setEnabled(false);
         resetErrors();
-
+        btnCreateServiceType.setProgress(1);
         String serviceTypeName = serviceTypeNameText.getText().toString();
         String serviceTypeValue = serviceTypeValueText.getText().toString();
         presenter.createServiceType(serviceTypeName, serviceTypeValue);
