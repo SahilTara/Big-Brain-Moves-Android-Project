@@ -8,13 +8,21 @@ Sukhraj Bhogal - 300012635
 Michael Barker - 300018443  
 
 ## Libraries used
+
+### Not too standard
 https://github.com/jaredrummler/MaterialSpinner  
 https://github.com/ReactiveX/RxJava  
+https://github.com/dmytrodanylyk/android-process-button  
 
-## Admin Login
-Since there's a min password requirement,
+### Pretty standard  
+https://github.com/powermock/powermock  
+https://github.com/mockito/mockito  
+https://github.com/material-components/material-components-android  
+
+## Admin Login  
+Since there's a min password requirement,  
 User: admin  
 password: admin123  
 
-## This Repo's Link (Useful for TAs)
+## This Repo's Link (Useful for TAs)  
 https://github.com/SahilTara/Big-Brain-Moves-Android-Project
