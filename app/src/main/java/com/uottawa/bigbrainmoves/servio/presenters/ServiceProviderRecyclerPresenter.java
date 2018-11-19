@@ -1,9 +1,7 @@
 package com.uottawa.bigbrainmoves.servio.presenters;
 
 import com.uottawa.bigbrainmoves.servio.models.Service;
-import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.ServiceProviderRecyclerView;
-import com.uottawa.bigbrainmoves.servio.views.ViewProfileView;
 
 public class ServiceProviderRecyclerPresenter {
 
