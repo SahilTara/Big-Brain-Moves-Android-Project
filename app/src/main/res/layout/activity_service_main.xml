@@ -19,9 +19,25 @@
         app:layout_constraintTop_toBottomOf="@+id/welcomeMessageText">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onViewProfileClick"
+            android:text="View Profile" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnManageAvailabilities"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onManageAvailabilitiesClick"
+            android:text="Manage Availabilities" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:onClick="onSignOutClick"
             android:text="Sign Out" />
     </LinearLayout>

@@ -40,7 +40,7 @@ public class TestUserListPresenter {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Before
-    public void setUp() {
+    public void setup() {
         presenter = new UserListPresenter(view, repository);
     }
 

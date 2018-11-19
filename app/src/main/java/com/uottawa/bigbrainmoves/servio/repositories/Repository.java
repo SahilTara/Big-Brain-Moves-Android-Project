@@ -1,7 +1,9 @@
 package com.uottawa.bigbrainmoves.servio.repositories;
 
 import com.uottawa.bigbrainmoves.servio.models.Account;
+import com.uottawa.bigbrainmoves.servio.models.Service;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
+import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
 
@@ -28,4 +30,16 @@ public interface Repository {
     Observable<Pair<ServiceType, Boolean>> listenForServiceTypeChanges();
     void deleteServiceType(String serviceTypeName);
     void editServiceType(String serviceTypeName, double value);
+
+    Observable<List<Service>> getServicesProvidedByCurrentUser();
+
+    Observable<List<Service>> getServicesProvidable(List<String> provided);
+
+    Observable<Boolean> saveProfile(String phoneNumber,
+                                    String address, String companyName,
+                                    String description, boolean isLicensed,
+                                    List<Service> modified);
+
+    Observable<Optional<WeeklyAvailabilities>> getAvailabilities();
+    void setAvailabilities(WeeklyAvailabilities availabilities);
 }

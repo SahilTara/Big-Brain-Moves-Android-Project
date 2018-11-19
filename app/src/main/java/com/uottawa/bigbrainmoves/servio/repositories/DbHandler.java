@@ -13,15 +13,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.uottawa.bigbrainmoves.servio.models.Account;
+import com.uottawa.bigbrainmoves.servio.models.Service;
+import com.uottawa.bigbrainmoves.servio.models.ServiceProvider;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
+import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
+import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public class DbHandler implements Repository {
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -189,7 +197,13 @@ public class DbHandler implements Repository {
                                 if (subscriber.isDisposed())
                                     return;
 
+                                //TODO: Try to clean this up later
                                 Account account = dataSnapshot.getValue(Account.class);
+
+                                if (account.getType().toLowerCase().equals("service")) {
+                                    account = dataSnapshot.getValue(ServiceProvider.class);
+                                }
+
                                 Optional<Account> accountOptional = Optional.ofNullable(account);
 
                                 subscriber.onNext(accountOptional);
@@ -231,7 +245,18 @@ public class DbHandler implements Repository {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in account's information
-                            Account account = new Account(displayName, type, username);
+                            Account account;
+
+                            // TODO: REPLACE WITH ENUM LATER
+                            if (type.toLowerCase().equals("service")) {
+                                // Service Provider class polymorphically created.
+                                account = new ServiceProvider(displayName, type, username,
+                                        "", "", "",
+                                        "", false);
+                            } else {
+                                account = new Account(displayName, type, username);
+                            }
+
                             writeUserNameToDatabase(username, email);
                             writeUserToDataBase(getUserId(), account);
                             subscriber.onNext(SignupResult.ACCOUNT_CREATED);
@@ -250,7 +275,7 @@ public class DbHandler implements Repository {
      */
     private void writeUserToDataBase(String uid, Account account) {
         myRef.child("user_info").child(uid).setValue(account);
-        if (account.type.equals("admin")) {
+        if (account.getType().equals("admin")) {
             // If we write admin type to database we have to do some things to make sure no more admins are made.
             myRef.child("admin_exists").setValue(true);
         }
@@ -411,6 +436,7 @@ public class DbHandler implements Repository {
                                 return;
                             if (!dataSnapshot.exists()) {
                                 writeServiceTypeToDatabase(serviceTypeName, value);
+                                startOfferingAllServicesWithType(serviceTypeName);
                                 subscriber.onNext(true);
                                 subscriber.onComplete();
                             } else {
@@ -479,12 +505,340 @@ public class DbHandler implements Repository {
         });
     }
 
+    /**
+     * Deletes the specified service type from the database.
+     * @param serviceTypeName name of service type to delete
+     */
     public void deleteServiceType(String serviceTypeName) {
         myRef.child("service_types").child(serviceTypeName).removeValue();
+        stopOfferingAllServicesWithType(serviceTypeName);
     }
 
+    /**
+     * Edits the value(rate) of the service type specified
+     * @param serviceTypeName name of service type to edit
+     * @param value the new rate to set to.
+     */
     public void editServiceType(String serviceTypeName, double value) {
         writeServiceTypeToDatabase(serviceTypeName, value);
+    }
+
+    /**
+     * Method simply returns all service type names within an rxjava observable.
+     * @return rxjava observable containing all current service type names.
+     */
+    private Observable<List<String>> getAllServiceTypeNames() {
+        return Observable.create(subscriber -> {
+            myRef.child("service_types").addListenerForSingleValueEvent(new ValueEventListener() {
+                //
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (subscriber.isDisposed())
+                        return;
+                    // We have some services in the database for the user
+                    if (dataSnapshot.exists()) {
+                        ArrayList<String> serviceTypes = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            ServiceType serviceType = snapshot.getValue(ServiceType.class);
+                            if (serviceType != null) {
+                                serviceTypes.add(serviceType.getType());
+                            }
+                        }
+                        subscriber.onNext(serviceTypes);
+                        subscriber.onComplete();
+                    } else {
+                        // deal with no services case
+                        subscriber.onNext(Collections.emptyList());
+                        subscriber.onComplete();
+                    }
+                }
+
+                @Override // Only really called when the database doesn't give enough permissions.
+                public void onCancelled(@NonNull DatabaseError dbError) {
+                    if (subscriber.isDisposed())
+                        return;
+                    subscriber.onError(new FirebaseException(dbError.getMessage()));
+                }
+            });
+        });
+    }
+
+    /**
+     * Gets all active services provided by the current user in the database.
+     * @return rxjava observable containing all active services of user.
+     */
+    @Override
+    public Observable<List<Service>> getServicesProvidedByCurrentUser() {
+        Account account = CurrentAccount.getInstance().getCurrentAccount();
+        String username = account.getUsername();
+
+        return Observable.create(subscriber -> {
+            myRef.child("currently_provided").orderByChild("usernameOfferedDisabled")
+                    .equalTo(username + String.valueOf(true) + false).addListenerForSingleValueEvent(new ValueEventListener() {
+                //
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (subscriber.isDisposed())
+                        return;
+
+                    // We have some services in the database for the user
+                    if (dataSnapshot.exists()) {
+                        ArrayList<Service> services = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Service service = snapshot.getValue(Service.class);
+                            if (service != null) {
+                                services.add(service);
+                            }
+                        }
+                        subscriber.onNext(services);
+                        subscriber.onComplete();
+                    } else {
+                        // deal with no services case
+                        subscriber.onNext(Collections.emptyList());
+                        subscriber.onComplete();
+                    }
+                }
+
+                @Override // Only really called when the database doesn't give enough permissions.
+                public void onCancelled(@NonNull DatabaseError dbError) {
+                    if (subscriber.isDisposed())
+                        return;
+                    subscriber.onError(new FirebaseException(dbError.getMessage()));
+                }
+            });
+        });
+    }
+
+
+    /**
+     * Method filters the service type names based on the names of the services already provided,
+     * to get the service object this it is then converted to physical service objects by retrieving
+     * old services dropped, or creating completely new objects which is then returned as an rxjava observable.
+     * @param provided the names of the services already provided
+     * @return rxjava observable containing services which are providable.
+     */
+    @Override
+    public Observable<List<Service>> getServicesProvidable(List<String> provided) {
+        return getAllServiceTypeNames().flatMapIterable(serviceTypes -> serviceTypes) // turns into an iterable stream
+                .filter(item->!provided.contains(item)) // filters based on contains
+                .toList().flatMapObservable(this::getOldServicesOrDefault); // gets list of service objects
+    }
+
+    /**
+     * Method gets old services dropped if they exist based on the serviceTypes and for the ones which
+     * don't have a dropped object a new one is created and returned in an rxjava observable.
+     * @param serviceTypes names of serviceTypes providable
+     * @return rxjava object containing physical services providable by the service provider.
+     */
+    private Observable<List<Service>> getOldServicesOrDefault(List<String> serviceTypes) {
+        Account account = CurrentAccount.getInstance().getCurrentAccount();
+        String username = account.getUsername();
+
+        return Observable.create(subscriber -> {
+            myRef.child("currently_provided").orderByChild("usernameOfferedDisabled")
+                    .equalTo(username + String.valueOf(false) + false).addListenerForSingleValueEvent(new ValueEventListener() {
+                //
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (subscriber.isDisposed())
+                        return;
+
+                    // We have some services previously provided
+                    if (dataSnapshot.exists()) {
+                        ArrayList<Service> services = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Service service = snapshot.getValue(Service.class);
+                            if (service != null) {
+                                if (serviceTypes.contains(service.getType())) {
+                                    services.add(service);
+                                    serviceTypes.remove(service.getType());
+                                }
+                            }
+                        }
+                        // Deal with the remaining services that don't exist yet.
+                        for (String serviceType : serviceTypes) {
+                            services.add(new Service(serviceType, 0.0, username, false, false));
+                        }
+
+
+                        subscriber.onNext(services);
+                        subscriber.onComplete();
+                    } else {
+                        // deal with no services case
+                        ArrayList<Service> services = new ArrayList<>();
+                        for (String serviceType : serviceTypes) {
+                            services.add(new Service(serviceType, 0.0, username, false, false));
+                        }
+                        subscriber.onNext(services);
+                        subscriber.onComplete();
+                    }
+
+                }
+
+                @Override // Only really called when the database doesn't give enough permissions.
+                public void onCancelled(@NonNull DatabaseError dbError) {
+                    if (subscriber.isDisposed())
+                        return;
+                    subscriber.onError(new FirebaseException(dbError.getMessage()));
+                }
+            });
+        });
+    }
+
+    /**
+     * Method saves the profile of a service provider and returns if it was successful or not
+     * @param phoneNumber updated phone number of service provider
+     * @param address updated address of service provider
+     * @param companyName updated company name of the service provider
+     * @param description updated description of the service provider
+     * @param isLicensed whether or not the service provider is a licensed professional.
+     * @param modified the services which were either added or removed to the service provider's offered
+     *                 services.
+     * @return rxjava boolean observable that holds the state of whether the save was successful or not.
+     */
+    @Override
+    public Observable<Boolean> saveProfile(String phoneNumber,
+                                           String address, String companyName,
+                                           String description, boolean isLicensed,
+                                           List<Service> modified) {
+        Account account = CurrentAccount.getInstance().getCurrentAccount();
+        String displayName = account.getDisplayName();
+        String type = account.getType();
+        String username = account.getUsername();
+
+        HashMap<String, Object> updateMap = new HashMap<>();
+
+        // specify the services to be updated
+        for (Service service : modified) {
+            updateMap.put("currently_provided/" + service.getType() + username, service);
+        }
+
+        // specify the user to be updated
+        updateMap.put("user_info/" + getUserId(),
+                new ServiceProvider(displayName, type, username, phoneNumber, address, companyName,
+                        description, isLicensed));
+
+        return Observable.create(subscriber -> {
+            myRef.updateChildren(updateMap).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // successful update
+                    subscriber.onNext(true);
+                    subscriber.onComplete();
+                } else { // otherwise unsuccessful
+                    subscriber.onNext(false);
+                    subscriber.onComplete();
+                }
+            });
+        });
+    }
+
+    /**
+     * Stops offering services with similar types
+     */
+    private void stopOfferingAllServicesWithType(String serviceType) {
+        myRef.child("currently_provided").orderByChild("typeDisabled").equalTo(serviceType + false)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        HashMap<String, Object> updateMap = new HashMap<>();
+                        if (dataSnapshot.exists()) {
+
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                Service service = snapshot.getValue(Service.class);
+                                if (service != null) {
+                                    String user = service.getServiceProviderUser();
+                                    service.setDisabled(true);
+                                    updateMap.put("currently_provided/" + serviceType + user,
+                                           service);
+                                }
+                            }
+
+                            // TODO add on complete listener??
+                            myRef.updateChildren(updateMap);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    /**
+     * Start offering services with specified type name if such exist.
+     */
+
+    private void startOfferingAllServicesWithType(String serviceType) {
+        myRef.child("currently_provided").orderByChild("typeDisabled").equalTo(serviceType + true)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        HashMap<String, Object> updateMap = new HashMap<>();
+                        if (dataSnapshot.exists()) {
+
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                Service service = snapshot.getValue(Service.class);
+                                if (service != null) {
+                                    String user = service.getServiceProviderUser();
+                                    service.setDisabled(false);
+                                    updateMap.put("currently_provided/" + serviceType + user,
+                                            service);
+                                }
+                            }
+
+                            // TODO add on complete listener??
+                            myRef.updateChildren(updateMap);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    /* End Service/Service Type Methods */
+
+    /**
+     * Gets the availabilities of the user should they exist, otherwise returns an empty optional.
+     * @return an rxjava observable of an optional weekly availabilities class.
+     */
+    @Override
+    public Observable<Optional<WeeklyAvailabilities>> getAvailabilities() {
+        Account account = CurrentAccount.getInstance().getCurrentAccount();
+        String username = account.getUsername();
+        return Observable.create(subscriber -> {
+           myRef.child("availabilities").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+               @Override
+               public void onDataChange(DataSnapshot dataSnapshot) {
+                   if (dataSnapshot.exists()) {
+                       Optional<WeeklyAvailabilities> availabilities = Optional
+                               .ofNullable(dataSnapshot.getValue(WeeklyAvailabilities.class));
+
+                       subscriber.onNext(availabilities);
+                       subscriber.onComplete();
+                   } else {
+                       subscriber.onNext(Optional.empty());
+                       subscriber.onComplete();
+                   }
+               }
+
+               @Override
+               public void onCancelled(DatabaseError databaseError) {
+                    subscriber.onError(new FirebaseException(databaseError.getMessage()));
+               }
+           });
+        });
+    }
+
+    @Override
+    public void setAvailabilities(WeeklyAvailabilities availabilities) {
+        Account account = CurrentAccount.getInstance().getCurrentAccount();
+        String username = account.getUsername();
+
+        myRef.child("availabilities").child(username).setValue(availabilities);
     }
 
 }
