@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    tools:context=".activities.ViewProfileActivity">
+
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:id="@+id/phoneHolder"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
+                <!-- Icon -->
+                <ImageView
+                    android:id="@+id/phoneIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_phone_red_24dp" />
+                <!-- Text-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/phoneInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:hint="Phone Number"
+                    app:helperText="*Required"
+                    app:hintAnimationEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/phoneViewText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:fontFamily="@font/roboto"
+                        android:gravity="center"
+                        android:inputType="phone"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="18sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <include layout="@layout/itemdivider" />
+
+            <LinearLayout
+                android:id="@+id/addressHolder"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
+                <!-- Icon -->
+                <ImageView
+                    android:id="@+id/addressIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_home_red_24dp" />
+                <!-- Text-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/addressInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:hint="Address"
+                    app:helperText="*Required"
+                    app:hintAnimationEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/addressViewText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:fontFamily="@font/roboto"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="18sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <include layout="@layout/itemdivider" />
+
+            <LinearLayout
+                android:id="@+id/companyHolder"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
+                <!-- Icon -->
+                <ImageView
+                    android:id="@+id/companyIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_work_red_24dp" />
+                <!-- Text-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/companyInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:hint="Company"
+                    app:helperText="*Required"
+                    app:hintAnimationEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/companyViewText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:fontFamily="@font/roboto"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="18sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <include layout="@layout/itemdivider" />
+
+
+            <LinearLayout
+                android:id="@+id/servicesOfferedHolder"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
+                <!-- Icon -->
+
+                <ImageView
+                    android:id="@+id/serviceIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_notifications_red_24dp" />
+                <!-- Scrollable Layout -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/servicesProvidedRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:fontFamily="@font/roboto"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="18sp">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/servicesProvidableRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:fontFamily="@font/roboto"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="18sp"
+                        android:visibility="gone">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <include layout="@layout/itemdivider" />
+
+            <LinearLayout
+                android:id="@+id/descriptionHolder"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
+                <!-- Icon -->
+                <ImageView
+                    android:id="@+id/descriptionIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_format_quote_red_24dp" />
+
+                <!-- Text-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:hint="Description"
+                    app:counterMaxLength="60"
+                    app:counterEnabled="true"
+                    app:hintAnimationEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/descriptionViewText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:fontFamily="@font/roboto"
+                        android:maxLength="60"
+                        android:maxLines="2"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="18sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <include layout="@layout/itemdivider" />
+
+            <LinearLayout
+                android:id="@+id/licenseHolder"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
+                <!-- Icon -->
+                <ImageView
+                    android:id="@+id/licenseIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_contacts_red_24dp" />
+
+                <!-- Text-->
+                <com.jaredrummler.materialspinner.MaterialSpinner
+                    android:id="@+id/licenseViewText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:fontFamily="@font/roboto"
+                    android:gravity="center"
+                    android:text="Licensed"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:onClick="onFabClick"
+        app:elevation="3dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.974"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.289"
+        app:srcCompat="@drawable/ic_edit_red_24dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

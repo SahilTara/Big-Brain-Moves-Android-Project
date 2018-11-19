@@ -12,6 +12,7 @@ import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.R;
 import com.uottawa.bigbrainmoves.servio.views.MainView;
+import com.uottawa.bigbrainmoves.servio.views.ViewProfileView;
 
 public class ServiceMainActivity extends AppCompatActivity implements MainView  {
     private MainScreenPresenter presenter;
@@ -28,6 +29,15 @@ public class ServiceMainActivity extends AppCompatActivity implements MainView  
         presenter.signOut();
     }
 
+    public void onViewProfileClick(View view) {
+        Intent viewProfile = new Intent(getApplicationContext(), ViewProfileActivity.class);
+        startActivity(viewProfile);
+    }
+
+    public void onManageAvailabilitiesClick(View view) {
+        Intent manageAvailabilities = new Intent(getApplicationContext(), ManageAvailabilitiesActivity.class);
+        startActivity(manageAvailabilities);
+    }
 
     @Override
     public void displaySignOut() {
