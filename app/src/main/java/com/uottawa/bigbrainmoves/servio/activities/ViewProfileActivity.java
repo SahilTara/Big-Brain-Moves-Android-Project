@@ -259,6 +259,8 @@ public class ViewProfileActivity extends AppCompatActivity implements ViewProfil
 
     @Override
     public void displayDbError() {
-        //TODO ADD TOAST SAYING "Save Unsuccessful due to insufficient permissions"
+        Toast.makeText(getApplicationContext(),
+             "Save unsuccessful due to insufficient permissions",
+             Toast.LENGTH_LONG).show();
     }
 }
