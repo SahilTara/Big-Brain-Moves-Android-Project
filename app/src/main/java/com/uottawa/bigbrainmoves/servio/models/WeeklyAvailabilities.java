@@ -16,7 +16,6 @@ public class WeeklyAvailabilities {
     private String sundayStart;
     private String sundayEnd;
 
-    // Needed for firebase
     public WeeklyAvailabilities() {
         mondayStart = "";
         mondayEnd = "";
@@ -38,29 +37,6 @@ public class WeeklyAvailabilities {
 
         sundayStart = "";
         sundayEnd = "";
-    }
-
-    public WeeklyAvailabilities(String mondayStart, String mondayEnd,
-                                String tuesdayStart, String tuesdayEnd,
-                                String wednesdayStart, String wednesdayEnd,
-                                String thursdayStart, String thursdayEnd,
-                                String fridayStart, String fridayEnd,
-                                String saturdayStart, String saturdayEnd,
-                                String sundayStart, String sundayEnd) {
-        this.mondayStart = mondayStart;
-        this.mondayEnd = mondayEnd;
-        this.tuesdayStart = tuesdayStart;
-        this.tuesdayEnd = tuesdayEnd;
-        this.wednesdayStart = wednesdayStart;
-        this.wednesdayEnd = wednesdayEnd;
-        this.thursdayStart = thursdayStart;
-        this.thursdayEnd = thursdayEnd;
-        this.fridayStart = fridayStart;
-        this.fridayEnd = fridayEnd;
-        this.saturdayStart = saturdayStart;
-        this.saturdayEnd = saturdayEnd;
-        this.sundayStart = sundayStart;
-        this.sundayEnd = sundayEnd;
     }
 
     public String getMondayEnd() {
