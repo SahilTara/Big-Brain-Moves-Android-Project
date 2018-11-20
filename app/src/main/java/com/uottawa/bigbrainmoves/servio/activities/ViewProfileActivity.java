@@ -236,7 +236,7 @@ public class ViewProfileActivity extends AppCompatActivity implements ViewProfil
 
     @Override
     public void displayInvalidCompanyName() {
-        //TODO add a setError on the companyInputLayout saying  "The company name must be entered" (setError layout is above)
+        addressInputLayout.setError("The company name must be entered");
     }
 
     public void displaySuccessfullySaved() {
