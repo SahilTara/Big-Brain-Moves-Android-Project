@@ -3,7 +3,6 @@ package com.uottawa.bigbrainmoves.servio.activities;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +14,6 @@ import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
-import com.uottawa.bigbrainmoves.servio.util.TimeUtil;
 import com.uottawa.bigbrainmoves.servio.views.ManageAvailabilitiesView;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.Timepoint;
