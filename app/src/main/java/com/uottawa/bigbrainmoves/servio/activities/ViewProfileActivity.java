@@ -243,7 +243,6 @@ public class ViewProfileActivity extends AppCompatActivity implements ViewProfil
         setEnabledState(false);
         setBackground(null);
         actionButton.setImageDrawable(editIcon);
-        // TODO ADD A TOAST SAYING "Successfully Saved"
         Toast.makeText(getApplicationContext(),
                 "Successfully Saved",
                 Toast.LENGTH_LONG).show();
@@ -252,7 +251,10 @@ public class ViewProfileActivity extends AppCompatActivity implements ViewProfil
 
     @Override
     public void displaySaveUnsuccessful() {
-        //TODO ADD TOAST SAYING "Save unsuccessful due to parameters passed".
+        Toast.makeText(getApplicationContext(),
+                "Save unsuccessful due to parameters passed",
+                Toast.LENGTH_LONG).show();
+        
     }
 
     @Override
