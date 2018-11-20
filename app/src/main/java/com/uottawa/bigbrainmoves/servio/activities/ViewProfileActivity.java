@@ -235,7 +235,7 @@ public class ViewProfileActivity extends AppCompatActivity implements ViewProfil
 
     @Override
     public void displayInvalidCompanyName() {
-        //TODO add a setError on the companyInputLayout saying  "The company name must be entered" see above
+        //TODO add a setError on the companyInputLayout saying  "The company name must be entered" (setError layout is above)
     }
 
     public void displaySuccessfullySaved() {
@@ -243,6 +243,9 @@ public class ViewProfileActivity extends AppCompatActivity implements ViewProfil
         setBackground(null);
         actionButton.setImageDrawable(editIcon);
         // TODO ADD A TOAST SAYING "Successfully Saved"
+        Toast.makeText(getApplicationContext(),
+                "Successfully Saved",
+                Toast.LENGTH_LONG).show();
         changeRecyclerViewState();
     }
 
