@@ -26,6 +26,7 @@ import io.reactivex.Observable;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -62,14 +63,7 @@ public class TestManageAvailabilitiesPresenter {
         presenter.getAvailabilities();
 
         verify(view, atLeastOnce()).displayDbError();
-        verify(view, never()).displayTimes(
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString());
+        verify(view, never()).displayTimes(any(WeeklyAvailabilities.class));
     }
 
     @Test
@@ -92,14 +86,7 @@ public class TestManageAvailabilitiesPresenter {
         presenter.getAvailabilities();
 
         verify(view, never()).displayDbError();
-        verify(view, atLeastOnce()).displayTimes(
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString());
+        verify(view, atLeastOnce()).displayTimes(any(WeeklyAvailabilities.class));
     }
 
     @Test
@@ -116,7 +103,7 @@ public class TestManageAvailabilitiesPresenter {
                 .thenReturn(serviceProvider);
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
 
-        presenter.setTime("0:00", "mondaystart");
+        presenter.setTime("0:00", WeeklyAvailabilities.TimeSlot.MONDAY_START);
         
         verify(availabilities, atLeastOnce()).setMondayStart(anyString());
         verify(availabilities, never()).setMondayEnd(anyString());
@@ -133,7 +120,7 @@ public class TestManageAvailabilitiesPresenter {
         verify(availabilities, never()).setSundayStart(anyString());
         verify(availabilities, never()).setSundayEnd(anyString());
 
-        presenter.setTime("0:00", "mondayend");
+        presenter.setTime("0:00", WeeklyAvailabilities.TimeSlot.MONDAY_END);
 
         verify(availabilities, atLeastOnce()).setMondayStart(anyString());
         verify(availabilities, atLeastOnce()).setMondayEnd(anyString());
@@ -165,7 +152,7 @@ public class TestManageAvailabilitiesPresenter {
         when(currentAccount.getCurrentAccount())
                 .thenReturn(serviceProvider);
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
-        presenter.setTime("0:00", "tuesdayStart");
+        presenter.setTime("0:00", WeeklyAvailabilities.TimeSlot.TUESDAY_START);
 
         verify(availabilities, never()).setMondayStart(anyString());
         verify(availabilities, never()).setMondayEnd(anyString());
@@ -182,7 +169,7 @@ public class TestManageAvailabilitiesPresenter {
         verify(availabilities, never()).setSundayStart(anyString());
         verify(availabilities, never()).setSundayEnd(anyString());
 
-        presenter.setTime("0:00", "tuesdayEnd");
+        presenter.setTime("0:00", WeeklyAvailabilities.TimeSlot.TUESDAY_END);
 
         verify(availabilities, never()).setMondayStart(anyString());
         verify(availabilities, never()).setMondayEnd(anyString());
@@ -214,8 +201,8 @@ public class TestManageAvailabilitiesPresenter {
         when(currentAccount.getCurrentAccount())
                 .thenReturn(serviceProvider);
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
-        when(availabilities.getMondayStart()).thenReturn("");
-        when(availabilities.getMondayEnd()).thenReturn("1:00");
+
+        when(availabilities.getInvalidTimeSlot()).thenReturn(Optional.of(DayOfWeek.MONDAY));
 
         presenter.saveTimes();
 
@@ -226,7 +213,7 @@ public class TestManageAvailabilitiesPresenter {
         verify(view, never()).displayDayInvalid(DayOfWeek.FRIDAY);
         verify(view, never()).displayDayInvalid(DayOfWeek.SATURDAY);
         verify(view, never()).displayDayInvalid(DayOfWeek.SUNDAY);
-        verify(view, never()).displaySuccesfulSave();
+        verify(view, never()).displaySuccessfulSave();
     }
 
     @Test
@@ -242,20 +229,7 @@ public class TestManageAvailabilitiesPresenter {
         when(currentAccount.getCurrentAccount())
                 .thenReturn(serviceProvider);
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
-        when(availabilities.getMondayStart()).thenReturn("");
-        when(availabilities.getMondayEnd()).thenReturn("");
-
-        when(availabilities.getTuesdayStart()).thenReturn("");
-        when(availabilities.getTuesdayEnd()).thenReturn("");
-
-        when(availabilities.getWednesdayStart()).thenReturn("");
-        when(availabilities.getWednesdayEnd()).thenReturn("");
-
-        when(availabilities.getThursdayStart()).thenReturn("");
-        when(availabilities.getThursdayEnd()).thenReturn("");
-
-        when(availabilities.getFridayStart()).thenReturn("");
-        when(availabilities.getFridayEnd()).thenReturn("1:00");
+        when(availabilities.getInvalidTimeSlot()).thenReturn(Optional.of(DayOfWeek.FRIDAY));
 
         presenter.saveTimes();
 
@@ -266,7 +240,7 @@ public class TestManageAvailabilitiesPresenter {
         verify(view, atLeastOnce()).displayDayInvalid(DayOfWeek.FRIDAY);
         verify(view, never()).displayDayInvalid(DayOfWeek.SATURDAY);
         verify(view, never()).displayDayInvalid(DayOfWeek.SUNDAY);
-        verify(view, never()).displaySuccesfulSave();
+        verify(view, never()).displaySuccessfulSave();
     }
     
     @Test
@@ -285,26 +259,7 @@ public class TestManageAvailabilitiesPresenter {
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
 
 
-        when(availabilities.getMondayStart()).thenReturn("");
-        when(availabilities.getMondayEnd()).thenReturn("");
-
-        when(availabilities.getTuesdayStart()).thenReturn("");
-        when(availabilities.getTuesdayEnd()).thenReturn("");
-
-        when(availabilities.getWednesdayStart()).thenReturn("");
-        when(availabilities.getWednesdayEnd()).thenReturn("");
-
-        when(availabilities.getThursdayStart()).thenReturn("");
-        when(availabilities.getThursdayEnd()).thenReturn("");
-
-        when(availabilities.getFridayStart()).thenReturn("");
-        when(availabilities.getFridayEnd()).thenReturn("");
-
-        when(availabilities.getSaturdayStart()).thenReturn("");
-        when(availabilities.getSaturdayEnd()).thenReturn("");
-
-        when(availabilities.getSundayStart()).thenReturn("");
-        when(availabilities.getSundayEnd()).thenReturn("");
+        when(availabilities.getInvalidTimeSlot()).thenReturn(Optional.empty());
 
         presenter.saveTimes();
 
@@ -315,7 +270,7 @@ public class TestManageAvailabilitiesPresenter {
         verify(view, never()).displayDayInvalid(DayOfWeek.FRIDAY);
         verify(view, never()).displayDayInvalid(DayOfWeek.SATURDAY);
         verify(view, never()).displayDayInvalid(DayOfWeek.SUNDAY);
-        verify(view, atLeastOnce()).displaySuccesfulSave();
+        verify(view, atLeastOnce()).displaySuccessfulSave();
     }
 
     @Test
@@ -333,9 +288,9 @@ public class TestManageAvailabilitiesPresenter {
                 .thenReturn(serviceProvider);
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
 
-        when(availabilities.getSaturdayEnd()).thenReturn("");
+        when(availabilities.getSaturdayEnd()).thenReturn("End Time");
 
-        Pair<String, Boolean> result = presenter.getTimeRestriction("saturdayStart");
+        Pair<String, Boolean> result = presenter.getTimeRestriction("SATURDAY_START");
         assertEquals("Expected result to be 23:30 for a day with no end defined", result.first, "23:30");
         assertFalse("Expected result for an ending restriction to be false", result.second);
     }
@@ -357,7 +312,7 @@ public class TestManageAvailabilitiesPresenter {
 
         when(availabilities.getSaturdayEnd()).thenReturn("20:00");
 
-        Pair<String, Boolean> result = presenter.getTimeRestriction("saturdayStart");
+        Pair<String, Boolean> result = presenter.getTimeRestriction("SATURDAY_START");
         assertEquals("Expected result to be 20:00 for this day since the end is defined as that",
                 result.first, "20:00");
         assertFalse("Expected result for an ending restriction to be false", result.second);
@@ -378,9 +333,9 @@ public class TestManageAvailabilitiesPresenter {
                 .thenReturn(serviceProvider);
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
 
-        when(availabilities.getWednesdayStart()).thenReturn("");
+        when(availabilities.getWednesdayStart()).thenReturn("Start Time");
 
-        Pair<String, Boolean> result = presenter.getTimeRestriction("wednesdayEnd");
+        Pair<String, Boolean> result = presenter.getTimeRestriction("WEDNESDAY_END");
         assertEquals("Expected result to be 00:00 for a day with no start defined", result.first, "00:00");
         assertTrue("Expected result for an start restriction to be true", result.second);
     }
@@ -402,7 +357,7 @@ public class TestManageAvailabilitiesPresenter {
 
         when(availabilities.getWednesdayStart()).thenReturn("15:00");
 
-        Pair<String, Boolean> result = presenter.getTimeRestriction("wednesdayEnd");
+        Pair<String, Boolean> result = presenter.getTimeRestriction("WEDNESDAY_END");
         assertEquals("Expected result to be 15:00 for this day since the start is defined to be that",
                 result.first, "15:00");
         assertTrue("Expected result for an start restriction to be true", result.second);

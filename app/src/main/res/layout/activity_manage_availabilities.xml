@@ -36,7 +36,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="mondayStart"
+                android:tag="MONDAY_START"
                 android:text="Start Time" />
 
             <com.google.android.material.button.MaterialButton
@@ -46,7 +46,7 @@
                 android:layout_height="45dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:tag="mondayEnd"
+                android:tag="MONDAY_END"
                 android:onClick="onTimeButtonClick"
                 android:text="End Time" />
         </LinearLayout>
@@ -75,7 +75,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="tuesdayStart"
+                android:tag="TUESDAY_START"
                 android:text="Start Time" />
 
             <com.google.android.material.button.MaterialButton
@@ -87,7 +87,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="tuesdayEnd"
+                android:tag="TUESDAY_END"
                 android:text="End Time" />
         </LinearLayout>
 
@@ -115,7 +115,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="wednesdayStart"
+                android:tag="WEDNESDAY_START"
                 android:text="Start Time" />
 
             <com.google.android.material.button.MaterialButton
@@ -127,7 +127,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="wednesdayEnd"
+                android:tag="WEDNESDAY_END"
                 android:text="End Time" />
         </LinearLayout>
 
@@ -155,7 +155,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="thursdayStart"
+                android:tag="THURSDAY_START"
                 android:text="Start Time" />
 
             <com.google.android.material.button.MaterialButton
@@ -167,7 +167,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="thursdayEnd"
+                android:tag="THURSDAY_END"
                 android:text="End Time" />
         </LinearLayout>
 
@@ -195,7 +195,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="fridayStart"
+                android:tag="FRIDAY_START"
                 android:text="Start Time" />
 
             <com.google.android.material.button.MaterialButton
@@ -207,7 +207,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="fridayEnd"
+                android:tag="FRIDAY_END"
                 android:text="End Time" />
         </LinearLayout>
 
@@ -235,7 +235,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="saturdayStart"
+                android:tag="SATURDAY_START"
                 android:text="Start Time" />
 
             <com.google.android.material.button.MaterialButton
@@ -247,7 +247,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="saturdayEnd"
+                android:tag="SATURDAY_END"
                 android:text="End Time" />
         </LinearLayout>
 
@@ -275,7 +275,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="sundayStart"
+                android:tag="SUNDAY_START"
                 android:text="Start Time" />
 
             <com.google.android.material.button.MaterialButton
@@ -287,7 +287,7 @@
                 android:layout_marginRight="5dp"
                 android:longClickable="true"
                 android:onClick="onTimeButtonClick"
-                android:tag="sundayEnd"
+                android:tag="SUNDAY_END"
                 android:text="End Time" />
 
         </LinearLayout>

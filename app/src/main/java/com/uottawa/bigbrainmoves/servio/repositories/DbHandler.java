@@ -1,7 +1,5 @@
 package com.uottawa.bigbrainmoves.servio.repositories;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Patterns;
 
 import com.google.firebase.FirebaseException;
@@ -25,16 +23,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 
 public class DbHandler implements Repository {
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = mDatabase.getReference(); // gets db ref, then searches for username.
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private AvailabilitiesRepository availabilitiesRepository = new AvailabilitiesRepositoryFirebase();
+
     /*
     Begin Account/User related Methods.
      */
@@ -807,40 +807,12 @@ public class DbHandler implements Repository {
      */
     @Override
     public Observable<Optional<WeeklyAvailabilities>> getAvailabilities() {
-        Account account = CurrentAccount.getInstance().getCurrentAccount();
-        String username = account.getUsername();
-        return Observable.create(subscriber -> {
-           myRef.child("availabilities").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-               @Override
-               public void onDataChange(DataSnapshot dataSnapshot) {
-                   if (dataSnapshot.exists()) {
-                       Optional<WeeklyAvailabilities> availabilities = Optional
-                               .ofNullable(dataSnapshot.getValue(WeeklyAvailabilities.class));
-
-                       subscriber.onNext(availabilities);
-                       subscriber.onComplete();
-                   } else {
-                       subscriber.onNext(Optional.empty());
-                       subscriber.onComplete();
-                   }
-               }
-
-               @Override
-               public void onCancelled(DatabaseError databaseError) {
-                    subscriber.onError(new FirebaseException(databaseError.getMessage()));
-               }
-           });
-        });
+        return availabilitiesRepository.getAvailabilities();
     }
 
     @Override
     public void setAvailabilities(WeeklyAvailabilities availabilities) {
-        Account account = CurrentAccount.getInstance().getCurrentAccount();
-        String username = account.getUsername();
-
-        myRef.child("availabilities").child(username).setValue(availabilities);
+        availabilitiesRepository.setAvailabilities(availabilities);
     }
 
 }
-
-

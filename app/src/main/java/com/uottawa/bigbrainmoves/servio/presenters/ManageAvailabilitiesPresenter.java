@@ -8,6 +8,8 @@ import com.uottawa.bigbrainmoves.servio.util.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.views.ManageAvailabilitiesView;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 import io.reactivex.Observer;
@@ -46,79 +48,8 @@ public class ManageAvailabilitiesPresenter {
                 }
                 WeeklyAvailabilities weeklyAvailabilities = provider.getAvailabilities();
 
-                // Monday Init
-                String mondayStart = weeklyAvailabilities.getMondayStart();
-                if (mondayStart.equals(""))
-                    mondayStart = "Start Time";
 
-                String mondayEnd = weeklyAvailabilities.getMondayEnd();
-                if (mondayEnd.equals(""))
-                    mondayEnd = "End Time";
-
-                // Tuesday Init
-                String tuesdayStart = weeklyAvailabilities.getTuesdayStart();
-                if (tuesdayStart.equals(""))
-                    tuesdayStart = "Start Time";
-
-                String tuesdayEnd = weeklyAvailabilities.getTuesdayEnd();
-                if (tuesdayEnd.equals(""))
-                    tuesdayEnd = "End Time";
-
-                // Wednesday Init
-                String wednesdayStart = weeklyAvailabilities.getWednesdayStart();
-                if (wednesdayStart.equals(""))
-                    wednesdayStart = "Start Time";
-
-                String wednesdayEnd = weeklyAvailabilities.getWednesdayEnd();
-                if (wednesdayEnd.equals(""))
-                    wednesdayEnd = "End Time";
-
-                // Thursday Init
-                String thursdayStart = weeklyAvailabilities.getThursdayStart();
-                if (thursdayStart.equals(""))
-                    thursdayStart = "Start Time";
-
-                String thursdayEnd = weeklyAvailabilities.getThursdayEnd();
-                if (thursdayEnd.equals(""))
-                    thursdayEnd = "End Time";
-
-                // Friday Init
-                String fridayStart = weeklyAvailabilities.getFridayStart();
-                if (fridayStart.equals(""))
-                    fridayStart = "Start Time";
-
-                String fridayEnd = weeklyAvailabilities.getFridayEnd();
-                if (fridayEnd.equals(""))
-                    fridayEnd = "End Time";
-
-                // Saturday Init
-                String saturdayStart = weeklyAvailabilities.getSaturdayStart();
-                if (saturdayStart.equals(""))
-                    saturdayStart = "Start Time";
-
-                String saturdayEnd = weeklyAvailabilities.getSaturdayEnd();
-                if (saturdayEnd.equals(""))
-                    saturdayEnd = "End Time";
-
-                // Sunday Init
-                String sundayStart = weeklyAvailabilities.getSundayStart();
-                if (sundayStart.equals(""))
-                    sundayStart = "Start Time";
-
-                String sundayEnd = weeklyAvailabilities.getSundayEnd();
-                if (sundayEnd.equals(""))
-                    sundayEnd = "End Time";
-
-                view.displayTimes(
-                        mondayStart, mondayEnd,
-                        tuesdayStart, tuesdayEnd,
-                        wednesdayStart, wednesdayEnd,
-                        thursdayStart, thursdayEnd,
-                        fridayStart, fridayEnd,
-                        saturdayStart, saturdayEnd,
-                        sundayStart, sundayEnd
-                );
-                
+                view.displayTimes(weeklyAvailabilities);
             }
 
             @Override
@@ -142,80 +73,31 @@ public class ManageAvailabilitiesPresenter {
     /**
      * Given an id we extract the time we must set in the weekly availabilities object.
      * @param time the time to set to.
-     * @param id the id of the clicked object.
+     * @param timeSlot the timeSlot of the clicked object.
      */
-    public void setTime(String time, String id) {
+    public void setTime(String time, WeeklyAvailabilities.TimeSlot timeSlot) {
         ServiceProvider provider = (ServiceProvider) CurrentAccount.getInstance().getCurrentAccount();
         WeeklyAvailabilities weeklyAvailabilities = provider.getAvailabilities();
 
-        switch (id.toLowerCase()) {
-            case "mondaystart":
-                weeklyAvailabilities.setMondayStart(time);
-                break;
-            case "mondayend":
-                weeklyAvailabilities.setMondayEnd(time);
-                break;
-            case "tuesdaystart":
-                weeklyAvailabilities.setTuesdayStart(time);
-                break;
-            case "tuesdayend":
-                weeklyAvailabilities.setTuesdayEnd(time);
-                break;
-            case "wednesdaystart":
-                weeklyAvailabilities.setWednesdayStart(time);
-                break;
-            case "wednesdayend":
-                weeklyAvailabilities.setWednesdayEnd(time);
-                break;
-            case "thursdaystart":
-                weeklyAvailabilities.setThursdayStart(time);
-                break;
-            case "thursdayend":
-                weeklyAvailabilities.setThursdayEnd(time);
-                break;
-            case "fridaystart":
-                weeklyAvailabilities.setFridayStart(time);
-                break;
-            case "fridayend":
-                weeklyAvailabilities.setFridayEnd(time);
-                break;
-            case "saturdaystart":
-                weeklyAvailabilities.setSaturdayStart(time);
-                break;
-            case "saturdayend":
-                weeklyAvailabilities.setSaturdayEnd(time);
-                break;
-            case "sundaystart":
-                weeklyAvailabilities.setSundayStart(time);
-                break;
-            case "sundayend":
-                weeklyAvailabilities.setSundayEnd(time);
-                break;
+        try {
+            // Essentially invokes the right setter by using reflections
+            Method setter = weeklyAvailabilities.getClass().getMethod(timeSlot.getMethodName(), String.class);
+            setter.invoke(weeklyAvailabilities, time);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            //TODO: DONT SWALLOW LATER!.
         }
-
-
     }
 
     public void saveTimes() {
         ServiceProvider provider = (ServiceProvider) CurrentAccount.getInstance().getCurrentAccount();
         WeeklyAvailabilities weeklyAvailabilities = provider.getAvailabilities();
-        if (weeklyAvailabilities.getMondayStart().equals("") ^ weeklyAvailabilities.getMondayEnd().equals("")) {
-            view.displayDayInvalid(DayOfWeek.MONDAY);
-        } else if (weeklyAvailabilities.getTuesdayStart().equals("") ^ weeklyAvailabilities.getTuesdayEnd().equals("")) {
-            view.displayDayInvalid(DayOfWeek.TUESDAY);
-        } else if (weeklyAvailabilities.getWednesdayStart().equals("") ^ weeklyAvailabilities.getWednesdayEnd().equals("")) {
-            view.displayDayInvalid(DayOfWeek.WEDNESDAY);
-        } else if (weeklyAvailabilities.getThursdayStart().equals("") ^ weeklyAvailabilities.getThursdayEnd().equals("")) {
-            view.displayDayInvalid(DayOfWeek.THURSDAY);
-        } else if (weeklyAvailabilities.getFridayStart().equals("") ^ weeklyAvailabilities.getFridayEnd().equals("")) {
-            view.displayDayInvalid(DayOfWeek.FRIDAY);
-        } else if (weeklyAvailabilities.getSaturdayStart().equals("") ^ weeklyAvailabilities.getSaturdayEnd().equals("")) {
-            view.displayDayInvalid(DayOfWeek.FRIDAY);
-        } else if (weeklyAvailabilities.getSundayStart().equals("") ^ weeklyAvailabilities.getSundayEnd().equals("")) {
+        Optional<DayOfWeek> invalidDay = weeklyAvailabilities.getInvalidTimeSlot();
 
+        if(invalidDay.isPresent()) {
+            view.displayDayInvalid(invalidDay.get());
         } else {
             repository.setAvailabilities(weeklyAvailabilities);
-            view.displaySuccesfulSave();
+            view.displaySuccessfulSave();
         }
     }
 
@@ -229,78 +111,78 @@ public class ManageAvailabilitiesPresenter {
         ServiceProvider provider = (ServiceProvider) CurrentAccount.getInstance().getCurrentAccount();
         WeeklyAvailabilities weeklyAvailabilities = provider.getAvailabilities();
         String time = "";
-        String compare = id.toLowerCase();
-        boolean isStart = !compare.contains("start");
+        String compare = id;
+        boolean isStart = !compare.toLowerCase().contains("start");
 
         switch (compare) {
-            case "mondaystart":
-                 time = weeklyAvailabilities.getMondayEnd();
-                if (time.equals(""))
+            case "MONDAY_START":
+                time = weeklyAvailabilities.getMondayEnd();
+                if (time.equals("End Time"))
                     time = "23:30";
                 break;
-            case "mondayend":
+            case "MONDAY_END":
                 time = weeklyAvailabilities.getMondayStart();
-                if (time.equals(""))
+                if (time.equals("Start Time"))
                     time = "00:00";
                 break;
-            case "tuesdaystart":
+            case "TUESDAY_START":
                 time = weeklyAvailabilities.getTuesdayEnd();
-                if (time.equals(""))
+                if (time.equals("End Time"))
                     time = "23:30";
                 break;
-            case "tuesdayend":
+            case "TUESDAY_END":
                 time = weeklyAvailabilities.getTuesdayStart();
-                if (time.equals(""))
+                if (time.equals("Start Time"))
                     time = "00:00";
                 break;
-            case "wednesdaystart":
+            case "WEDNESDAY_START":
                 time = weeklyAvailabilities.getWednesdayEnd();
-                if (time.equals(""))
+                if (time.equals("End Time"))
                     time = "23:30";
                 break;
-            case "wednesdayend":
+            case "WEDNESDAY_END":
                 time = weeklyAvailabilities.getWednesdayStart();
-                if (time.equals(""))
+                if (time.equals("Start Time"))
                     time = "00:00";
                 break;
-            case "thursdaystart":
+            case "THURSDAY_START":
                 time = weeklyAvailabilities.getThursdayEnd();
-                if (time.equals(""))
+                if (time.equals("End Time"))
                     time = "23:30";
                 break;
-            case "thursdayend":
+            case "THURSDAY_END":
                 time = weeklyAvailabilities.getThursdayStart();
-                if (time.equals(""))
+                if (time.equals("Start Time"))
                     time = "00:00";
                 break;
-            case "fridaystart":
+            case "FRIDAY_START":
                 time = weeklyAvailabilities.getFridayEnd();
-                if (time.equals(""))
+                if (time.equals("End Time"))
                     time = "23:30";
                 break;
-            case "fridayend":
+            case "FRIDAY_END":
                 time = weeklyAvailabilities.getFridayStart();
-                if (time.equals(""))
+                if (time.equals("Start Time"))
                     time = "00:00";
                 break;
-            case "saturdaystart":
+            case "SATURDAY_START":
                 time = weeklyAvailabilities.getSaturdayEnd();
-                if (time.equals(""))
+                if (time.equals("End Time"))
                     time = "23:30";
                 break;
-            case "saturdayend":
+            case "SATURDAY_END":
                 time = weeklyAvailabilities.getSaturdayStart();
-                if (time.equals(""))
+                if (time.equals("Start Time"))
                     time = "00:00";
                 break;
-            case "sundaystart":
+            case "SUNDAY_START":
                 time = weeklyAvailabilities.getSundayEnd();
-                if (time.equals(""))
+                if (time.equals("End Time"))
                     time = "23:30";
                 break;
-            case "sundayend":
+            case "SUNDAY_END":
                 time = weeklyAvailabilities.getSundayStart();
-                if (time.equals(""))
+                if (time.equals("Start Time"))
                     time = "00:00";
                 break;
         }

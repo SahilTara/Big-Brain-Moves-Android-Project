@@ -17,6 +17,7 @@ public class LoginOrSignUpPresenter extends AccountLoginPresenter {
     }
 
     public void login(String input, String password) {
+        input = input.trim();
 
         if (input.length() == 0) {
             view.displayInvalidUser();

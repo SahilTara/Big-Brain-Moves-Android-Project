@@ -25,5 +25,10 @@ Since there's a min password requirement,
 User: admin  
 password: admin123  
 
+## Service Provider Login 
+You can create your own but the marking scheme requires us to precreate one for you so,
+User: taservicetest
+password: password123
+
 ## This Repo's Link (Useful for TAs)  
 https://github.com/SahilTara/Big-Brain-Moves-Android-Project

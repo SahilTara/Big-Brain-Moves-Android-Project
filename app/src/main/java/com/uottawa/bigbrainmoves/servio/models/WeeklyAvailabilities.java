@@ -1,5 +1,10 @@
 package com.uottawa.bigbrainmoves.servio.models;
 
+import com.google.firebase.database.Exclude;
+import com.uottawa.bigbrainmoves.servio.util.DayOfWeek;
+
+import java.util.Optional;
+
 public class WeeklyAvailabilities {
     private String mondayStart;
     private String mondayEnd;
@@ -17,26 +22,26 @@ public class WeeklyAvailabilities {
     private String sundayEnd;
 
     public WeeklyAvailabilities() {
-        mondayStart = "";
-        mondayEnd = "";
+        mondayStart = "Start Time";
+        mondayEnd = "End Time";
 
-        tuesdayStart = "";
-        tuesdayEnd = "";
+        tuesdayStart = "Start Time";
+        tuesdayEnd = "End Time";
 
-        wednesdayStart = "";
-        wednesdayEnd = "";
+        wednesdayStart = "Start Time";
+        wednesdayEnd = "End Time";
 
-        thursdayStart = "";
-        thursdayEnd = "";
+        thursdayStart = "Start Time";
+        thursdayEnd = "End Time";
 
-        fridayStart = "";
-        fridayEnd = "";
+        fridayStart = "Start Time";
+        fridayEnd = "End Time";
 
-        saturdayStart = "";
-        saturdayEnd = "";
+        saturdayStart = "Start Time";
+        saturdayEnd = "End Time";
 
-        sundayStart = "";
-        sundayEnd = "";
+        sundayStart = "Start Time";
+        sundayEnd = "End Time";
     }
 
     public String getMondayEnd() {
@@ -52,47 +57,47 @@ public class WeeklyAvailabilities {
     }
 
     public String getTuesdayStart() {
-        return tuesdayStart;
+        return tuesdayStart; 
     }
 
     public String getWednesdayEnd() {
-        return wednesdayEnd;
+        return wednesdayEnd; 
     }
 
     public String getWednesdayStart() {
-        return wednesdayStart;
+        return wednesdayStart; 
     }
 
     public String getThursdayEnd() {
-        return thursdayEnd;
+        return thursdayEnd; 
     }
 
     public String getThursdayStart() {
-        return thursdayStart;
+        return thursdayStart; 
     }
 
     public String getFridayStart() {
-        return fridayStart;
+        return fridayStart; 
     }
 
     public String getFridayEnd() {
-        return fridayEnd;
+        return fridayEnd; 
     }
 
     public String getSaturdayEnd() {
-        return saturdayEnd;
+        return saturdayEnd; 
     }
 
     public String getSaturdayStart() {
-        return saturdayStart;
+        return saturdayStart; 
     }
 
     public String getSundayEnd() {
-        return sundayEnd;
+        return sundayEnd; 
     }
 
     public String getSundayStart() {
-        return sundayStart;
+        return sundayStart; 
     }
 
     public void setMondayStart(String mondayStart) {
@@ -149,5 +154,117 @@ public class WeeklyAvailabilities {
 
     public void setSundayEnd(String sundayEnd) {
         this.sundayEnd = sundayEnd;
+    }
+
+    @Exclude
+    public Optional<DayOfWeek> getInvalidTimeSlot() {
+        DayOfWeek invalidDay = null;
+        
+        if (mondayStart.equals("Start Time") ^ mondayEnd.equals("End Time")) {
+            invalidDay = DayOfWeek.MONDAY;
+        } else if (tuesdayStart.equals("Start Time") ^ tuesdayEnd.equals("End Time")) {
+            invalidDay = DayOfWeek.TUESDAY;
+        } else if (wednesdayStart.equals("Start Time") ^ wednesdayEnd.equals("End Time")) {
+            invalidDay = DayOfWeek.WEDNESDAY;
+        } else if (thursdayStart.equals("Start Time") ^ thursdayEnd.equals("End Time")) {
+            invalidDay = DayOfWeek.THURSDAY;
+        } else if (fridayStart.equals("Start Time") ^ fridayEnd.equals("End Time")) {
+            invalidDay = DayOfWeek.FRIDAY;
+        } else if (saturdayStart.equals("Start Time") ^ saturdayEnd.equals("End Time")) {
+            invalidDay = DayOfWeek.SATURDAY;
+        } else if (sundayStart.equals("Start Time") ^ sundayEnd.equals("End Time")) {
+            invalidDay = DayOfWeek.SUNDAY;
+        }
+        
+        return Optional.ofNullable(invalidDay);
+    }
+
+    public enum TimeSlot {
+        MONDAY_START {
+            @Override
+            public String getMethodName() {
+                return "setMondayStart";
+            }
+        },
+        MONDAY_END {
+            @Override
+            public String getMethodName() {
+                return "setMondayEnd";
+            }
+        },
+        TUESDAY_START {
+            @Override
+            public String getMethodName() {
+                return "setTuesdayStart";
+            }
+        },
+        TUESDAY_END {
+            @Override
+            public String getMethodName() {
+                return "setTuesdayEnd";
+            }
+        },
+        WEDNESDAY_START {
+            @Override
+            public String getMethodName() {
+                return "setWednesdayStart";
+            }
+        },
+        WEDNESDAY_END {
+            @Override
+            public String getMethodName() {
+                return "setWednesdayEnd";
+            }
+        },
+        THURSDAY_START {
+            @Override
+            public String getMethodName() {
+                return "setThursdayStart";
+            }
+        },
+        THURSDAY_END {
+            @Override
+            public String getMethodName() {
+                return "setThursdayEnd";
+            }
+        },
+        FRIDAY_START {
+            @Override
+            public String getMethodName() {
+                return "setFridayStart";
+            }
+        },
+        FRIDAY_END {
+            @Override
+            public String getMethodName() {
+                return "setFridayEnd";
+            }
+        },
+        SATURDAY_START {
+            @Override
+            public String getMethodName() {
+                return "setSaturdayStart";
+            }
+        },
+        SATURDAY_END {
+            @Override
+            public String getMethodName() {
+                return "setSaturdayEnd";
+            }
+        },
+        SUNDAY_START {
+            @Override
+            public String getMethodName() {
+                return "setSundayStart";
+            }
+        },
+        SUNDAY_END {
+            @Override
+            public String getMethodName() {
+                return "setSundayEnd";
+            }
+        };
+
+        public abstract String getMethodName();
     }
 }
