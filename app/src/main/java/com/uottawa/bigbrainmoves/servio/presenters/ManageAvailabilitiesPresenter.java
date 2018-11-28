@@ -84,7 +84,7 @@ public class ManageAvailabilitiesPresenter {
             Method setter = weeklyAvailabilities.getClass().getMethod(timeSlot.getMethodName(), String.class);
             setter.invoke(weeklyAvailabilities, time);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            //TODO: DONT SWALLOW LATER!.
+
         }
     }
 
@@ -104,17 +104,17 @@ public class ManageAvailabilitiesPresenter {
 
     /**
      * gets the start or end time restriction of the day depending on the id passed.
-     * @param id
+     * @param id the time slot about to be selected.
      * @return a Pair containing the time as a string and whether it or not it is a start restriction.
      */
     public Pair<String, Boolean> getTimeRestriction(String id) {
         ServiceProvider provider = (ServiceProvider) CurrentAccount.getInstance().getCurrentAccount();
         WeeklyAvailabilities weeklyAvailabilities = provider.getAvailabilities();
         String time = "";
-        String compare = id;
-        boolean isStart = !compare.toLowerCase().contains("start");
 
-        switch (compare) {
+        boolean isStart = !id.toLowerCase().contains("start");
+
+        switch (id) {
             case "MONDAY_START":
                 time = weeklyAvailabilities.getMondayEnd();
                 if (time.equals("End Time"))

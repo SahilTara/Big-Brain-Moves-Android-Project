@@ -49,46 +49,40 @@ public class ServiceTypeListAdapter extends RecyclerView.Adapter<ServiceTypeList
 
         viewHolder.parentLayout.setOnClickListener((view) -> {
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
-            alertBuilder.setTitle(serviceType.getType()).setPositiveButton("Edit Value", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle(serviceType.getType());
+            alertBuilder.setTitle(serviceType.getType()).setPositiveButton("Edit Value", (dialog, which) -> {
+                dialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(serviceType.getType());
 
-                    final EditText input = new EditText(context);
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                    builder.setView(input);
+                final EditText input = new EditText(context);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                builder.setView(input);
 
-                    builder.setPositiveButton("OK", (dialog1, which1) -> {
-                        String result = input.getText().toString();
-                        try {
-                            double val = Double.valueOf(result);
-                            if (val <= Double.valueOf("1.7E308")) {
-                                val = Math.round(val * 100.0) / 100.0;
-                                repository.editServiceType(serviceType.getType(), val);
-                                Toast.makeText(context,
-                                        "Value of service type successfully changed",
-                                        Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(context, "Value must be less than or equal to 1.7*10^308", Toast.LENGTH_LONG).show();
+                builder.setPositiveButton("OK", (dialog1, which1) -> {
+                    String result = input.getText().toString();
+                    try {
+                        double val = Double.valueOf(result);
+                        if (val <= Double.valueOf("1.7E308")) {
+                            val = Math.round(val * 100.0) / 100.0;
+                            repository.editServiceType(serviceType.getType(), val);
+                            Toast.makeText(context,
+                                    "Value of service type successfully changed",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, "Value must be less than or equal to 1.7*10^308", Toast.LENGTH_LONG).show();
 
-                            }
-                        } catch (NumberFormatException e) {
-                            Toast.makeText(context, "Value must be non blank.", Toast.LENGTH_LONG).show();
                         }
-                        dialog1.dismiss();
-                    });
-                    builder.setNegativeButton("Cancel", (dialog12, which12) -> dialog12.cancel());
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(context, "Value must be non blank.", Toast.LENGTH_LONG).show();
+                    }
+                    dialog1.dismiss();
+                });
+                builder.setNegativeButton("Cancel", (dialog12, which12) -> dialog12.cancel());
 
-                    builder.show();
-                }
-            }).setNegativeButton("Delete Service Type", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    repository.deleteServiceType(serviceType.getType());
-                    dialog.dismiss();
-                }
+                builder.show();
+            }).setNegativeButton("Delete Service Type", (dialog, which) -> {
+                repository.deleteServiceType(serviceType.getType());
+                dialog.dismiss();
             }).show();
         });
     }

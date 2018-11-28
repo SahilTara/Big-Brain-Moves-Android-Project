@@ -8,7 +8,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.uottawa.bigbrainmoves.servio.R;
 import com.uottawa.bigbrainmoves.servio.models.Account;

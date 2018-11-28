@@ -42,5 +42,12 @@ public enum DayOfWeek {
         public String toString() {
             return "Sunday";
         }
+    },
+    ANY {
+        @Override
+        public String toString() {
+            return "Any";
+        }
     }
+
 }

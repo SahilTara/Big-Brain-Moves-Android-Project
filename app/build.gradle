@@ -1,3 +1,7 @@
+plugins {
+    id "org.sonarqube" version "2.6"
+}
+
 apply plugin: 'com.android.application'
 
 android {
@@ -28,9 +32,11 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.google.firebase:firebase-auth:16.0.5'
-    implementation 'com.google.firebase:firebase-database:16.0.4'
+    implementation 'com.google.firebase:firebase-database:16.0.5'
     implementation 'com.jaredrummler:material-spinner:1.2.5'
     implementation "io.reactivex.rxjava2:rxjava:2.2.3"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+
 
     testImplementation "org.powermock:powermock-module-junit4:2.0.0-RC.3"
     testImplementation "org.powermock:powermock-module-junit4-rule:2.0.0-RC.3"
@@ -47,6 +53,8 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.github.dmytrodanylyk.android-process-button:library:1.0.4'
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.github.pchmn:MaterialChipsInput:1.0.8'
+
 }
 apply plugin: 'com.google.gms.google-services'
 

@@ -20,10 +20,26 @@
         app:layout_constraintTop_toBottomOf="@+id/welcomeMessageText">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFindServices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onFindServicesClick"
+            android:text="Find Services" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewBookings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onSignOutClick"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:text="View Bookings" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onSignOutClick"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:text="Sign Out" />
     </LinearLayout>
 

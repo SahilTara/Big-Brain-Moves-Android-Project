@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:orientation="vertical"
+    tools:context=".activities.FindServicesActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.pchmn.materialchips.ChipsInput
+            android:id="@+id/searchBar"
+            android:layout_width="220dp"
+            android:layout_height="50dp"
+            app:hint="Enter a Service Name"></com.pchmn.materialchips.ChipsInput>
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="onFilterClick"
+            android:text="Filter"
+            app:icon="@drawable/ic_filter_list_24dp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/filteredServicesRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

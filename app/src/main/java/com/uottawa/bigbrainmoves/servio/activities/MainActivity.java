@@ -24,6 +24,11 @@ public class MainActivity extends AppCompatActivity implements MainView {
         presenter.showWelcomeMessage();
     }
 
+    public void onFindServicesClick(View view) {
+        Intent intent = new Intent(getApplicationContext(), FindServicesActivity.class);
+        startActivity(intent);
+    }
+
     public void onSignOutClick(View view) {
         presenter.signOut();
     }

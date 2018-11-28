@@ -1,10 +1,12 @@
 package com.uottawa.bigbrainmoves.servio.models;
 
 
+import java.util.Objects;
+
 public class ServiceType {
     // NEED TO BE PUBLIC FOR FIREBASE
-    public String type; // type of service plumber, washer, etc...
-    public double rate;
+    private String type; // type of service plumber, washer, etc...
+    private double rate;
 
     public ServiceType() {
         // Needed for DB
@@ -27,5 +29,10 @@ public class ServiceType {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type);
     }
 }

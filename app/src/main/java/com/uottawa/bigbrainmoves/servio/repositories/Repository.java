@@ -7,6 +7,7 @@ import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.SignupResult;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,11 +36,14 @@ public interface Repository {
 
     Observable<List<Service>> getServicesProvidable(List<String> provided);
 
+    Observable<Pair<Service, Boolean>> listenForServiceChanges();
+
     Observable<Boolean> saveProfile(String phoneNumber,
                                     String address, String companyName,
                                     String description, boolean isLicensed,
                                     List<Service> modified);
 
     Observable<Optional<WeeklyAvailabilities>> getAvailabilities();
+    Observable<HashMap<String, WeeklyAvailabilities>> getAllAvailabilities();
     void setAvailabilities(WeeklyAvailabilities availabilities);
 }

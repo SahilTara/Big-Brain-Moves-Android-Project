@@ -4,7 +4,6 @@ import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -71,12 +70,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         userText.setOnFocusChangeListener(this::setFocus);
         passwordText.setOnFocusChangeListener(this::setFocus);
 
-        spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-
-            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                typeSelected = item;
-                signUpButton.setProgress(0);
-            }
+        spinner.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
+            typeSelected = item;
+            signUpButton.setProgress(0);
         });
     }
 

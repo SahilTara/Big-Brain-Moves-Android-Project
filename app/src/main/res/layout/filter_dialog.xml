@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:layout_margin="8dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/ratingTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Minimum Rating"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="18sp" />
+
+    <RatingBar
+        android:id="@+id/filterByStars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:numStars="5"
+        android:rating="0"
+        android:stepSize="1" />
+
+    <TextView
+        android:id="@+id/startTimeTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Preferred Start Time"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="18sp"
+        android:visibility="visible" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSetStartTime"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Any Time"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:visibility="visible"
+        app:icon="@drawable/ic_access_time_black_24dp" />
+
+    <TextView
+        android:id="@+id/pickDayOfWeekTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal"
+        android:text="Day of Week"
+        android:textSize="18sp" />
+
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/spinnerChooseDayOfWeek"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="6dp"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
+

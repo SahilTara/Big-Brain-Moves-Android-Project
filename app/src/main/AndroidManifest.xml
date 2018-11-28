@@ -27,7 +27,9 @@
         <activity android:name=".activities.ManageServiceTypesActivity" />
         <activity android:name=".activities.CreateServiceTypeActivity" />
         <activity android:name=".activities.ViewProfileActivity" />
-        <activity android:name=".activities.ManageAvailabilitiesActivity"></activity>
+        <activity android:name=".activities.ManageAvailabilitiesActivity" />
+        <activity android:name=".activities.FindServicesActivity" />
+        <activity android:name=".activities.ViewServiceActivity"></activity>
     </application>
 
 </manifest>

@@ -129,8 +129,8 @@ public class ViewProfilePresenter {
             for (Service service : services) {
                 if (!service.isOffered()) {
                     Service s = new Service(service.getType(),
-                            service.getRating(),
-                            service.getServiceProviderUser(), true, false);
+                            service.getServiceProviderUser(), service.getServiceProviderName(), 0,
+                            0, true, false);
                     s.setOffered(true);
                     modified.add(s);
                 }

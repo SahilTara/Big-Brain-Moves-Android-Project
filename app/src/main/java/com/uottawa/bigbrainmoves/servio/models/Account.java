@@ -2,10 +2,9 @@ package com.uottawa.bigbrainmoves.servio.models;
 
 
 public class Account {
-    // These need to be public for Fire base.
-    public String displayName;
-    public String type;
-    public String username;
+    private String displayName;
+    private String type;
+    private String username;
 
     public Account() {
         // Needed for DB

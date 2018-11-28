@@ -12,7 +12,6 @@ import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.R;
 import com.uottawa.bigbrainmoves.servio.views.MainView;
-import com.uottawa.bigbrainmoves.servio.views.ViewProfileView;
 
 public class ServiceMainActivity extends AppCompatActivity implements MainView  {
     private MainScreenPresenter presenter;

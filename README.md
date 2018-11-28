@@ -14,6 +14,8 @@ https://github.com/jaredrummler/MaterialSpinner
 https://github.com/ReactiveX/RxJava  
 https://github.com/dmytrodanylyk/android-process-button  
 https://github.com/wdullaer/MaterialDateTimePicker  
+https://github.com/pchmn/MaterialChipsInput  
+https://github.com/ReactiveX/RxAndroid  
 
 ### Pretty standard  
 https://github.com/powermock/powermock  
