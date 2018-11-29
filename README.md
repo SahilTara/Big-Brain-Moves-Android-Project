@@ -1,6 +1,10 @@
 # Big-Brain-Moves-Android-Project
 Seg 2105 Project -- For team Big Brain Moves  
 
+## Build Status  
+[![CircleCI](https://circleci.com/gh/SahilTara/Big-Brain-Moves-Android-Project.svg?style=svg&circle-token=39204e66d1002fe2c48cb5a6ca62a7a782dc6632)](https://circleci.com/gh/SahilTara/Big-Brain-Moves-Android-Project)  
+
+## Contributers  
 Elliott Barbeau - 300005672  
 Declan McMullen - 300006557  
 Sahil Tara - 300018569  
