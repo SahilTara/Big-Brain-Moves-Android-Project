@@ -13,7 +13,9 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class ManageAvailabilitiesPresenter {
 
@@ -66,7 +68,10 @@ public class ManageAvailabilitiesPresenter {
                 disposable = null;
             }
         };
-        repository.getAvailabilities().subscribe(observer);
+        repository.getAvailabilities()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
 
@@ -84,7 +89,7 @@ public class ManageAvailabilitiesPresenter {
             Method setter = weeklyAvailabilities.getClass().getMethod(timeSlot.getMethodName(), String.class);
             setter.invoke(weeklyAvailabilities, time);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-
+            // TODO: STOP SWALLOWING
         }
     }
 

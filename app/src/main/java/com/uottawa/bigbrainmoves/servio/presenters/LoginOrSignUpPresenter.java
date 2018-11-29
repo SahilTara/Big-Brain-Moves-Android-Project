@@ -4,7 +4,9 @@ import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.LoginOrSignUpView;
 
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class LoginOrSignUpPresenter extends AccountLoginPresenter {
     private LoginOrSignUpView view;
@@ -62,7 +64,10 @@ public class LoginOrSignUpPresenter extends AccountLoginPresenter {
             }
         };
 
-        repository.login(input, password).subscribe(booleanObserver);
+        repository.login(input, password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(booleanObserver);
     }
 
 

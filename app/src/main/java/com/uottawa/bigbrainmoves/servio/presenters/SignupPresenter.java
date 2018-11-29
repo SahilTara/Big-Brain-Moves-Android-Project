@@ -8,7 +8,9 @@ import com.uottawa.bigbrainmoves.servio.views.SignUpView;
 import java.util.regex.Pattern;
 
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class SignupPresenter extends  AccountLoginPresenter {
     private final SignUpView view;
@@ -91,7 +93,10 @@ public class SignupPresenter extends  AccountLoginPresenter {
                                                  username,
                                                  password,
                                                  displayName,
-                                                 typeSelected).subscribe(signupObserver);
+                                                 typeSelected)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(signupObserver);
         }
     }
 
@@ -128,6 +133,9 @@ public class SignupPresenter extends  AccountLoginPresenter {
             }
         };
 
-        repository.doesAdminAccountExist().subscribe(booleanObserver);
+        repository.doesAdminAccountExist()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(booleanObserver);
     }
 }

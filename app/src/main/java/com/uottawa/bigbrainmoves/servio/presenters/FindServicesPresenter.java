@@ -13,7 +13,9 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class FindServicesPresenter {
     private final FindServicesView view;
@@ -59,7 +61,10 @@ public class FindServicesPresenter {
                 disposable = null;
             }
         };
-        repository.listenForServiceTypeChanges().subscribe(resultObserver);
+        repository.listenForServiceTypeChanges()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(resultObserver);
     }
 
     public void listenForServiceChanges() {
@@ -93,7 +98,10 @@ public class FindServicesPresenter {
             }
         };
 
-        repository.listenForServiceChanges().subscribe(resultObserver);
+        repository.listenForServiceChanges()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(resultObserver);
     }
 
     public void filterList(List<Service> services) {
@@ -164,7 +172,10 @@ public class FindServicesPresenter {
             }
         };
 
-        repository.getAllAvailabilities().subscribe(hashmapObserver);
+        repository.getAllAvailabilities()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(hashmapObserver);
     }
 
     private boolean checkDayOfWeekAvailable(DayOfWeek dayOfWeek, WeeklyAvailabilities availabilities) {
@@ -259,6 +270,4 @@ public class FindServicesPresenter {
         }
         filterList(services);
     }
-
-
 }

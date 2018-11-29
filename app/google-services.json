@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "224585205287",
-    "firebase_url": "https://bigbrainmovesservio.firebaseio.com",
-    "project_id": "bigbrainmovesservio",
-    "storage_bucket": "bigbrainmovesservio.appspot.com"
+    "project_number": "1013563648409",
+    "firebase_url": "https://servio-dev-e62c9.firebaseio.com",
+    "project_id": "servio-dev-e62c9",
+    "storage_bucket": "servio-dev-e62c9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:224585205287:android:6953eac4da83db73",
+        "mobilesdk_app_id": "1:1013563648409:android:6953eac4da83db73",
         "android_client_info": {
           "package_name": "com.uottawa.bigbrainmoves.servio"
         }
       },
       "oauth_client": [
         {
-          "client_id": "224585205287-3q6mv8ot3dlrbr4lr8dp063upe88k4jd.apps.googleusercontent.com",
+          "client_id": "1013563648409-reu9omcrbs2aqlfp3n99e3ub8ukijh8i.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDkzxayXTn8RFNq0b0U8_M2GaPTyReNFHk"
+          "current_key": "AIzaSyCDakzyUhZfdXBsQY-OgrwGCZgJedN5Xm0"
         }
       ],
       "services": {

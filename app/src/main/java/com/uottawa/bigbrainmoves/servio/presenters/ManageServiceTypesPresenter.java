@@ -6,7 +6,9 @@ import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.views.ManageServiceTypesView;
 
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class ManageServiceTypesPresenter {
     private ManageServiceTypesView view;
@@ -45,6 +47,9 @@ public class ManageServiceTypesPresenter {
                 disposable = null;
             }
         };
-        repository.listenForServiceTypeChanges().subscribe(resultObserver);
+        repository.listenForServiceTypeChanges()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(resultObserver);
     }
 }

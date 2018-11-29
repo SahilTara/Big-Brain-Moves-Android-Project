@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class ViewProfilePresenter {
     private final ViewProfileView view;
@@ -84,7 +86,10 @@ public class ViewProfilePresenter {
                     strings.add(s.getType());
                 }
 
-                repository.getServicesProvidable(strings).subscribe(providableObserver);
+                repository.getServicesProvidable(strings)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(providableObserver);
             }
 
             @Override
@@ -101,7 +106,10 @@ public class ViewProfilePresenter {
             }
         };
 
-        repository.getServicesProvidedByCurrentUser().subscribe(providedObserver);
+        repository.getServicesProvidedByCurrentUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(providedObserver);
 
 
     }
@@ -185,6 +193,8 @@ public class ViewProfilePresenter {
             };
 
             repository.saveProfile(phoneNumber, address, companyName, description, isLicensed, modified)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(saveObserver);
 
         }

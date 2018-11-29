@@ -559,24 +559,7 @@ public class DbHandler implements Repository {
                 myRef.child(SERVICE_TYPES).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (subscriber.isDisposed())
-                            return;
-                        // We have some services in the database for the user
-                        if (dataSnapshot.exists()) {
-                            ArrayList<String> serviceTypes = new ArrayList<>();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                ServiceType serviceType = snapshot.getValue(ServiceType.class);
-                                if (serviceType != null) {
-                                    serviceTypes.add(serviceType.getType());
-                                }
-                            }
-                            subscriber.onNext(serviceTypes);
-                            subscriber.onComplete();
-                        } else {
-                            // deal with no services case
-                            subscriber.onNext(Collections.emptyList());
-                            subscriber.onComplete();
-                        }
+                        getAllGenericOnDataChange(dataSnapshot, subscriber, ServiceType.class, String.class);
                     }
 
                     @Override // Only really called when the database doesn't give enough permissions.
@@ -588,10 +571,40 @@ public class DbHandler implements Repository {
         }));
     }
 
-    public <K, V> void getAllGenericOnDataChange(DataSnapshot dataSnapshot,
+    /**
+     * Generic on data change method for getting all instances of a certain type from the database.
+     * @param dataSnapshot firebase datasnapshot of the results where the instances live.
+     * @param subscriber the rxjava emitter.
+     * @param classToGetFromFireBase the way the data is stored in the database at that node.
+     * @param classToReturn the form you would like it in (if possible).
+     * @param <K> the type of the form you would like it in (returned as a list of this).
+     * @param <V> the type the data is stored as in the database.
+     */
+    private <K, V> void getAllGenericOnDataChange(DataSnapshot dataSnapshot,
                                                  ObservableEmitter<List<K>> subscriber,
-                                                 Class<V> temp) {
-
+                                                 Class<V> classToGetFromFireBase, Class<K> classToReturn) {
+        if (subscriber.isDisposed())
+            return;
+        // We have some services in the database for the user
+        if (dataSnapshot.exists()) {
+            ArrayList<K> elements = new ArrayList<>();
+            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                V element = snapshot.getValue(classToGetFromFireBase);
+                if (element != null) {
+                    if (element instanceof ServiceType) {
+                        elements.add(classToReturn.cast(((ServiceType) element).getType()));
+                    } else {
+                        elements.add(classToReturn.cast(element));
+                    }
+                }
+            }
+            subscriber.onNext(elements);
+            subscriber.onComplete();
+        } else {
+            // deal with no services case
+            subscriber.onNext(Collections.emptyList());
+            subscriber.onComplete();
+        }
     }
     /**
      * Gets all active services provided by the current user in the database.
@@ -607,25 +620,7 @@ public class DbHandler implements Repository {
                 .equalTo(username + String.valueOf(true) + false).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (subscriber.isDisposed())
-                            return;
-
-                        // We have some services in the database for the user
-                        if (dataSnapshot.exists()) {
-                            ArrayList<Service> services = new ArrayList<>();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                Service service = snapshot.getValue(Service.class);
-                                if (service != null) {
-                                    services.add(service);
-                                }
-                            }
-                            subscriber.onNext(services);
-                            subscriber.onComplete();
-                        } else {
-                            // deal with no services case
-                            subscriber.onNext(Collections.emptyList());
-                            subscriber.onComplete();
-                        }
+                        getAllGenericOnDataChange(dataSnapshot, subscriber, Service.class, Service.class);
                     }
 
                     @Override // Only really called when the database doesn't give enough permissions.

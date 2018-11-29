@@ -7,7 +7,9 @@ import com.uottawa.bigbrainmoves.servio.views.UserListView;
 import java.util.List;
 
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class UserListPresenter {
     private final UserListView view;
@@ -49,6 +51,9 @@ public class UserListPresenter {
                 disposable = null;
             }
         };
-        repository.getAllUsersFromDataBase().subscribe(listObserver);
+        repository.getAllUsersFromDataBase()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listObserver);
     }
 }

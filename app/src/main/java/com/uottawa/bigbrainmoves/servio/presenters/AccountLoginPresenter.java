@@ -8,7 +8,9 @@ import com.uottawa.bigbrainmoves.servio.views.AccountLoginView;
 import java.util.Optional;
 
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class AccountLoginPresenter {
     private final AccountLoginView view;
@@ -75,7 +77,10 @@ public class AccountLoginPresenter {
         };
 
         // subscribe to the getUserFromDatabaseMethod.
-        repository.getUserFromDataBase(uid).subscribe(accountObserver);
+        repository.getUserFromDataBase(uid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(accountObserver);
 
     }
 }

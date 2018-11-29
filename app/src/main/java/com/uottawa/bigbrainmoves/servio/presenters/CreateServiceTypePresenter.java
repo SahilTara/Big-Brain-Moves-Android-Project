@@ -4,7 +4,9 @@ import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.CreateServiceTypeView;
 
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class CreateServiceTypePresenter {
 
@@ -61,7 +63,10 @@ public class CreateServiceTypePresenter {
                         disposable = null;
                     }
                 };
-                repository.createServiceTypeIfNotInDatabase(name, val).subscribe(booleanObserver);
+                repository.createServiceTypeIfNotInDatabase(name, val)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(booleanObserver);
             }
         } catch (NumberFormatException e) {
             view.displayInvalidValue();
