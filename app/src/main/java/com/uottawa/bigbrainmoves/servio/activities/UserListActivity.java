@@ -11,7 +11,7 @@ import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.presenters.UserListPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
-import com.uottawa.bigbrainmoves.servio.util.AccountListAdapter;
+import com.uottawa.bigbrainmoves.servio.util.adapters.AccountListAdapter;
 import com.uottawa.bigbrainmoves.servio.views.UserListView;
 
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.uottawa.bigbrainmoves.servio.models;
 
 import com.google.firebase.database.Exclude;
+import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +24,10 @@ public class ServiceProvider extends Account {
 
     }
 
-    public ServiceProvider(String displayName, String type, String username,
+    public ServiceProvider(String displayName, String username,
                            String phoneNumber, String address, String companyName,
                            String description, boolean isLicensed) {
-        super(displayName, type, username);
+        super(displayName, AccountType.SERVICE_PROVIDER, username);
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.companyName = companyName;

@@ -13,7 +13,7 @@ import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.presenters.ManageAvailabilitiesPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
-import com.uottawa.bigbrainmoves.servio.util.DayOfWeek;
+import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.views.ManageAvailabilitiesView;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;

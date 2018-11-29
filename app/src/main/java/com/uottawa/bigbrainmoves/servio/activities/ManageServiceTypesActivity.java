@@ -13,7 +13,7 @@ import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.presenters.ManageServiceTypesPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
-import com.uottawa.bigbrainmoves.servio.util.ServiceTypeListAdapter;
+import com.uottawa.bigbrainmoves.servio.util.adapters.ServiceTypeListAdapter;
 import com.uottawa.bigbrainmoves.servio.views.ManageServiceTypesView;
 
 import java.util.ArrayList;

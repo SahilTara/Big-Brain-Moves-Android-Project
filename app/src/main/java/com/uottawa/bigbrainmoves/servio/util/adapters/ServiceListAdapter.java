@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio.util;
+package com.uottawa.bigbrainmoves.servio.util.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import com.uottawa.bigbrainmoves.servio.R;
 import com.uottawa.bigbrainmoves.servio.models.Service;
-import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
-import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 
 import java.util.ArrayList;
 import java.util.List;

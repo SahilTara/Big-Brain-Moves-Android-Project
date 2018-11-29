@@ -14,8 +14,8 @@ import com.uottawa.bigbrainmoves.servio.models.Service;
 import com.uottawa.bigbrainmoves.servio.presenters.ViewProfilePresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
-import com.uottawa.bigbrainmoves.servio.util.ServicesOfferableListAdapter;
-import com.uottawa.bigbrainmoves.servio.util.ServicesOfferedListAdapter;
+import com.uottawa.bigbrainmoves.servio.util.adapters.ServicesOfferableListAdapter;
+import com.uottawa.bigbrainmoves.servio.util.adapters.ServicesOfferedListAdapter;
 import com.uottawa.bigbrainmoves.servio.views.ViewProfileView;
 
 import java.util.ArrayList;

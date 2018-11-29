@@ -1,8 +1,10 @@
 package com.uottawa.bigbrainmoves.servio.presenters;
 
 
+import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
-import com.uottawa.bigbrainmoves.servio.util.SignupResult;
+import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
+import com.uottawa.bigbrainmoves.servio.util.enums.SignupResult;
 import com.uottawa.bigbrainmoves.servio.views.SignUpView;
 
 import java.util.regex.Pattern;
@@ -36,7 +38,7 @@ public class SignupPresenter extends  AccountLoginPresenter {
                               String username,
                               String password,
                               String displayName,
-                              String typeSelected) {
+                              AccountType typeSelected) {
 
         if (!EMAIL_ADDRESS.matcher(email).matches()) {
             view.displayInvalidEmail();
@@ -48,7 +50,7 @@ public class SignupPresenter extends  AccountLoginPresenter {
             view.displayInvalidUserNameAlphanumeric();
         } else if (!password.matches("^(?=\\S+$).{6,}$")) {
             view.displayInvalidPassword();
-        } else if (typeSelected.equals("")) {
+        } else if (typeSelected.equals(AccountType.NONE)) {
             view.displayInvalidType();
         } else {
             Observer<SignupResult> signupObserver = new Observer<SignupResult>() {

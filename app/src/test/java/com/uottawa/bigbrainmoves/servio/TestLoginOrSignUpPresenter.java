@@ -4,6 +4,7 @@ import com.uottawa.bigbrainmoves.servio.presenters.LoginOrSignUpPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.LoginOrSignUpView;
 
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,8 +27,12 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestLoginOrSignUpPresenter {
+    @ClassRule
+    public static final RxJavaSchedulerRule schedulers = new RxJavaSchedulerRule();
+
     @Mock
     private Repository repository;
+
     @Mock
     private LoginOrSignUpView view;
 
@@ -36,8 +41,6 @@ public class TestLoginOrSignUpPresenter {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
-
-
 
     private final String user = "Test";
     private final String password = "Test";

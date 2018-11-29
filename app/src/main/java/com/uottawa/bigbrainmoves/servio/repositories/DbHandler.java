@@ -17,9 +17,8 @@ import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
-import com.uottawa.bigbrainmoves.servio.util.SignupResult;
-
-import org.reactivestreams.Subscriber;
+import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
+import com.uottawa.bigbrainmoves.servio.util.enums.SignupResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -200,7 +199,7 @@ public class DbHandler implements Repository {
 
                             Account account = dataSnapshot.getValue(Account.class);
 
-                            if (account.getType().equalsIgnoreCase("service")) {
+                            if (account.getType().equals(AccountType.SERVICE_PROVIDER)) {
                                 account = dataSnapshot.getValue(ServiceProvider.class);
                             }
 
@@ -238,17 +237,16 @@ public class DbHandler implements Repository {
                                                    final String username,
                                                    final String password,
                                                    final String displayName,
-                                                   final String type) {
+                                                   final AccountType type) {
         return Observable.create(subscriber -> mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in account's information
                         Account account;
 
-                        // TODO: REPLACE WITH ENUM LATER
-                        if (type.equalsIgnoreCase("service")) {
+                        if (type.equals(AccountType.SERVICE_PROVIDER)) {
                             // Service Provider class polymorphically created.
-                            account = new ServiceProvider(displayName, type, username,
+                            account = new ServiceProvider(displayName, username,
                                     "", "", "",
                                     "", false);
                         } else {
@@ -331,7 +329,7 @@ public class DbHandler implements Repository {
                                                               final String username,
                                                               final String password,
                                                               final String displayName,
-                                                              final String typeSelected) {
+                                                              final AccountType typeSelected) {
         return Observable.create(subscriber -> {
             // We make sure that a user does not exist with this username.
             // We will return true if the user exists, false otherwise in this observer.
@@ -727,7 +725,6 @@ public class DbHandler implements Repository {
                                            List<Service> modified) {
         Account account = CurrentAccount.getInstance().getCurrentAccount();
         String displayName = account.getDisplayName();
-        String type = account.getType();
         String username = account.getUsername();
 
         HashMap<String, Object> updateMap = new HashMap<>();
@@ -739,7 +736,7 @@ public class DbHandler implements Repository {
 
         // specify the user to be updated
         updateMap.put(ACCOUNT_INFO + "/" + getUserId(),
-                new ServiceProvider(displayName, type, username, phoneNumber, address, companyName,
+                new ServiceProvider(displayName, username, phoneNumber, address, companyName,
                         description, isLicensed));
 
         return Observable.create(subscriber ->

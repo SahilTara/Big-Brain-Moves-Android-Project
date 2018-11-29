@@ -2,10 +2,12 @@ package com.uottawa.bigbrainmoves.servio;
 
 import com.uottawa.bigbrainmoves.servio.presenters.SignupPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
-import com.uottawa.bigbrainmoves.servio.util.SignupResult;
+import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
+import com.uottawa.bigbrainmoves.servio.util.enums.SignupResult;
 import com.uottawa.bigbrainmoves.servio.views.SignUpView;
 
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ import org.mockito.junit.MockitoRule;
 
 import io.reactivex.Observable;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -24,6 +27,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestSignUpPresenter {
+    @ClassRule
+    public static final RxJavaSchedulerRule schedulers = new RxJavaSchedulerRule();
 
     @Mock
     private SignUpView view;
@@ -49,8 +54,8 @@ public class TestSignUpPresenter {
     private static final String DISPLAY_NAME = "Test Ing";
     private static final String INVALID_DISPLAY_NAME = "TESTING4832";
 
-    private static final String TYPE = "home";
-    private static final String INVALID_TYPE = "";
+    private static final AccountType TYPE = AccountType.HOME_OWNER;
+    private static final AccountType INVALID_TYPE = AccountType.NONE;
 
     @Before
     public void setup() {
@@ -140,7 +145,7 @@ public class TestSignUpPresenter {
                 anyString(),
                 anyString(),
                 anyString(),
-                anyString())).thenReturn(Observable.create(subscriber -> {
+                any(AccountType.class))).thenReturn(Observable.create(subscriber -> {
             subscriber.onError(new Exception("Test"));
         }));
         presenter.createAccount(EMAIL, USER, PASSWORD, DISPLAY_NAME, TYPE);
@@ -163,7 +168,7 @@ public class TestSignUpPresenter {
                 anyString(),
                 anyString(),
                 anyString(),
-                anyString())).thenReturn(Observable.create(subscriber -> {
+                any(AccountType.class))).thenReturn(Observable.create(subscriber -> {
             subscriber.onNext(SignupResult.USERNAME_TAKEN);
             subscriber.onComplete();
         }));
@@ -187,7 +192,7 @@ public class TestSignUpPresenter {
                 anyString(),
                 anyString(),
                 anyString(),
-                anyString())).thenReturn(Observable.create(subscriber -> {
+                any(AccountType.class))).thenReturn(Observable.create(subscriber -> {
             subscriber.onNext(SignupResult.EMAIL_TAKEN);
             subscriber.onComplete();
         }));
@@ -211,7 +216,7 @@ public class TestSignUpPresenter {
                 anyString(),
                 anyString(),
                 anyString(),
-                anyString())).thenReturn(Observable.create(subscriber -> {
+                any(AccountType.class))).thenReturn(Observable.create(subscriber -> {
             subscriber.onNext(SignupResult.ACCOUNT_CREATED);
             subscriber.onComplete();
         }));

@@ -1,7 +1,7 @@
-package com.uottawa.bigbrainmoves.servio.util;
+package com.uottawa.bigbrainmoves.servio.util.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;

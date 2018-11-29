@@ -21,7 +21,6 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestServiceProviderRecyclerPresenter {
-
     @Mock
     private ServiceProviderRecyclerView first;
     @Mock

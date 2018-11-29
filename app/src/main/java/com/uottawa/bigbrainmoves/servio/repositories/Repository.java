@@ -5,7 +5,8 @@ import com.uottawa.bigbrainmoves.servio.models.Service;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
-import com.uottawa.bigbrainmoves.servio.util.SignupResult;
+import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
+import com.uottawa.bigbrainmoves.servio.util.enums.SignupResult;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,7 @@ public interface Repository {
                                                        final String username,
                                                        final String password,
                                                        final String displayName,
-                                                       final String typeSelected);
+                                                       final AccountType typeSelected);
     Observable<Boolean> doesAdminAccountExist();
     boolean checkIfUserIsLoggedIn();
     String getUserId();

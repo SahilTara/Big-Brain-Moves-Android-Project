@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio.util;
+package com.uottawa.bigbrainmoves.servio.util.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

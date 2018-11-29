@@ -4,6 +4,7 @@ import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.presenters.MainScreenPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
+import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
 import com.uottawa.bigbrainmoves.servio.views.MainView;
 
 import org.junit.Rule;
@@ -59,7 +60,7 @@ public class TestMainScreenPresenter {
         when(CurrentAccount.getInstance())
                 .thenReturn(currentAccount);
         when(currentAccount.getCurrentAccount())
-                .thenReturn(new Account("Test", "Test", "Test"));
+                .thenReturn(new Account("Test", AccountType.ADMIN, "Test"));
 
         presenter.showWelcomeMessage();
 

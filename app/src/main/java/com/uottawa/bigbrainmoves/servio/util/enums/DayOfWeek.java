@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio.util;
+package com.uottawa.bigbrainmoves.servio.util.enums;
 
 public enum DayOfWeek {
     MONDAY {

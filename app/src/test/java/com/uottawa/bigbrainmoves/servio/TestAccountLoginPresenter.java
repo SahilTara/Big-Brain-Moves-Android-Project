@@ -7,6 +7,7 @@ import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.views.AccountLoginView;
 
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,8 @@ import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestAccountLoginPresenter {
+    @ClassRule
+    public static final RxJavaSchedulerRule schedulers = new RxJavaSchedulerRule();
 
     @Mock
     private Repository repository;

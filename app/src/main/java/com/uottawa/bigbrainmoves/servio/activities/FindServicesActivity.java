@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
-import android.widget.TextView;
 
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.pchmn.materialchips.ChipsInput;
@@ -16,8 +15,8 @@ import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.presenters.FindServicesPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
-import com.uottawa.bigbrainmoves.servio.util.DayOfWeek;
-import com.uottawa.bigbrainmoves.servio.util.ServiceListAdapter;
+import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
+import com.uottawa.bigbrainmoves.servio.util.adapters.ServiceListAdapter;
 import com.uottawa.bigbrainmoves.servio.util.ServiceTypeChip;
 import com.uottawa.bigbrainmoves.servio.views.FindServicesView;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;

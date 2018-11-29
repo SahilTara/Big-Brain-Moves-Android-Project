@@ -6,6 +6,7 @@ import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.views.ManageServiceTypesView;
 
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -36,6 +37,9 @@ public class TestManageServiceTypesPresenter {
 
     @Captor
     private ArgumentCaptor<Boolean> second;
+
+    @ClassRule
+    public static final RxJavaSchedulerRule schedulers = new RxJavaSchedulerRule();
 
     @Test
     public void testDataError() {

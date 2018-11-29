@@ -1,7 +1,7 @@
 package com.uottawa.bigbrainmoves.servio.models;
 
 import com.google.firebase.database.Exclude;
-import com.uottawa.bigbrainmoves.servio.util.DayOfWeek;
+import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 
 import java.util.Optional;
 

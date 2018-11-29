@@ -4,7 +4,7 @@ import com.uottawa.bigbrainmoves.servio.models.Service;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
-import com.uottawa.bigbrainmoves.servio.util.DayOfWeek;
+import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.views.FindServicesView;
 

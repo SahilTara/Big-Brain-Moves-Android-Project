@@ -17,11 +17,12 @@ import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.R;
 import com.uottawa.bigbrainmoves.servio.util.UiUtil;
 import com.uottawa.bigbrainmoves.servio.models.Account;
+import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
 import com.uottawa.bigbrainmoves.servio.views.SignUpView;
 
 public class SignUpActivity extends AppCompatActivity implements SignUpView {
 
-    private String typeSelected;
+    private AccountType typeSelected;
     private SignupPresenter presenter;
     private final Repository repository = new DbHandler();
 
@@ -44,8 +45,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         setContentView(R.layout.activity_signup);
 
         spinner = findViewById(R.id.userTypeSpinner);
-        spinner.setItems("", "service", "home");
-        typeSelected = "";
+        spinner.setItems(AccountType.NONE, AccountType.SERVICE_PROVIDER, AccountType.HOME_OWNER);
+        typeSelected = AccountType.NONE;
 
         signUpButton = findViewById(R.id.btnSignUp);
         signUpButton.setMode(ActionProcessButton.Mode.ENDLESS);
@@ -70,7 +71,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         userText.setOnFocusChangeListener(this::setFocus);
         passwordText.setOnFocusChangeListener(this::setFocus);
 
-        spinner.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
+        spinner.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<AccountType>) (view, position, id, item) -> {
             typeSelected = item;
             signUpButton.setProgress(0);
         });
@@ -196,7 +197,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
 
     @Override
     public void displayAdminDoesNotExist() {
-        spinner.setItems("", "admin", "user", "service");
+        spinner.setItems(AccountType.NONE, AccountType.ADMIN,
+                AccountType.SERVICE_PROVIDER,
+                AccountType.HOME_OWNER);
     }
 
     @Override

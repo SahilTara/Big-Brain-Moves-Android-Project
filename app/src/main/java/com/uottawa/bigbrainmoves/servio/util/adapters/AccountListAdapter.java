@@ -1,4 +1,4 @@
-package com.uottawa.bigbrainmoves.servio.util;
+package com.uottawa.bigbrainmoves.servio.util.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +31,7 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         final Account account = accounts.get(position);
         viewHolder.userText.setText(account.getUsername());
-        viewHolder.typeText.setText(account.getType());
+        viewHolder.typeText.setText(account.getType().toString());
     }
 
     @Override

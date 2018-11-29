@@ -5,11 +5,12 @@ import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.presenters.ManageAvailabilitiesPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
-import com.uottawa.bigbrainmoves.servio.util.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
+import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.views.ManageAvailabilitiesView;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +21,15 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.plugins.RxAndroidPlugins;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.schedulers.ExecutorScheduler;
+import io.reactivex.plugins.RxJavaPlugins;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
@@ -54,6 +62,28 @@ public class TestManageAvailabilitiesPresenter {
         presenter = new ManageAvailabilitiesPresenter(view, repository);
     }
 
+    @BeforeClass
+    public static void setUpRxSchedulers() {
+        Scheduler immediate = new Scheduler() {
+            @Override
+            public Disposable scheduleDirect(@NonNull Runnable run, long delay, @NonNull TimeUnit unit) {
+                // this prevents StackOverflowErrors when scheduling with a delay
+                return super.scheduleDirect(run, 0, unit);
+            }
+
+            @Override
+            public Worker createWorker() {
+                return new ExecutorScheduler.ExecutorWorker(Runnable::run);
+            }
+        };
+
+        RxJavaPlugins.setInitIoSchedulerHandler(scheduler -> immediate);
+        RxJavaPlugins.setInitComputationSchedulerHandler(scheduler -> immediate);
+        RxJavaPlugins.setInitNewThreadSchedulerHandler(scheduler -> immediate);
+        RxJavaPlugins.setInitSingleSchedulerHandler(scheduler -> immediate);
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler(scheduler -> immediate);
+    }
+
     @Test
     public void testGetAvailabilitiesDataError() {
         when(repository.getAvailabilities()).thenReturn(Observable.create(subscriber -> {
@@ -74,7 +104,7 @@ public class TestManageAvailabilitiesPresenter {
                 .thenReturn(currentAccount);
         when(currentAccount.getCurrentAccount())
                 .thenReturn(new ServiceProvider(
-                        "Test", "Test", "Test",
+                        "Test", "Test",
                         "613-343-3333", "33 Test", "Test",
                         "Test",true));
 

@@ -7,6 +7,8 @@ import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.views.ViewProfileView;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +19,15 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.plugins.RxAndroidPlugins;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.schedulers.ExecutorScheduler;
+import io.reactivex.plugins.RxJavaPlugins;
 
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -61,6 +70,28 @@ public class TestViewProfilePresenter {
     private static final String VALID_COMPANY = "abc";
     private static final String DESCRIPTON = "";
     private static final boolean IS_LICENSED = true;
+
+    @BeforeClass
+    public static void setUpRxSchedulers() {
+        Scheduler immediate = new Scheduler() {
+            @Override
+            public Disposable scheduleDirect(@NonNull Runnable run, long delay, @NonNull TimeUnit unit) {
+                // this prevents StackOverflowErrors when scheduling with a delay
+                return super.scheduleDirect(run, 0, unit);
+            }
+
+            @Override
+            public Worker createWorker() {
+                return new ExecutorScheduler.ExecutorWorker(Runnable::run);
+            }
+        };
+
+        RxJavaPlugins.setInitIoSchedulerHandler(scheduler -> immediate);
+        RxJavaPlugins.setInitComputationSchedulerHandler(scheduler -> immediate);
+        RxJavaPlugins.setInitNewThreadSchedulerHandler(scheduler -> immediate);
+        RxJavaPlugins.setInitSingleSchedulerHandler(scheduler -> immediate);
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler(scheduler -> immediate);
+    }
 
     @Test
     public void testGetProfileInfo() {
