@@ -1,11 +1,17 @@
 package com.uottawa.bigbrainmoves.servio.repositories;
 
+import android.os.Parcelable;
+
 import com.uottawa.bigbrainmoves.servio.models.Account;
+import com.uottawa.bigbrainmoves.servio.models.Booking;
+import com.uottawa.bigbrainmoves.servio.models.ReadOnlyService;
 import com.uottawa.bigbrainmoves.servio.models.Service;
+import com.uottawa.bigbrainmoves.servio.models.ServiceProvider;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
+import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.enums.SignupResult;
 
 import java.util.HashMap;
@@ -14,7 +20,8 @@ import java.util.Optional;
 
 import io.reactivex.Observable;
 
-public interface Repository {
+public interface Repository extends AvailabilitiesRepository {
+    Observable<Optional<ServiceProvider>> getServiceProviderFromDatabase(String username);
     Observable<Optional<Account>> getUserFromDataBase(String uid);
     Observable<List<Account>> getAllUsersFromDataBase();
     Observable<Boolean> login(String input, String password);
@@ -30,6 +37,7 @@ public interface Repository {
 
     Observable<Boolean> createServiceTypeIfNotInDatabase(String serviceTypeName, double value);
     Observable<Pair<ServiceType, Boolean>> listenForServiceTypeChanges();
+    Observable<Optional<ServiceType>> getServiceType(String serviceTypeName);
     void deleteServiceType(String serviceTypeName);
     void editServiceType(String serviceTypeName, double value);
 
@@ -44,7 +52,8 @@ public interface Repository {
                                     String description, boolean isLicensed,
                                     List<Service> modified);
 
-    Observable<Optional<WeeklyAvailabilities>> getAvailabilities();
-    Observable<HashMap<String, WeeklyAvailabilities>> getAllAvailabilities();
-    void setAvailabilities(WeeklyAvailabilities availabilities);
+
+    Observable<List<Booking>> getAllBookingsForServiceOnDate(ReadOnlyService service, String date);
+    Observable<List<Booking>> getAllBookingsForServiceOnDay(ReadOnlyService service, DayOfWeek day);
+    void saveBooking(Booking booking);
 }

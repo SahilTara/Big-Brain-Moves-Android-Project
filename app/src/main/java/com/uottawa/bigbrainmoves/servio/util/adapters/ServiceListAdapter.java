@@ -1,6 +1,7 @@
 package com.uottawa.bigbrainmoves.servio.util.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.uottawa.bigbrainmoves.servio.R;
+import com.uottawa.bigbrainmoves.servio.activities.ViewServiceActivity;
 import com.uottawa.bigbrainmoves.servio.models.Service;
 
 import java.util.ArrayList;
@@ -44,7 +46,9 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
         viewHolder.serviceRating.setRating((float) service.getRating());
 
         viewHolder.parentLayout.setOnClickListener((view) -> {
-
+            Intent intent = new Intent(context, ViewServiceActivity.class);
+            intent.putExtra("service", service);
+            context.startActivity(intent);
         });
     }
 

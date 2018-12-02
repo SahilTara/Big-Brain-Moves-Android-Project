@@ -10,5 +10,6 @@ import io.reactivex.Observable;
 public interface AvailabilitiesRepository {
     void setAvailabilities(WeeklyAvailabilities availabilities);
     Observable<Optional<WeeklyAvailabilities>> getAvailabilities();
+    Observable<Optional<WeeklyAvailabilities>> getAvailabilities(String username);
     Observable<HashMap<String, WeeklyAvailabilities>> getAllAvailabilities();
 }

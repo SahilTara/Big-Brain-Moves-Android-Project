@@ -6,7 +6,7 @@ import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceProvider extends Account {
+public class ServiceProvider extends Account implements ReadOnlyServiceProvider {
     private String phoneNumber;
     private String address;
     private String companyName;

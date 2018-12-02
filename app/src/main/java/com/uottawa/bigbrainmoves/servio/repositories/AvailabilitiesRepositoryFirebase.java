@@ -32,6 +32,12 @@ public class AvailabilitiesRepositoryFirebase implements  AvailabilitiesReposito
     public Observable<Optional<WeeklyAvailabilities>> getAvailabilities() {
         Account account = CurrentAccount.getInstance().getCurrentAccount();
         String username = account.getUsername();
+        return getAvailabilities(username);
+    }
+
+    @Override
+    public Observable<Optional<WeeklyAvailabilities>> getAvailabilities(String username) {
+
         return Observable.create(subscriber ->
                 myRef.child("availabilities").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

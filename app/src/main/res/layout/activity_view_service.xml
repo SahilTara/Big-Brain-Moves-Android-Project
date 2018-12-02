@@ -283,22 +283,76 @@
         <!-- End Table-->
         <include layout="@layout/itemdivider"/>
 
-        <TextView
-            android:id="@+id/providerNameTextView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:gravity="center"
-            android:textSize="18sp" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/providerRatingTextView"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Rating:"
+                android:textSize="18sp" />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="true"
+                android:numStars="5" />
+        </LinearLayout>
 
         <include layout="@layout/itemdivider"/>
 
-        <TextView
-            android:id="@+id/ratingTextView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:gravity="center"
-            android:text="Rating:"
-            android:textSize="18sp" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/providerNameTextView"
+                android:layout_width="235dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="18sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewProfile"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View Profile" />
+
+        </LinearLayout>
+
+        <include layout="@layout/itemdivider"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMakeBooking"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:text="Make Booking" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewRatings"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:text="View Ratings" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

@@ -11,6 +11,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.uottawa.bigbrainmoves.servio.models.Account;
+import com.uottawa.bigbrainmoves.servio.models.Booking;
+import com.uottawa.bigbrainmoves.servio.models.ReadOnlyService;
 import com.uottawa.bigbrainmoves.servio.models.Service;
 import com.uottawa.bigbrainmoves.servio.models.ServiceProvider;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
@@ -18,6 +20,7 @@ import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
+import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.enums.SignupResult;
 
 import java.util.ArrayList;
@@ -30,6 +33,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
+import io.reactivex.functions.BiConsumer;
+import io.reactivex.functions.Consumer;
 
 public class DbHandler implements Repository {
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -41,6 +46,8 @@ public class DbHandler implements Repository {
     private static final String SERVICE_TYPES = "service_types";
     private static final String PROVIDED_SERVICES = "currently_provided";
     private static final String ADMIN_EXISTS = "admin_exists";
+    private static final String BOOKINGS = "bookings";
+
     /*
     Begin Account/User related Methods.
      */
@@ -156,6 +163,8 @@ public class DbHandler implements Repository {
                         if (subscriber.isDisposed())
                             return;
                         // We have some users in the database.
+                        getAllGenericOnDataChange(dataSnapshot, subscriber, Account.class);
+                        /*
                         if (dataSnapshot.exists()) {
                             ArrayList<Account> accounts = new ArrayList<>();
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -167,6 +176,7 @@ public class DbHandler implements Repository {
                             subscriber.onNext(accounts);
                             subscriber.onComplete();
                         }
+                        */
                     }
 
                     @Override // Only really called when the database doesn't give enough permissions.
@@ -209,6 +219,7 @@ public class DbHandler implements Repository {
                             subscriber.onComplete();
                         } else {
                             subscriber.onNext(Optional.empty());
+                            subscriber.onComplete();
                         }
                     }
 
@@ -221,8 +232,56 @@ public class DbHandler implements Repository {
                         subscriber.onError(new FirebaseException(dbError.getMessage()));
                     }
                 }));
+    }
 
+    // TODO DON'T REPEAT YOUR SELF FIX LATER!
+    /**
+     * Gets an Account object of type ServiceProvider, and returns an observable using that username.
+     * If the user is non existent / isn't the correct type an empty optional is returned.
+     * @param username the username of the service provider account.
+     * @return an rxJava observable of the account.
+     */
+    public Observable<Optional<ServiceProvider>> getServiceProviderFromDatabase(String username) {
+        return Observable.create(subscriber ->
+                myRef.child(ACCOUNT_INFO).orderByChild("username").equalTo(username).limitToFirst(1)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            //
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() == 1) {
+                                    // if the subscriber is disposed we don't care about result
+                                    if (subscriber.isDisposed())
+                                        return;
+                                        // should only run once.
+                                        dataSnapshot = dataSnapshot.getChildren().iterator().next();
 
+                                        Account account = dataSnapshot.getValue(Account.class);
+                                        ServiceProvider provider = null;
+
+                                        if (account.getType().equals(AccountType.SERVICE_PROVIDER)) {
+                                            provider = dataSnapshot.getValue(ServiceProvider.class);
+                                        }
+
+                                        Optional<ServiceProvider> providerOptional = Optional.ofNullable(provider);
+
+                                        subscriber.onNext(providerOptional);
+                                        subscriber.onComplete();
+
+                                } else {
+                                    subscriber.onNext(Optional.empty());
+                                    subscriber.onComplete();
+                                }
+                            }
+
+                            @Override // Only really called when the database doesn't give enough permissions.
+                            public void onCancelled(@NonNull DatabaseError dbError) {
+                                // if the subscriber is disposed we don't care about result
+                                if (subscriber.isDisposed())
+                                    return;
+
+                                subscriber.onError(new FirebaseException(dbError.getMessage()));
+                            }
+                        }));
     }
 
     /**
@@ -270,7 +329,7 @@ public class DbHandler implements Repository {
      */
     private void writeUserToDataBase(String uid, Account account) {
         myRef.child(ACCOUNT_INFO).child(uid).setValue(account);
-        if (account.getType().equals("admin")) {
+        if (account.getType().equals(AccountType.ADMIN)) {
             // If we write admin type to database we have to do some things to make sure no more admins are made.
             myRef.child(ADMIN_EXISTS).setValue(true);
         }
@@ -549,15 +608,15 @@ public class DbHandler implements Repository {
     }
 
     /**
-     * Method simply returns all service type names within an rxjava observable.
-     * @return rxjava observable containing all current service type names.
+     * Method simply returns all service types within an rxjava observable.
+     * @return rxjava observable containing all current service types.
      */
-    private Observable<List<String>> getAllServiceTypeNames() {
+    private Observable<List<ServiceType>> getAllServiceTypes() {
         return Observable.create(subscriber ->
                 myRef.child(SERVICE_TYPES).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        getAllGenericOnDataChange(dataSnapshot, subscriber, ServiceType.class, String.class);
+                        getAllGenericOnDataChange(dataSnapshot, subscriber, ServiceType.class);
                     }
 
                     @Override // Only really called when the database doesn't give enough permissions.
@@ -570,40 +629,137 @@ public class DbHandler implements Repository {
     }
 
     /**
+     * Method simply returns an optional ervice type with the matching string within an rxjava observable.
+     * @param serviceTypeName name of the service type you would like to attempt to retrieve
+     * @return an rxjava observable of optional of service type.
+     */
+    public Observable<Optional<ServiceType>> getServiceType(String serviceTypeName) {
+        return Observable.create(subscriber ->
+                myRef.child(SERVICE_TYPES).child(serviceTypeName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (subscriber.isDisposed())
+                            return;
+
+                        ServiceType serviceType = null;
+
+                        if (dataSnapshot.exists()) {
+                             serviceType = dataSnapshot.getValue(ServiceType.class);
+                        }
+
+                        subscriber.onNext(Optional.ofNullable(serviceType));
+                        subscriber.onComplete();
+                    }
+
+                    @Override // Only really called when the database doesn't give enough permissions.
+                    public void onCancelled(@NonNull DatabaseError dbError) {
+                        if (subscriber.isDisposed())
+                            return;
+                        subscriber.onError(new FirebaseException(dbError.getMessage()));
+                    }
+                }));
+    }
+
+
+    //TODO Rework comments here.
+    /**
      * Generic on data change method for getting all instances of a certain type from the database.
      * @param dataSnapshot firebase datasnapshot of the results where the instances live.
      * @param subscriber the rxjava emitter.
-     * @param classToGetFromFireBase the way the data is stored in the database at that node.
-     * @param classToReturn the form you would like it in (if possible).
-     * @param <K> the type of the form you would like it in (returned as a list of this).
-     * @param <V> the type the data is stored as in the database.
+     * @param <K> The type of the data.
      */
-    private <K, V> void getAllGenericOnDataChange(DataSnapshot dataSnapshot,
-                                                 ObservableEmitter<List<K>> subscriber,
-                                                 Class<V> classToGetFromFireBase, Class<K> classToReturn) {
+    private <K> void getAllGenericOnDataChange(DataSnapshot dataSnapshot,
+                                               ObservableEmitter<List<K>> subscriber,
+                                               Class<K> classToReturn) {
+        // TODO if stable remove comment.
+        /*
         if (subscriber.isDisposed())
             return;
         // We have some services in the database for the user
         if (dataSnapshot.exists()) {
             ArrayList<K> elements = new ArrayList<>();
             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                V element = snapshot.getValue(classToGetFromFireBase);
+                GenericTypeIndicator<K> indicator = new GenericTypeIndicator<K>(){};
+
+                K element = snapshot.getValue(indicator);
                 if (element != null) {
-                    if (element instanceof ServiceType) {
-                        elements.add(classToReturn.cast(((ServiceType) element).getType()));
-                    } else {
-                        elements.add(classToReturn.cast(element));
-                    }
+                    elements.add(element);
                 }
             }
+
+
             subscriber.onNext(elements);
             subscriber.onComplete();
         } else {
             // deal with no services case
             subscriber.onNext(Collections.emptyList());
             subscriber.onComplete();
-        }
+        } */
+
+
+        // default call to the main getAllGenericOnDataChange method.
+        getAllGenericOnDataChange(dataSnapshot, subscriber, classToReturn, List::add, (elements, subber) -> {
+            subber.onNext(elements);
+            subber.onComplete();
+        }, (subber) -> {
+            subber.onNext(new ArrayList<>());
+            subber.onComplete();
+        });
     }
+
+    // Used to allow for less code duplication.
+    private <K> void getAllGenericOnDataChange(DataSnapshot dataSnapshot,
+                                               ObservableEmitter<List<K>> subscriber,
+                                               Class<K> classTypeToReturn,
+                                               BiConsumer<List<K>, K> mutator,
+                                               BiConsumer<List<K>, ObservableEmitter<List<K>>> postLoopAction,
+                                               Consumer<ObservableEmitter<List<K>>> snapshotDoesNotExist) {
+
+        if (subscriber.isDisposed())
+            return;
+
+
+        // We have some elements in the database
+        if (dataSnapshot.exists()) {
+            ArrayList<K> elements = new ArrayList<>();
+            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                K element = snapshot.getValue(classTypeToReturn);
+                if (element != null) {
+                    try {
+                        // execute our mutator hook method.
+                        mutator.accept(elements, element);
+                    } catch (Exception e) {
+                        // Can't really do anything else since exception could be anything
+                        subscriber.onError(e);
+                    }
+                }
+            }
+
+            try {
+                // call the post action hook.
+                postLoopAction.accept(elements, subscriber);
+            } catch (Exception e) {
+                // Can't really do anything else since exception could be anything
+                subscriber.onError(e);
+            }
+
+        } else {
+            // deal with no elements case by calling the snapshotDoesNotExist hook.
+            try {
+                snapshotDoesNotExist.accept(subscriber);
+            } catch (Exception e) {
+                // Cannot do anything here
+                subscriber.onError(e);
+            }
+        }
+
+
+    }
+
+
+
+
     /**
      * Gets all active services provided by the current user in the database.
      * @return rxjava observable containing all active services of user.
@@ -618,7 +774,7 @@ public class DbHandler implements Repository {
                 .equalTo(username + String.valueOf(true) + false).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        getAllGenericOnDataChange(dataSnapshot, subscriber, Service.class, Service.class);
+                        getAllGenericOnDataChange(dataSnapshot, subscriber, Service.class);
                     }
 
                     @Override // Only really called when the database doesn't give enough permissions.
@@ -640,8 +796,9 @@ public class DbHandler implements Repository {
      */
     @Override
     public Observable<List<Service>> getServicesProvidable(List<String> provided) {
-        return getAllServiceTypeNames().flatMapIterable(serviceTypes -> serviceTypes) // turns into an iterable stream
-                .filter(item->!provided.contains(item)) // filters based on contains
+        return getAllServiceTypes().flatMapIterable(serviceTypes -> serviceTypes) // turns into an iterable stream
+                .filter(item->!provided.contains(item.getType()))    // filters based on contains
+                .map(ServiceType::getType)                           // converts service type to the type string.
                 .toList().flatMapObservable(this::getOldServicesOrDefault); // gets list of service objects
     }
 
@@ -661,6 +818,8 @@ public class DbHandler implements Repository {
                 .equalTo(username + String.valueOf(false) + false).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // TODO if stable remove comment
+                        /*
                         if (subscriber.isDisposed())
                             return;
 
@@ -694,7 +853,36 @@ public class DbHandler implements Repository {
                             }
                             subscriber.onNext(services);
                             subscriber.onComplete();
+
                         }
+                        */
+
+                        getAllGenericOnDataChange(dataSnapshot, subscriber, Service.class, (services, service) -> {
+                            /* if old services exist in the database and they are in the services providable
+                             * by the user then we execute this.
+                             */
+                            if (serviceTypes.contains(service.getType())) {
+                                services.add(service);
+                                serviceTypes.remove(service.getType());
+                            }
+                        }, (services, subber) -> {
+                            // Deal with the remaining services that don't exist yet.
+                            for (String serviceType : serviceTypes) {
+                                services.add(new Service(serviceType, username, displayName, 0,
+                                        0.0, false, false));
+                            }
+                            subber.onNext(services);
+                            subber.onComplete();
+                        } , (subber) -> {
+                            // deal with no services case
+                            ArrayList<Service> services = new ArrayList<>();
+                            for (String serviceType : serviceTypes) {
+                                services.add(new Service(serviceType, username, displayName, 0,
+                                        0.0, false, false));
+                            }
+                            subber.onNext(services);
+                            subber.onComplete();
+                        });
 
                     }
 
@@ -797,6 +985,16 @@ public class DbHandler implements Repository {
     }
 
     /**
+     * gets the availabilities of the user specified should they exist, otherwise returns an empty optional
+     * @param username the username to get the availabilities for
+     * @return an rxjava observable of an optional weekly availabilities class for the user.
+     */
+    @Override
+    public Observable<Optional<WeeklyAvailabilities>> getAvailabilities(String username) {
+        return availabilitiesRepository.getAvailabilities(username);
+    }
+
+    /**
      * Gets all availabilities for all service providers hashmap form, for fast lookup. Wrapped into
      * an rxjava observable.
      * @return Hashmap containing username as key and availabilities as value in an RxJava Observable.
@@ -812,6 +1010,60 @@ public class DbHandler implements Repository {
     @Override
     public void setAvailabilities(WeeklyAvailabilities availabilities) {
         availabilitiesRepository.setAvailabilities(availabilities);
+    }
+
+    /** End Availabilities Logic **/
+
+    /** Begin Booking Logic **/
+    public Observable<List<Booking>> getAllBookingsForServiceOnDate(ReadOnlyService service, String date) {
+        String provider = service.getServiceProviderUser();
+        String type = service.getType();
+        return Observable.create(subscriber ->
+                myRef.child(BOOKINGS).orderByChild("providerServiceTypeParsableYearMonthDay")
+                        .equalTo(provider + type + String.valueOf(true) + date).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        getAllGenericOnDataChange(dataSnapshot, subscriber, Booking.class);
+                    }
+
+                    @Override // Only really called when the database doesn't give enough permissions.
+                    public void onCancelled(@NonNull DatabaseError dbError) {
+                        if (subscriber.isDisposed())
+                            return;
+                        subscriber.onError(new FirebaseException(dbError.getMessage()));
+                    }
+                }));
+
+    }
+
+    //TODO ALLOW CHANGING AVAILABILITIES TO DELETE BOOKINGS.
+    // Will be used for resetting availabilities
+    public Observable<List<Booking>> getAllBookingsForServiceOnDay(ReadOnlyService service, DayOfWeek day) {
+        String provider = service.getServiceProviderUser();
+        String type = service.getType();
+        return Observable.create(subscriber ->
+                myRef.child(BOOKINGS).orderByChild("providerServiceTypeParsableDayOfWeek")
+                        .equalTo(provider + type + String.valueOf(true) + day.toString())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                getAllGenericOnDataChange(dataSnapshot, subscriber, Booking.class);
+                            }
+
+                            @Override // Only really called when the database doesn't give enough permissions.
+                            public void onCancelled(@NonNull DatabaseError dbError) {
+                                if (subscriber.isDisposed())
+                                    return;
+                                subscriber.onError(new FirebaseException(dbError.getMessage()));
+                            }
+                        }));
+    }
+
+
+
+    public void saveBooking(Booking booking) {
+        myRef.child(BOOKINGS).child(booking.getProviderServiceTypeParsableYearMonthDayCustomer())
+                .setValue(booking);
     }
 
 }

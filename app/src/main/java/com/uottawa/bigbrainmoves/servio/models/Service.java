@@ -1,10 +1,13 @@
 package com.uottawa.bigbrainmoves.servio.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 
 import java.util.Objects;
 
-public class Service {
+public class Service implements Parcelable, ReadOnlyService {
     private String type;
     private String serviceProviderUser;
     private boolean isOffered;
@@ -135,4 +138,49 @@ public class Service {
     public int hashCode() {
         return Objects.hash(type, serviceProviderUser, serviceProviderName);
     }
+
+    // Parcelable Boilerplate
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.type);
+        dest.writeString(this.serviceProviderUser);
+        dest.writeByte(this.isOffered ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isDisabled ? (byte) 1 : (byte) 0);
+        dest.writeString(this.usernameOfferedDisabled);
+        dest.writeString(this.typeDisabled);
+        dest.writeString(this.offeredDisabled);
+        dest.writeInt(this.numOfRatings);
+        dest.writeDouble(this.totalRatingSum);
+        dest.writeString(this.serviceProviderName);
+    }
+
+    protected Service(Parcel in) {
+        this.type = in.readString();
+        this.serviceProviderUser = in.readString();
+        this.isOffered = in.readByte() != 0;
+        this.isDisabled = in.readByte() != 0;
+        this.usernameOfferedDisabled = in.readString();
+        this.typeDisabled = in.readString();
+        this.offeredDisabled = in.readString();
+        this.numOfRatings = in.readInt();
+        this.totalRatingSum = in.readDouble();
+        this.serviceProviderName = in.readString();
+    }
+
+    public static final Parcelable.Creator<Service> CREATOR = new Parcelable.Creator<Service>() {
+        @Override
+        public Service createFromParcel(Parcel source) {
+            return new Service(source);
+        }
+
+        @Override
+        public Service[] newArray(int size) {
+            return new Service[size];
+        }
+    };
 }
