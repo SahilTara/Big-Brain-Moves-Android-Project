@@ -30,7 +30,7 @@
             android:id="@+id/btnViewBookings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="onSignOutClick"
+            android:onClick="onViewBookingsClick"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:text="View Bookings" />
 

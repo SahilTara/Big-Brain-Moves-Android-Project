@@ -3,6 +3,8 @@ package com.uottawa.bigbrainmoves.servio.models;
 import com.uottawa.bigbrainmoves.servio.util.enums.BookingStatus;
 import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 
+import java.util.Objects;
+
 public class Booking {
     private String providerUser;
     private String customerUser;
@@ -11,17 +13,14 @@ public class Booking {
     private String startTime;
     private String endTime;
     private String providerServiceTypeParsableYearMonthDay;
-    private String providerServiceTypeParsableDayOfWeek;
     private String providerServiceTypeParsableYearMonthDayCustomer;
     private BookingStatus status;
-    private DayOfWeek dayOfWeek;
     private double price;
 
     public Booking() {}
 
     public Booking(String providerUser, String customerUser, String serviceType,
-                   String date, String startTime, String endTime, double price, BookingStatus status,
-                   DayOfWeek dayOfWeek) {
+                   String date, String startTime, String endTime, double price, BookingStatus status) {
 
         this.providerUser = providerUser;
         this.customerUser = customerUser;
@@ -30,10 +29,8 @@ public class Booking {
         this.endTime = endTime;
         this.price = price;
         this.status = status;
-        this.dayOfWeek = dayOfWeek;
         this.date = date;
 
-        updateProviderServiceTypeParsableDayOfWeek();
         updateProviderServiceTypeParsableYearMonthDay();
         updateProviderServiceTypeParsableYearMonthDayCustomer();
     }
@@ -61,21 +58,9 @@ public class Booking {
         updateProviderServiceTypeParsableYearMonthDayCustomer();
     }
 
-    public DayOfWeek getDayOfWeek() {
-        return dayOfWeek;
-    }
-
-    public void setDayOfWeek(DayOfWeek dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-        updateProviderServiceTypeParsableDayOfWeek();
-    }
 
     public String getProviderServiceTypeParsableYearMonthDay() {
         return providerServiceTypeParsableYearMonthDay;
-    }
-
-    public String getProviderServiceTypeParsableDayOfWeek() {
-        return providerServiceTypeParsableDayOfWeek;
     }
 
     public BookingStatus getStatus() {
@@ -90,7 +75,6 @@ public class Booking {
         this.serviceType = serviceType;
 
         updateProviderServiceTypeParsableYearMonthDay();
-        updateProviderServiceTypeParsableDayOfWeek();
         updateProviderServiceTypeParsableYearMonthDayCustomer();
     }
 
@@ -102,12 +86,6 @@ public class Booking {
                 status.isParsable() + date;
     }
 
-    private void updateProviderServiceTypeParsableDayOfWeek() {
-        if (providerUser == null || serviceType == null || status == null || dayOfWeek == null)
-            return;
-        providerServiceTypeParsableDayOfWeek = providerUser + serviceType +
-                status.isParsable() + dayOfWeek.toString();
-    }
 
     private void updateProviderServiceTypeParsableYearMonthDayCustomer() {
         if (customerUser == null || providerServiceTypeParsableYearMonthDay == null)
@@ -118,7 +96,6 @@ public class Booking {
     public void setStatus(BookingStatus status) {
         this.status = status;
 
-        updateProviderServiceTypeParsableDayOfWeek();
         updateProviderServiceTypeParsableYearMonthDay();
         updateProviderServiceTypeParsableYearMonthDayCustomer();
 
@@ -131,7 +108,6 @@ public class Booking {
     public void setProviderUser(String providerUser) {
         this.providerUser = providerUser;
 
-        updateProviderServiceTypeParsableDayOfWeek();
         updateProviderServiceTypeParsableYearMonthDay();
         updateProviderServiceTypeParsableYearMonthDayCustomer();
     }
@@ -159,5 +135,22 @@ public class Booking {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        return Objects.equals(providerUser, booking.providerUser) &&
+                Objects.equals(customerUser, booking.customerUser) &&
+                Objects.equals(serviceType, booking.serviceType) &&
+                Objects.equals(date, booking.date) &&
+                (Objects.equals(status, booking.status) || Objects.equals(status.isParsable(), booking.status.isParsable()));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(providerUser, customerUser, serviceType, status, date);
     }
 }

@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.ServiceMainActivity">
+
     <LinearLayout
-        android:layout_width="301dp"
+        android:layout_width="314dp"
         android:layout_height="245dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -33,13 +34,30 @@
             android:onClick="onManageAvailabilitiesClick"
             android:text="Manage Availabilities" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSignOut"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:onClick="onSignOutClick"
-            android:text="Sign Out" />
+            android:layout_height="wrap_content">
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewBookings"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onViewBookingsClick"
+                android:text="View Bookings" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSignOut"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onSignOutClick"
+                android:text="Sign Out"
+                android:layout_weight="1"/>
+        </LinearLayout>
     </LinearLayout>
 
     <TextView

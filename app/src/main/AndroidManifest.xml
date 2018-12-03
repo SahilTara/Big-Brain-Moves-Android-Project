@@ -29,7 +29,9 @@
         <activity android:name=".activities.ViewProfileActivity" />
         <activity android:name=".activities.ManageAvailabilitiesActivity" />
         <activity android:name=".activities.FindServicesActivity" />
-        <activity android:name=".activities.ViewServiceActivity"></activity>
+        <activity android:name=".activities.ViewServiceActivity" />
+        <activity android:name=".activities.ViewBookingsActivity" />
+        <activity android:name=".activities.ViewRatingsActivity"></activity>
     </application>
 
 </manifest>

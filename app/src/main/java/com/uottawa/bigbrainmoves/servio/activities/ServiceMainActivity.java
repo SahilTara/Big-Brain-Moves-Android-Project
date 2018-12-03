@@ -28,6 +28,11 @@ public class ServiceMainActivity extends AppCompatActivity implements MainView  
         presenter.signOut();
     }
 
+    public void onViewBookingsClick(View view) {
+        Intent viewBookings = new Intent(getApplicationContext(), ViewBookingsActivity.class);
+        startActivity(viewBookings);
+    }
+
     public void onViewProfileClick(View view) {
         Intent viewProfile = new Intent(getApplicationContext(), ViewProfileActivity.class);
         startActivity(viewProfile);

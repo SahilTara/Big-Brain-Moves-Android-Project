@@ -4,6 +4,7 @@ import android.os.Parcelable;
 
 import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.models.Booking;
+import com.uottawa.bigbrainmoves.servio.models.Rating;
 import com.uottawa.bigbrainmoves.servio.models.ReadOnlyService;
 import com.uottawa.bigbrainmoves.servio.models.Service;
 import com.uottawa.bigbrainmoves.servio.models.ServiceProvider;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 import io.reactivex.Observable;
 
-public interface Repository extends AvailabilitiesRepository {
+public interface Repository extends AvailabilitiesRepository, BookingsRepository {
     Observable<Optional<ServiceProvider>> getServiceProviderFromDatabase(String username);
     Observable<Optional<Account>> getUserFromDataBase(String uid);
     Observable<List<Account>> getAllUsersFromDataBase();
@@ -45,6 +46,8 @@ public interface Repository extends AvailabilitiesRepository {
 
     Observable<List<Service>> getServicesProvidable(List<String> provided);
 
+    Observable<Optional<Service>> getServiceByName(String serviceTypeProvider);
+
     Observable<Pair<Service, Boolean>> listenForServiceChanges();
 
     Observable<Boolean> saveProfile(String phoneNumber,
@@ -52,8 +55,7 @@ public interface Repository extends AvailabilitiesRepository {
                                     String description, boolean isLicensed,
                                     List<Service> modified);
 
-
-    Observable<List<Booking>> getAllBookingsForServiceOnDate(ReadOnlyService service, String date);
-    Observable<List<Booking>> getAllBookingsForServiceOnDay(ReadOnlyService service, DayOfWeek day);
-    void saveBooking(Booking booking);
+    Observable<Boolean> addRating(Rating rating, double oldRating, boolean isUpdate);
+    Observable<Optional<Rating>> getRating(String providerUser, String serviceType, String rater);
+    Observable<Pair<Rating, Boolean>> listenForRatingChanges(ReadOnlyService service);
 }

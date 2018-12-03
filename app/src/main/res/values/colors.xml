@@ -10,4 +10,8 @@
     <color name="colorSecondaryText">#757575</color>
     <color name="colorDivider">#BDBDBD</color>
     <color name="white">#FFF</color>
+    <color name="pending">#fbc02d</color>
+    <color name="accepted">#009688</color>
+    <color name="completed">#1b5e20</color>
+    <color name="cancelled">#f44336</color>
 </resources>

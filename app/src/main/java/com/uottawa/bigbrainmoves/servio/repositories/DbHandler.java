@@ -9,9 +9,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.models.Booking;
+import com.uottawa.bigbrainmoves.servio.models.Rating;
 import com.uottawa.bigbrainmoves.servio.models.ReadOnlyService;
 import com.uottawa.bigbrainmoves.servio.models.Service;
 import com.uottawa.bigbrainmoves.servio.models.ServiceProvider;
@@ -24,6 +26,7 @@ import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.enums.SignupResult;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,18 +39,19 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 
-public class DbHandler implements Repository {
+public class DbHandler extends GenericFirebaseRepository implements Repository {
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = mDatabase.getReference(); // gets db ref, then searches for username.
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private AvailabilitiesRepository availabilitiesRepository = new AvailabilitiesRepositoryFirebase();
+    private BookingsRepository bookingsRepository = new BookingsRepositoryFirebase();
+
     private static final String USERNAME_TO_EMAIL = "user_ids";
     private static final String ACCOUNT_INFO = "user_info";
     private static final String SERVICE_TYPES = "service_types";
     private static final String PROVIDED_SERVICES = "currently_provided";
     private static final String ADMIN_EXISTS = "admin_exists";
-    private static final String BOOKINGS = "bookings";
-
+    private static final String RATINGS = "ratings";
     /*
     Begin Account/User related Methods.
      */
@@ -164,19 +168,6 @@ public class DbHandler implements Repository {
                             return;
                         // We have some users in the database.
                         getAllGenericOnDataChange(dataSnapshot, subscriber, Account.class);
-                        /*
-                        if (dataSnapshot.exists()) {
-                            ArrayList<Account> accounts = new ArrayList<>();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                Account account = snapshot.getValue(Account.class);
-                                if (account != null) {
-                                    accounts.add(account);
-                                }
-                            }
-                            subscriber.onNext(accounts);
-                            subscriber.onComplete();
-                        }
-                        */
                     }
 
                     @Override // Only really called when the database doesn't give enough permissions.
@@ -661,101 +652,7 @@ public class DbHandler implements Repository {
     }
 
 
-    //TODO Rework comments here.
-    /**
-     * Generic on data change method for getting all instances of a certain type from the database.
-     * @param dataSnapshot firebase datasnapshot of the results where the instances live.
-     * @param subscriber the rxjava emitter.
-     * @param <K> The type of the data.
-     */
-    private <K> void getAllGenericOnDataChange(DataSnapshot dataSnapshot,
-                                               ObservableEmitter<List<K>> subscriber,
-                                               Class<K> classToReturn) {
-        // TODO if stable remove comment.
-        /*
-        if (subscriber.isDisposed())
-            return;
-        // We have some services in the database for the user
-        if (dataSnapshot.exists()) {
-            ArrayList<K> elements = new ArrayList<>();
-            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                GenericTypeIndicator<K> indicator = new GenericTypeIndicator<K>(){};
 
-                K element = snapshot.getValue(indicator);
-                if (element != null) {
-                    elements.add(element);
-                }
-            }
-
-
-            subscriber.onNext(elements);
-            subscriber.onComplete();
-        } else {
-            // deal with no services case
-            subscriber.onNext(Collections.emptyList());
-            subscriber.onComplete();
-        } */
-
-
-        // default call to the main getAllGenericOnDataChange method.
-        getAllGenericOnDataChange(dataSnapshot, subscriber, classToReturn, List::add, (elements, subber) -> {
-            subber.onNext(elements);
-            subber.onComplete();
-        }, (subber) -> {
-            subber.onNext(new ArrayList<>());
-            subber.onComplete();
-        });
-    }
-
-    // Used to allow for less code duplication.
-    private <K> void getAllGenericOnDataChange(DataSnapshot dataSnapshot,
-                                               ObservableEmitter<List<K>> subscriber,
-                                               Class<K> classTypeToReturn,
-                                               BiConsumer<List<K>, K> mutator,
-                                               BiConsumer<List<K>, ObservableEmitter<List<K>>> postLoopAction,
-                                               Consumer<ObservableEmitter<List<K>>> snapshotDoesNotExist) {
-
-        if (subscriber.isDisposed())
-            return;
-
-
-        // We have some elements in the database
-        if (dataSnapshot.exists()) {
-            ArrayList<K> elements = new ArrayList<>();
-            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-                K element = snapshot.getValue(classTypeToReturn);
-                if (element != null) {
-                    try {
-                        // execute our mutator hook method.
-                        mutator.accept(elements, element);
-                    } catch (Exception e) {
-                        // Can't really do anything else since exception could be anything
-                        subscriber.onError(e);
-                    }
-                }
-            }
-
-            try {
-                // call the post action hook.
-                postLoopAction.accept(elements, subscriber);
-            } catch (Exception e) {
-                // Can't really do anything else since exception could be anything
-                subscriber.onError(e);
-            }
-
-        } else {
-            // deal with no elements case by calling the snapshotDoesNotExist hook.
-            try {
-                snapshotDoesNotExist.accept(subscriber);
-            } catch (Exception e) {
-                // Cannot do anything here
-                subscriber.onError(e);
-            }
-        }
-
-
-    }
 
 
 
@@ -818,44 +715,6 @@ public class DbHandler implements Repository {
                 .equalTo(username + String.valueOf(false) + false).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        // TODO if stable remove comment
-                        /*
-                        if (subscriber.isDisposed())
-                            return;
-
-                        // We have some services previously provided
-                        if (dataSnapshot.exists()) {
-                            ArrayList<Service> services = new ArrayList<>();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                Service service = snapshot.getValue(Service.class);
-                                if (service != null) {
-                                    if (serviceTypes.contains(service.getType())) {
-                                        services.add(service);
-                                        serviceTypes.remove(service.getType());
-                                    }
-                                }
-                            }
-                            // Deal with the remaining services that don't exist yet.
-                            for (String serviceType : serviceTypes) {
-                                services.add(new Service(serviceType, username, displayName, 0,
-                                        0.0, false, false));
-                            }
-
-
-                            subscriber.onNext(services);
-                            subscriber.onComplete();
-                        } else {
-                            // deal with no services case
-                            ArrayList<Service> services = new ArrayList<>();
-                            for (String serviceType : serviceTypes) {
-                                services.add(new Service(serviceType, username, displayName, 0,
-                                        0.0, false, false));
-                            }
-                            subscriber.onNext(services);
-                            subscriber.onComplete();
-
-                        }
-                        */
 
                         getAllGenericOnDataChange(dataSnapshot, subscriber, Service.class, (services, service) -> {
                             /* if old services exist in the database and they are in the services providable
@@ -884,6 +743,32 @@ public class DbHandler implements Repository {
                             subber.onComplete();
                         });
 
+                    }
+
+                    @Override // Only really called when the database doesn't give enough permissions.
+                    public void onCancelled(@NonNull DatabaseError dbError) {
+                        if (subscriber.isDisposed())
+                            return;
+                        subscriber.onError(new FirebaseException(dbError.getMessage()));
+                    }
+                }));
+    }
+
+    public Observable<Optional<Service>> getServiceByName(String serviceTypeProvider) {
+        return Observable.create(subscriber ->
+                myRef.child(PROVIDED_SERVICES).child(serviceTypeProvider).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (subscriber.isDisposed())
+                            return;
+
+                        Service service = null;
+                        if (dataSnapshot.exists()) {
+                            service = dataSnapshot.getValue(Service.class);
+                        }
+
+                        subscriber.onNext(Optional.ofNullable(service));
+                        subscriber.onComplete();
                     }
 
                     @Override // Only really called when the database doesn't give enough permissions.
@@ -1012,18 +897,38 @@ public class DbHandler implements Repository {
         availabilitiesRepository.setAvailabilities(availabilities);
     }
 
-    /** End Availabilities Logic **/
+    /* End Availabilities Logic */
 
-    /** Begin Booking Logic **/
+    /* Begin Booking Logic */
     public Observable<List<Booking>> getAllBookingsForServiceOnDate(ReadOnlyService service, String date) {
-        String provider = service.getServiceProviderUser();
-        String type = service.getType();
+        return bookingsRepository.getAllBookingsForServiceOnDate(service, date);
+    }
+
+
+    public Observable<Pair<Booking, Boolean>> listenForCurrentUserBookingChanges() {
+        return bookingsRepository.listenForCurrentUserBookingChanges();
+    }
+
+    public void saveBooking(Booking booking) {
+        bookingsRepository.saveBooking(booking);
+    }
+
+
+    public Observable<Optional<Rating>> getRating(String providerUser, String serviceType, String rater) {
         return Observable.create(subscriber ->
-                myRef.child(BOOKINGS).orderByChild("providerServiceTypeParsableYearMonthDay")
-                        .equalTo(provider + type + String.valueOf(true) + date).addListenerForSingleValueEvent(new ValueEventListener() {
+                myRef.child(RATINGS).child(serviceType + providerUser + rater).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        getAllGenericOnDataChange(dataSnapshot, subscriber, Booking.class);
+                        if (subscriber.isDisposed())
+                            return;
+
+                        Rating rating = null;
+                        if (dataSnapshot.exists()) {
+                            rating = dataSnapshot.getValue(Rating.class);
+                        }
+
+                        subscriber.onNext(Optional.ofNullable(rating));
+                        subscriber.onComplete();
                     }
 
                     @Override // Only really called when the database doesn't give enough permissions.
@@ -1033,37 +938,77 @@ public class DbHandler implements Repository {
                         subscriber.onError(new FirebaseException(dbError.getMessage()));
                     }
                 }));
-
     }
 
-    //TODO ALLOW CHANGING AVAILABILITIES TO DELETE BOOKINGS.
-    // Will be used for resetting availabilities
-    public Observable<List<Booking>> getAllBookingsForServiceOnDay(ReadOnlyService service, DayOfWeek day) {
-        String provider = service.getServiceProviderUser();
-        String type = service.getType();
+    /**
+     * Method adds rating to service, and gets an rxjava observable indicating the success status.
+     * @param rating new rating object.
+     * @param oldRating old rating to remove.
+     * @param isUpdate whether the rating is an update or not.
+     * @return an rxjava observable containing the success status of the addition of the rating.
+     */
+    public Observable<Boolean> addRating(Rating rating, double oldRating, boolean isUpdate) {
+        String serviceName = rating.getServiceTypeProvider();
+
+        return getServiceByName(serviceName).flatMap(serviceOpt -> Observable.create(subscriber -> {
+            if (serviceOpt.isPresent()) {
+                Service service = serviceOpt.get();
+                if (isUpdate) {
+                    service.setTotalRatingSum(service.getTotalRatingSum() - oldRating + rating.getRating());
+                } else {
+                    service.setNumOfRatings(service.getNumOfRatings() + 1);
+                    service.setTotalRatingSum(service.getTotalRatingSum() + rating.getRating());
+                }
+                rating.setReviewDate(Calendar.getInstance().getTimeInMillis());
+                HashMap<String, Object> updateMap = new HashMap<>();
+                updateMap.put(RATINGS + "/" + rating.getServiceTypeProviderRater(), rating);
+                updateMap.put(PROVIDED_SERVICES + "/" + serviceName, service);
+
+                myRef.updateChildren(updateMap);
+                subscriber.onNext(true);
+            } else {
+                subscriber.onNext(false);
+            }
+            subscriber.onComplete();
+        }));
+    }
+
+    /**
+     * Method listens for changes in services in the database, and notifies all observers.
+     * @return RxJava containing a service and whether removed or not.
+     */
+    public Observable<Pair<Rating, Boolean>> listenForRatingChanges(ReadOnlyService service) {
+        String serviceTypeProvider = service.getType() + service.getServiceProviderUser();
         return Observable.create(subscriber ->
-                myRef.child(BOOKINGS).orderByChild("providerServiceTypeParsableDayOfWeek")
-                        .equalTo(provider + type + String.valueOf(true) + day.toString())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                myRef.child(RATINGS).orderByChild("serviceTypeProvider").equalTo(serviceTypeProvider)
+                        .addChildEventListener(new ChildEventListener() {
                             @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                getAllGenericOnDataChange(dataSnapshot, subscriber, Booking.class);
+                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Rating rating = dataSnapshot.getValue(Rating.class);
+                                subscriber.onNext(new Pair<>(rating, false));
                             }
 
-                            @Override // Only really called when the database doesn't give enough permissions.
-                            public void onCancelled(@NonNull DatabaseError dbError) {
-                                if (subscriber.isDisposed())
-                                    return;
-                                subscriber.onError(new FirebaseException(dbError.getMessage()));
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Rating rating = dataSnapshot.getValue(Rating.class);
+                                subscriber.onNext(new Pair<>(rating, false));
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                Rating rating = dataSnapshot.getValue(Rating.class);
+                                subscriber.onNext(new Pair<>(rating, true));
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                subscriber.onError(new FirebaseException(databaseError.getMessage()));
                             }
                         }));
     }
-
-
-
-    public void saveBooking(Booking booking) {
-        myRef.child(BOOKINGS).child(booking.getProviderServiceTypeParsableYearMonthDayCustomer())
-                .setValue(booking);
-    }
-
 }

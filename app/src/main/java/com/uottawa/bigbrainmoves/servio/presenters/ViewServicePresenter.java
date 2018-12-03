@@ -282,7 +282,7 @@ public class ViewServicePresenter {
         repository.getAllBookingsForServiceOnDate(service, dateRepresentation).subscribe(bookingObserver);
     }
 
-    public void createBooking(ReadOnlyService service, String date, Calendar selected, String timeRange, double price) {
+    public void createBooking(ReadOnlyService service, String date, String timeRange, double price) {
         if (!date.contains("-")) {
             view.displayInvalidDate();
             return;
@@ -299,38 +299,11 @@ public class ViewServicePresenter {
             view.displayInvalidTime();
             return;
         }
-        DayOfWeek dayOfWeek = DayOfWeek.ANY;
 
         Account account = CurrentAccount.getInstance().getCurrentAccount();
         String customer = account.getUsername();
         String provider = service.getServiceProviderUser();
         String serviceType = service.getType();
-
-
-        switch (selected.get(Calendar.DAY_OF_WEEK)) {
-            case Calendar.MONDAY:
-                dayOfWeek = DayOfWeek.MONDAY;
-                break;
-            case Calendar.TUESDAY:
-                dayOfWeek = DayOfWeek.TUESDAY;
-                break;
-            case Calendar.WEDNESDAY:
-                dayOfWeek = DayOfWeek.WEDNESDAY;
-                break;
-            case Calendar.THURSDAY:
-                dayOfWeek = DayOfWeek.THURSDAY;
-                break;
-            case Calendar.FRIDAY:
-                dayOfWeek = DayOfWeek.FRIDAY;
-                break;
-            case Calendar.SATURDAY:
-                dayOfWeek = DayOfWeek.SATURDAY;
-                break;
-            case Calendar.SUNDAY:
-                dayOfWeek = DayOfWeek.SUNDAY;
-                break;
-        }
-        final DayOfWeek day = dayOfWeek;
 
         Observer<List<Booking>> bookingObserver = new Observer<List<Booking>>() {
             Disposable disposable;
@@ -356,8 +329,7 @@ public class ViewServicePresenter {
 
 
                 repository.saveBooking(new Booking(provider, customer, serviceType,
-                        date, startingTime, endingTime, price, BookingStatus.PENDING,
-                        day));
+                        date, startingTime, endingTime, price, BookingStatus.PENDING));
                 view.displayBookingCreated();
             }
 

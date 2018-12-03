@@ -29,6 +29,11 @@ public class MainActivity extends AppCompatActivity implements MainView {
         startActivity(intent);
     }
 
+    public void onViewBookingsClick(View view) {
+        Intent viewBookings = new Intent(getApplicationContext(), ViewBookingsActivity.class);
+        startActivity(viewBookings);
+    }
+
     public void onSignOutClick(View view) {
         presenter.signOut();
     }

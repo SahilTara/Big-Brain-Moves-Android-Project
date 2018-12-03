@@ -16,6 +16,7 @@ import com.google.android.material.button.MaterialButton;
 import com.uottawa.bigbrainmoves.servio.R;
 import com.uottawa.bigbrainmoves.servio.models.ReadOnlyService;
 import com.uottawa.bigbrainmoves.servio.models.ReadOnlyServiceProvider;
+import com.uottawa.bigbrainmoves.servio.models.Service;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.presenters.ViewServicePresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
@@ -168,7 +169,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
                 priceVal = Double.parseDouble(priceText);
             }
 
-            presenter.createBooking(service, date, selected, timeRange, priceVal);
+            presenter.createBooking(service, date, timeRange, priceVal);
         }).setNegativeButton("Cancel", (dialog, __) -> {
             dialog.dismiss();
         }).setTitle("Make a Booking").show();
@@ -178,7 +179,10 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
     }
 
     private void onViewRatingsClick() {
-
+        Intent intent = new Intent(getApplicationContext(), ViewRatingsActivity.class);
+        Service service = getIntent().getParcelableExtra("service");
+        intent.putExtra("service", service);
+        startActivity(intent);
     }
 
     private void onViewProfileClick() {
@@ -273,7 +277,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
     @Override
     public void displayNoAvailabilitiesOnThisDay() {
-        Toast.makeText(getApplicationContext(), "The service provider has no availabilities on this day!", Toast.LENGTH_LONG).show();;
+        Toast.makeText(getApplicationContext(), "The service provider has no availabilities on this day!", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -370,29 +374,34 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
                 Toast.LENGTH_LONG).show();
     }
 
-    //TODO GIVE THESE TO THE OTHERS
     @Override
     public void displayInvalidDate() {
+        //TODO ADD TOAST
 
     }
 
     @Override
     public void displayInvalidTime() {
+        //TODO ADD TOAST
 
     }
 
     @Override
     public void displayBookingCollision() {
-
+        Toast.makeText(getApplicationContext(),
+                "Please select a different time/date as the selected booking collides with someone else's!",
+                Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void displayBookingCreated() {
+        //TODO ADD TOAST
 
     }
 
     @Override
     public void displayEmptyTime() {
+        //TODO ADD TOAST
 
     }
 
