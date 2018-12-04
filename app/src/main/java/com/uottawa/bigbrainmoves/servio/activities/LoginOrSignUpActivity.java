@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
@@ -24,6 +25,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity implements LoginOrS
     private ActionProcessButton btnSignIn;
     private EditText usernameText;
     private EditText passwordText;
+    private LinearLayout focusDummy;
 
     private TextInputLayout usernameInputLayout;
     private TextInputLayout passwordInputLayout;
@@ -41,6 +43,8 @@ public class LoginOrSignUpActivity extends AppCompatActivity implements LoginOrS
 
         usernameInputLayout = findViewById(R.id.usernameInputLayout);
         passwordInputLayout = findViewById(R.id.passwordInputLayout);
+
+        focusDummy = findViewById(R.id.focusDummy);
 
         btnSignIn.setMode(ActionProcessButton.Mode.ENDLESS);
 
@@ -87,6 +91,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity implements LoginOrS
     public void displayInvalidLogin() {
         Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_LONG).show();
         btnSignIn.setProgress(-1);
+        focusDummy.requestFocus();
         setEnableStateOfLoginComponents(true);
     }
 
@@ -95,6 +100,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity implements LoginOrS
         usernameInputLayout.setError("A username/email must be entered!");
         usernameText.setError(null);
         btnSignIn.setProgress(-1);
+        focusDummy.requestFocus();
         setEnableStateOfLoginComponents(true);
     }
 
@@ -103,6 +109,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity implements LoginOrS
         passwordInputLayout.setError("A password must be entered!");
         passwordText.setError(null);
         btnSignIn.setProgress(-1);
+        focusDummy.requestFocus();
         setEnableStateOfLoginComponents(true);
     }
 
@@ -112,6 +119,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity implements LoginOrS
                 "Please contact bigbrainmoves@gmail.com, your account's data seems to be corrupted",
                 Toast.LENGTH_LONG).show();
         btnSignIn.setProgress(-1);
+        focusDummy.requestFocus();
         setEnableStateOfLoginComponents(true);
     }
 
@@ -121,6 +129,7 @@ public class LoginOrSignUpActivity extends AppCompatActivity implements LoginOrS
                 "Insufficient permissions to communicate with database.",
                 Toast.LENGTH_LONG).show();
         btnSignIn.setProgress(-1);
+        focusDummy.requestFocus();
         setEnableStateOfLoginComponents(true);
     }
 

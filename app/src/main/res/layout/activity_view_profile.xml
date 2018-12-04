@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".activities.ViewProfileActivity">
 
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -144,7 +150,7 @@
                     android:id="@+id/serviceIcon"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_notifications_red_24dp" />
+                    android:src="@drawable/ic_service" />
                 <!-- Scrollable Layout -->
                 <LinearLayout
                     android:layout_width="match_parent"

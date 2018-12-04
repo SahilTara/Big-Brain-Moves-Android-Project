@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
@@ -39,6 +40,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
     private EditText passwordText;
     private EditText displayNameText;
 
+    private LinearLayout focusDummy;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +68,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
 
         passwordText = findViewById(R.id.passwordText);
         passwordInputLayout = findViewById(R.id.passwordInputLayout);
+
+        focusDummy = findViewById(R.id.focusDummy);
 
         emailText.setOnFocusChangeListener(this::setFocus);
         displayNameText.setOnFocusChangeListener(this::setFocus);
@@ -130,6 +135,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         emailInputLayout.setError("Email is already associated to an account.");
         setEnableStateOfSignUpComponents(true);
         signUpButton.setProgress(-1);
+        focusDummy.requestFocus();
     }
 
     @Override
@@ -137,6 +143,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         userInputLayout.setError("Username has already been taken.");
         setEnableStateOfSignUpComponents(true);
         signUpButton.setProgress(-1);
+        focusDummy.requestFocus();
     }
 
     @Override
@@ -153,6 +160,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         emailInputLayout.setError("Invalid Email Address");
         setEnableStateOfSignUpComponents(true);
         signUpButton.setProgress(-1);
+        focusDummy.requestFocus();
     }
 
     @Override
@@ -160,6 +168,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         userInputLayout.setError("Username must have minimum length of 3.");
         setEnableStateOfSignUpComponents(true);
         signUpButton.setProgress(-1);
+        focusDummy.requestFocus();
     }
 
     @Override
@@ -167,6 +176,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         userInputLayout.setError("Username can only contain alphanumeric or .-_ characters.");
         setEnableStateOfSignUpComponents(true);
         signUpButton.setProgress(-1);
+        focusDummy.requestFocus();
     }
 
     @Override
@@ -174,15 +184,17 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         displayNameInputLayout.setError("Display Name must only contain A-Z and spaces.");
         setEnableStateOfSignUpComponents(true);
         signUpButton.setProgress(-1);
+        focusDummy.requestFocus();
     }
 
     @Override
     public void displayInvalidPassword() {
-        passwordInputLayout.setError("Passwords must be greater than 6" +
+        passwordInputLayout.setError("Passwords must be greater than 6 " +
                                      "characters long and contain no spaces.");
 
         setEnableStateOfSignUpComponents(true);
         signUpButton.setProgress(-1);
+        focusDummy.requestFocus();
     }
 
     @Override
@@ -193,6 +205,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         spinner.setError("You must select a valid type.");
         setEnableStateOfSignUpComponents(true);
         signUpButton.setProgress(-1);
+
+        focusDummy.requestFocus();
     }
 
     @Override
@@ -209,6 +223,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
                 Toast.LENGTH_LONG).show();
         setEnableStateOfSignUpComponents(true);
         signUpButton.setProgress(0);
+        focusDummy.requestFocus();
     }
 
     @Override
@@ -218,6 +233,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
                 Toast.LENGTH_LONG).show();
         setEnableStateOfSignUpComponents(true);
         signUpButton.setProgress(-1);
+        focusDummy.requestFocus();
     }
 
     @Override

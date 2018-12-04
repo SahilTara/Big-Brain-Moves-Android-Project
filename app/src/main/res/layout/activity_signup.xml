@@ -1,133 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout3"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="10dp"
-    android:orientation="vertical"
-    tools:context=".activities.SignUpActivity">
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailInputLayout"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:fontFamily="@font/roboto"
-        android:hint="Email"
-        app:helperText="*Required"
-        app:hintAnimationEnabled="true">
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        tools:context=".activities.SignUpActivity">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:id="@+id/focusDummy"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/emailText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
+            android:layout_margin="8dp"
             android:fontFamily="@font/roboto"
-            android:inputType="textEmailAddress" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Email"
+            app:helperText="*Required"
+            app:hintAnimationEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:fontFamily="@font/roboto"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/displayNameInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:fontFamily="@font/roboto"
-        android:hint="Display Name"
-        app:helperText="*Required"
-        app:hintAnimationEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/displayNameText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/displayNameInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
+            android:layout_margin="8dp"
             android:fontFamily="@font/roboto"
-            android:inputType="textPersonName" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Display Name"
+            app:helperText="*Required"
+            app:hintAnimationEnabled="true">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/usernameInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:fontFamily="@font/roboto"
-        android:hint="Username"
-        app:helperText="*Required"
-        app:hintAnimationEnabled="true">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/displayNameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:fontFamily="@font/roboto"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/userText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/usernameInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
+            android:layout_margin="8dp"
             android:fontFamily="@font/roboto"
-            android:inputType="textPersonName" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Username"
+            app:helperText="*Required"
+            app:hintAnimationEnabled="true">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/passwordInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:fontFamily="@font/roboto"
-        android:hint="Password"
-        app:helperText="*Required"
-        app:hintAnimationEnabled="true"
-        app:passwordToggleEnabled="true">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/userText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:fontFamily="@font/roboto"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/passwordText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
+            android:layout_margin="8dp"
             android:fontFamily="@font/roboto"
-            android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Password"
+            app:helperText="*Required"
+            app:hintAnimationEnabled="true"
+            app:passwordToggleEnabled="true">
 
-    <com.jaredrummler.materialspinner.MaterialSpinner
-        android:id="@+id/userTypeSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:hint="Type"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.45"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/displayNameText" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:fontFamily="@font/roboto"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/userTypeSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:hint="Type"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.45"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/displayNameText" />
 
 
-    <com.dd.processbutton.iml.ActionProcessButton
-        android:id="@+id/btnSignUp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="100dp"
-        android:elevation="2dp"
-        android:fontFamily="@font/roboto"
-        android:gravity="center_vertical|center_horizontal|center"
-        android:minWidth="80dp"
-        android:onClick="btnSignUpClick"
-        android:text="Sign Up"
+        <com.dd.processbutton.iml.ActionProcessButton
+            android:id="@+id/btnSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="100dp"
+            android:elevation="2dp"
+            android:fontFamily="@font/roboto"
+            android:gravity="center_vertical|center_horizontal|center"
+            android:minWidth="80dp"
+            android:onClick="btnSignUpClick"
+            android:text="Sign Up"
 
-        android:textAlignment="center"
+            android:textAlignment="center"
 
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        app:pb_colorComplete="@color/green_complete"
-        app:pb_colorError="@color/red_error"
-        app:pb_colorNormal="@color/colorAccent"
-        app:pb_colorPressed="@color/colorAccentDark"
-        app:pb_colorProgress="@color/purple_progress"
-        app:pb_cornerRadius="4dp"
-        app:pb_textComplete="Success"
-        app:pb_textError="Failed"
-        app:pb_textProgress="Attempting sign up" />
-</LinearLayout>
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:pb_colorComplete="@color/green_complete"
+            app:pb_colorError="@color/red_error"
+            app:pb_colorNormal="@color/colorAccent"
+            app:pb_colorPressed="@color/colorAccentDark"
+            app:pb_colorProgress="@color/purple_progress"
+            app:pb_cornerRadius="4dp"
+            app:pb_textComplete="Success"
+            app:pb_textError="Failed"
+            app:pb_textProgress="Attempting sign up" />
+    </LinearLayout>
+</ScrollView>

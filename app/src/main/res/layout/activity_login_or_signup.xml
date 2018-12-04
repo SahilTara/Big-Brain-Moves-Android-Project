@@ -8,11 +8,19 @@
     tools:context=".activities.LoginOrSignUpActivity">
 
     <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:id="@+id/focusDummy"/>
+
+    <LinearLayout
         android:id="@+id/parentLoginLinLayout"
         android:layout_width="338dp"
-        android:layout_height="150dp"
+        android:layout_height="149dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="8dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +109,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/parentLoginLinLayout"
-        app:layout_constraintVertical_bias="0.176">
+        app:layout_constraintVertical_bias="0.296">
 
         <!--Following material guidelines -->
         <com.dd.processbutton.iml.ActionProcessButton
