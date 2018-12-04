@@ -376,7 +376,9 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
     @Override
     public void displayInvalidDate() {
-        //TODO ADD TOAST
+        Toast.makeText(getApplicationContext(),
+                "Please select a date for your booking!",
+                Toast.LENGTH_LONG).show();
 
     }
 
