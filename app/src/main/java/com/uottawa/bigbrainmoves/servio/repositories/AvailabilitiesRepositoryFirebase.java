@@ -20,12 +20,14 @@ public class AvailabilitiesRepositoryFirebase implements  AvailabilitiesReposito
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = mDatabase.getReference();
 
+    private static final String AVAILABILITIES = "availabilities";
+    
     @Override
     public void setAvailabilities(WeeklyAvailabilities availabilities) {
         Account account = CurrentAccount.getInstance().getCurrentAccount();
         String username = account.getUsername();
 
-        myRef.child("availabilities").child(username).setValue(availabilities);
+        myRef.child(AVAILABILITIES).child(username).setValue(availabilities);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class AvailabilitiesRepositoryFirebase implements  AvailabilitiesReposito
     public Observable<Optional<WeeklyAvailabilities>> getAvailabilities(String username) {
 
         return Observable.create(subscriber ->
-                myRef.child("availabilities").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+                myRef.child(AVAILABILITIES).child(username).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
@@ -68,7 +70,7 @@ public class AvailabilitiesRepositoryFirebase implements  AvailabilitiesReposito
      */
     public Observable<HashMap<String, WeeklyAvailabilities>> getAllAvailabilities() {
         return Observable.create(subscriber -> {
-            myRef.child("availabilities").addListenerForSingleValueEvent(new ValueEventListener() {
+            myRef.child(AVAILABILITIES).addListenerForSingleValueEvent(new ValueEventListener() {
                 //
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

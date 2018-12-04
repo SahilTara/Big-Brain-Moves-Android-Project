@@ -70,35 +70,7 @@ public class BookingsRepositoryFirebase extends GenericFirebaseRepository implem
         final Query myQuery = ref;
 
         return Observable.create(subscriber ->
-                myQuery.addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Booking booking = dataSnapshot.getValue(Booking.class);
-                                subscriber.onNext(new Pair<>(booking, false));
-                            }
-
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Booking booking = dataSnapshot.getValue(Booking.class);
-                                subscriber.onNext(new Pair<>(booking, false));
-                            }
-
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                                Booking booking = dataSnapshot.getValue(Booking.class);
-                                subscriber.onNext(new Pair<>(booking, true));
-                            }
-
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                subscriber.onError(new FirebaseException(databaseError.getMessage()));
-                            }
-                        }));
+                myQuery.addChildEventListener(getGenericChildEventListener(Booking.class, subscriber)));
     }
 
     public void saveBooking(Booking booking) {

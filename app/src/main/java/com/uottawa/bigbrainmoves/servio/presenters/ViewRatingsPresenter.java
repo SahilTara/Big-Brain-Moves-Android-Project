@@ -1,11 +1,9 @@
 package com.uottawa.bigbrainmoves.servio.presenters;
 
-import com.uottawa.bigbrainmoves.servio.models.Booking;
 import com.uottawa.bigbrainmoves.servio.models.Rating;
 import com.uottawa.bigbrainmoves.servio.models.ReadOnlyService;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
-import com.uottawa.bigbrainmoves.servio.views.ViewBookingsView;
 import com.uottawa.bigbrainmoves.servio.views.ViewRatingsView;
 
 import io.reactivex.Observer;

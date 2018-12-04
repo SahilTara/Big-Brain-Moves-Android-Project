@@ -74,7 +74,6 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
     private Button chooseTime;
     private TextView price;
     private TextView priceLabel;
-    private TextView timeLabel;
 
     private ViewServicePresenter presenter;
     private final Repository repository = new DbHandler();
@@ -82,6 +81,9 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
     private ReadOnlyService service;
     private WeeklyAvailabilities availabilities;
     private Calendar selected = Calendar.getInstance();
+
+    // The tag for the service object sent from a different activity.
+    private static final String PARCELABLE_SERVICE_TAG = "service";
 
 
     @Override
@@ -91,7 +93,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
         ButterKnife.bind(this);
         presenter = new ViewServicePresenter(repository, this);
         Intent intent = getIntent();
-        service = intent.getParcelableExtra("service");
+        service = intent.getParcelableExtra(PARCELABLE_SERVICE_TAG);
         presenter.loadAvailabilitiesForService(service);
         presenter.loadServiceProviderForService(service);
         displayServiceInfo(service);
@@ -113,11 +115,11 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
         chooseTime = dialogView.findViewById(R.id.btnSetTimeRange);
         price = dialogView.findViewById(R.id.priceTextView);
-        timeLabel = dialogView.findViewById(R.id.timeRangeTextView);
+        TextView timeLabel = dialogView.findViewById(R.id.timeRangeTextView);
         priceLabel = dialogView.findViewById(R.id.priceLabelTextView);
 
         Calendar calendar = Calendar.getInstance();
-        chooseDate.setOnClickListener(__ -> {
+        chooseDate.setOnClickListener(v -> {
             boolean timeVisible = chooseTime.getVisibility() == View.VISIBLE;
             boolean priceVisible = price.getVisibility() == View.VISIBLE;
 
@@ -128,7 +130,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
             priceLabel.setVisibility(View.GONE);
 
 
-            DatePickerDialog datePickerDialog = DatePickerDialog.newInstance((___, year, monthOfYear, dayOfMonth) -> {
+            DatePickerDialog datePickerDialog = DatePickerDialog.newInstance((datePickerView, year, monthOfYear, dayOfMonth) -> {
                 selected.set(year, monthOfYear, dayOfMonth);
 
                 chooseTime.setText("Select a Time Range");
@@ -139,7 +141,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
                 chooseTime.setVisibility(View.VISIBLE);
             });
 
-            datePickerDialog.setOnDismissListener(___ -> {
+            datePickerDialog.setOnDismissListener(view -> {
                 if (timeVisible) {
                     timeLabel.setVisibility(View.VISIBLE);
                     chooseTime.setVisibility(View.VISIBLE);
@@ -156,11 +158,9 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
         });
 
-        chooseTime.setOnClickListener(__ -> {
-            presenter.getTimeRestrictions(service, selected, availabilities);
-        });
+        chooseTime.setOnClickListener(view -> presenter.getTimeRestrictions(service, selected, availabilities));
 
-        dialogBuilder.setView(dialogView).setPositiveButton("Confirm Booking", (dialog, __) -> {
+        dialogBuilder.setView(dialogView).setPositiveButton("Confirm Booking", (dialog, which) -> {
             String date = chooseDate.getText().toString();
             String timeRange = chooseTime.getText().toString();
             String priceText = price.getText().toString().replace("$", "");
@@ -170,9 +170,8 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
             }
 
             presenter.createBooking(service, date, timeRange, priceVal);
-        }).setNegativeButton("Cancel", (dialog, __) -> {
-            dialog.dismiss();
-        }).setTitle("Make a Booking").show();
+        }).setNegativeButton("Cancel", (dialog, which) ->
+                dialog.dismiss()).setTitle("Make a Booking").show();
 
 
 
@@ -180,8 +179,8 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
     private void onViewRatingsClick() {
         Intent intent = new Intent(getApplicationContext(), ViewRatingsActivity.class);
-        Service service = getIntent().getParcelableExtra("service");
-        intent.putExtra("service", service);
+        Service serviceNotReadOnly = getIntent().getParcelableExtra(PARCELABLE_SERVICE_TAG);
+        intent.putExtra(PARCELABLE_SERVICE_TAG, serviceNotReadOnly);
         startActivity(intent);
     }
 
@@ -312,11 +311,11 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
 
         TimePickerDialog timePickerStart = TimePickerDialog.newInstance(
-                (__, selectedStartHour, selectedStartMinute, ___) -> {
+                (startView, selectedStartHour, selectedStartMinute, selectedStartSecond) -> {
                     int selectedStartHourRestrict = (selectedStartHour + ((selectedStartMinute + 30) / 60)) % 24;
                     int selectedStartMinuteRestrict = (selectedStartMinute + 30) % 60;
                     TimePickerDialog timePickerEnd = TimePickerDialog.newInstance(
-                            (____, selectedEndHour, selectedEndMinute, _____) -> {
+                            (endView, selectedEndHour, selectedEndMinute, selectedEndSecond) -> {
                                 price.setText("");
                                 chooseTime.setText(String.format(Locale.ENGLISH,
                                         "%02d:%02d~%02d:%02d",
@@ -329,7 +328,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
                                 presenter.getServicePrice(service, duration);
                             }, true);
 
-                    timePickerEnd.setOnDismissListener(____ -> {
+                    timePickerEnd.setOnDismissListener(v -> {
                         if (priceVisible) {
                             priceLabel.setVisibility(View.VISIBLE);
                             price.setVisibility(View.VISIBLE);
@@ -346,7 +345,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
                     timePickerEnd.show(getSupportFragmentManager(), "TimePicker");
                 }, true);
 
-        timePickerStart.setOnDismissListener(__ -> {
+        timePickerStart.setOnDismissListener(view -> {
             if (priceVisible) {
                 priceLabel.setVisibility(View.VISIBLE);
                 price.setVisibility(View.VISIBLE);
@@ -420,6 +419,8 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
             case R.id.btnViewRatings:
                 onViewRatingsClick();
                 break;
+            default:
+                // we don't do anything here since there is no other views for us to handle.
         }
     }
 }

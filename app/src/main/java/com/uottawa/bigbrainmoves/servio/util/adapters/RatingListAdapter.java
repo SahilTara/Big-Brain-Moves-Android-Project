@@ -37,7 +37,7 @@ public class RatingListAdapter extends RecyclerView.Adapter<RatingListAdapter.Vi
         viewHolder.ratingCommentTextView.setText(rating.getComment());
 
 
-        viewHolder.ratingBar.setRating((float) rating.getRating());
+        viewHolder.ratingBar.setRating((float) rating.getRatingGiven());
 
     }
 

@@ -109,7 +109,6 @@ public class ViewProfileActivity extends AppCompatActivity implements ViewProfil
             setBackground(originalTextDrawable);
             actionButton.setImageDrawable(saveIcon);
             changeRecyclerViewState();
-            RecyclerView recyclerView = findViewById(R.id.servicesProvidedRecycler);
         } else {
             ServicesOfferedListAdapter adapter = (ServicesOfferedListAdapter) provided.getAdapter();
             String phoneNumber = phoneViewText.getText().toString();

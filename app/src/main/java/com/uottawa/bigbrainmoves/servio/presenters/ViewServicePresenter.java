@@ -11,7 +11,6 @@ import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.util.enums.BookingStatus;
-import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.views.ViewServiceView;
 
 import java.text.SimpleDateFormat;
@@ -199,6 +198,8 @@ public class ViewServicePresenter {
                 startTime = availabilities.getSundayStart();
                 endTime = availabilities.getSundayEnd();
                 break;
+            default:
+                // We only consider monday-sunday as days.
         }
 
         // Rounds to nearest thirty minutes
@@ -266,7 +267,6 @@ public class ViewServicePresenter {
                 @Override
                 public void onError(Throwable e) {
                     view.displayDbError();
-                    e.printStackTrace();
                     disposable.dispose();
                     disposable = null;
                 }
@@ -336,7 +336,6 @@ public class ViewServicePresenter {
             @Override
             public void onError(Throwable e) {
                 view.displayDbError();
-                e.printStackTrace();
                 disposable.dispose();
                 disposable = null;
             }

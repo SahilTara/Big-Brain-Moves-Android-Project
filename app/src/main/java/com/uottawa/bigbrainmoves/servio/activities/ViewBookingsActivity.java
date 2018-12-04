@@ -19,15 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ViewBookingsActivity extends AppCompatActivity implements ViewBookingsView {
-
-    private ViewBookingsPresenter presenter;
     private final Repository repository = new DbHandler();
     private List<Booking> listOfBookings = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_bookings);
-        presenter = new ViewBookingsPresenter(this, repository);
+        ViewBookingsPresenter presenter = new ViewBookingsPresenter(this, repository);
         presenter.listenForBookingUpdates();
     }
 

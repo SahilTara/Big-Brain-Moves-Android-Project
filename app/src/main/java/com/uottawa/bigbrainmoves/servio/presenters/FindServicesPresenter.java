@@ -24,6 +24,7 @@ public class FindServicesPresenter {
     private String time = "00:00";
     private String filterString = ".*()";
     private boolean filterByTime = false;
+    private static final String VALID_TIME_REGEX = "\\d{2}:\\d{2}";
     private DayOfWeek dayOfWeek = DayOfWeek.ANY;
 
     public FindServicesPresenter(FindServicesView view, Repository repository) {
@@ -48,8 +49,6 @@ public class FindServicesPresenter {
             @Override
             public void onError(Throwable e) {
                 // want silence for this one.
-                //TODO: Remove after debugging.
-                e.printStackTrace();
                 disposable.dispose();
                 disposable = null;
             }
@@ -83,9 +82,6 @@ public class FindServicesPresenter {
 
             @Override
             public void onError(Throwable e) {
-                // want silence for this one.
-                //TODO: Remove after debugging.
-                e.printStackTrace();
                 disposable.dispose();
                 disposable = null;
             }
@@ -186,7 +182,7 @@ public class FindServicesPresenter {
         boolean isAvailableMonday =  ((dayOfWeek.equals(DayOfWeek.MONDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(mondayStart) >= 0 // check if >= than start
                 && time.compareTo(mondayEnd) < 0) || !filterByTime) // less than end
-                && mondayStart.matches("\\d{2}:\\d{2}"));
+                && mondayStart.matches(VALID_TIME_REGEX));
 
         String tuesdayStart = availabilities.getTuesdayStart();
         String tuesdayEnd = availabilities.getTuesdayEnd();
@@ -194,7 +190,7 @@ public class FindServicesPresenter {
         boolean isAvailableTuesday =  ((dayOfWeek.equals(DayOfWeek.TUESDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(tuesdayStart) >= 0 // check if >= than start
                 && time.compareTo(tuesdayEnd) < 0) || !filterByTime) // less than end
-                && tuesdayStart.matches("\\d{2}:\\d{2}"));
+                && tuesdayStart.matches(VALID_TIME_REGEX));
 
         String wednesdayStart = availabilities.getWednesdayStart();
         String wednesdayEnd = availabilities.getWednesdayEnd();
@@ -202,7 +198,7 @@ public class FindServicesPresenter {
         boolean isAvailableWednesday =  ((dayOfWeek.equals(DayOfWeek.WEDNESDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(wednesdayStart) >= 0 // check if >= than start
                 && time.compareTo(wednesdayEnd) < 0) || !filterByTime) // less than end
-                && wednesdayStart.matches("\\d{2}:\\d{2}"));
+                && wednesdayStart.matches(VALID_TIME_REGEX));
 
         String thursdayStart = availabilities.getThursdayStart();
         String thursdayEnd = availabilities.getThursdayEnd();
@@ -210,7 +206,7 @@ public class FindServicesPresenter {
         boolean isAvailableThursday =  ((dayOfWeek.equals(DayOfWeek.THURSDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(thursdayStart) >= 0 // check if >= than start
                 && time.compareTo(thursdayEnd) < 0) || !filterByTime) // less than end
-                && thursdayStart.matches("\\d{2}:\\d{2}"));
+                && thursdayStart.matches(VALID_TIME_REGEX));
 
         String fridayStart = availabilities.getFridayStart();
         String fridayEnd = availabilities.getFridayEnd();
@@ -218,7 +214,7 @@ public class FindServicesPresenter {
         boolean isAvailableFriday =  ((dayOfWeek.equals(DayOfWeek.FRIDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(fridayStart) >= 0 // check if >= than start
                 && time.compareTo(fridayEnd) < 0) || !filterByTime) // less than end
-                && fridayStart.matches("\\d{2}:\\d{2}"));
+                && fridayStart.matches(VALID_TIME_REGEX));
 
 
         String saturdayStart = availabilities.getSaturdayStart();
@@ -227,7 +223,7 @@ public class FindServicesPresenter {
         boolean isAvailableSaturday =  ((dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(saturdayStart) >= 0 // check if >= than start
                 && time.compareTo(saturdayEnd) < 0) || !filterByTime) // less than end
-                && saturdayStart.matches("\\d{2}:\\d{2}"));
+                && saturdayStart.matches(VALID_TIME_REGEX));
 
         String sundayStart = availabilities.getSundayStart();
         String sundayEnd = availabilities.getSundayEnd();
@@ -235,7 +231,7 @@ public class FindServicesPresenter {
         boolean isAvailableSunday =  ((dayOfWeek.equals(DayOfWeek.SUNDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(sundayStart) >= 0 // check if >= than start
                 && time.compareTo(sundayEnd) < 0) || !filterByTime) // less than end
-                && sundayStart.matches("\\d{2}:\\d{2}"));
+                && sundayStart.matches(VALID_TIME_REGEX));
 
         return isAvailableMonday || isAvailableTuesday || isAvailableWednesday || isAvailableThursday ||
                 isAvailableFriday || isAvailableSaturday || isAvailableSunday;

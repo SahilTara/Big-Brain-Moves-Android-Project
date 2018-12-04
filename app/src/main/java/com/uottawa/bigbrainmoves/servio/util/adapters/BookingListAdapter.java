@@ -208,7 +208,7 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
         RatingBar ratingBar = ratingDialogView.findViewById(R.id.ratingBar);
         EditText commentText = ratingDialogView.findViewById(R.id.commentText);
 
-        double oldValue = rating.getRating();
+        double oldValue = rating.getRatingGiven();
         ratingBar.setRating((float) oldValue);
         commentText.setText(rating.getComment());
 
@@ -217,7 +217,7 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
         }
 
         ratingDialog.setPositiveButton(positiveText, (dialog, __) -> {
-            rating.setRating(ratingBar.getRating());
+            rating.setRatingGiven(ratingBar.getRating());
             rating.setComment(commentText.getText().toString());
             presenter.setRating(rating, oldValue, isRated);
         }).setNegativeButton("Cancel", (dialog, __) -> {

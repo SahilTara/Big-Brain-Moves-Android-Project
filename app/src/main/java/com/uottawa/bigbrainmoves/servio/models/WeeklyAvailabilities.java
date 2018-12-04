@@ -20,28 +20,30 @@ public class WeeklyAvailabilities {
     private String saturdayEnd;
     private String sundayStart;
     private String sundayEnd;
-
+    private static final String DEFAULT_START_STRING = "Start Time";
+    private static final String DEFAULT_END_STRING = "End Time";
+    
     public WeeklyAvailabilities() {
-        mondayStart = "Start Time";
-        mondayEnd = "End Time";
+        mondayStart = DEFAULT_START_STRING;
+        mondayEnd = DEFAULT_END_STRING;
 
-        tuesdayStart = "Start Time";
-        tuesdayEnd = "End Time";
+        tuesdayStart = DEFAULT_START_STRING;
+        tuesdayEnd = DEFAULT_END_STRING;
 
-        wednesdayStart = "Start Time";
-        wednesdayEnd = "End Time";
+        wednesdayStart = DEFAULT_START_STRING;
+        wednesdayEnd = DEFAULT_END_STRING;
 
-        thursdayStart = "Start Time";
-        thursdayEnd = "End Time";
+        thursdayStart = DEFAULT_START_STRING;
+        thursdayEnd = DEFAULT_END_STRING;
 
-        fridayStart = "Start Time";
-        fridayEnd = "End Time";
+        fridayStart = DEFAULT_START_STRING;
+        fridayEnd = DEFAULT_END_STRING;
 
-        saturdayStart = "Start Time";
-        saturdayEnd = "End Time";
+        saturdayStart = DEFAULT_START_STRING;
+        saturdayEnd = DEFAULT_END_STRING;
 
-        sundayStart = "Start Time";
-        sundayEnd = "End Time";
+        sundayStart = DEFAULT_START_STRING;
+        sundayEnd = DEFAULT_END_STRING;
     }
 
     public String getMondayEnd() {
@@ -160,19 +162,19 @@ public class WeeklyAvailabilities {
     public Optional<DayOfWeek> getInvalidTimeSlot() {
         DayOfWeek invalidDay = null;
         
-        if (mondayStart.equals("Start Time") ^ mondayEnd.equals("End Time")) {
+        if (mondayStart.equals(DEFAULT_START_STRING) ^ mondayEnd.equals(DEFAULT_END_STRING)) {
             invalidDay = DayOfWeek.MONDAY;
-        } else if (tuesdayStart.equals("Start Time") ^ tuesdayEnd.equals("End Time")) {
+        } else if (tuesdayStart.equals(DEFAULT_START_STRING) ^ tuesdayEnd.equals(DEFAULT_END_STRING)) {
             invalidDay = DayOfWeek.TUESDAY;
-        } else if (wednesdayStart.equals("Start Time") ^ wednesdayEnd.equals("End Time")) {
+        } else if (wednesdayStart.equals(DEFAULT_START_STRING) ^ wednesdayEnd.equals(DEFAULT_END_STRING)) {
             invalidDay = DayOfWeek.WEDNESDAY;
-        } else if (thursdayStart.equals("Start Time") ^ thursdayEnd.equals("End Time")) {
+        } else if (thursdayStart.equals(DEFAULT_START_STRING) ^ thursdayEnd.equals(DEFAULT_END_STRING)) {
             invalidDay = DayOfWeek.THURSDAY;
-        } else if (fridayStart.equals("Start Time") ^ fridayEnd.equals("End Time")) {
+        } else if (fridayStart.equals(DEFAULT_START_STRING) ^ fridayEnd.equals(DEFAULT_END_STRING)) {
             invalidDay = DayOfWeek.FRIDAY;
-        } else if (saturdayStart.equals("Start Time") ^ saturdayEnd.equals("End Time")) {
+        } else if (saturdayStart.equals(DEFAULT_START_STRING) ^ saturdayEnd.equals(DEFAULT_END_STRING)) {
             invalidDay = DayOfWeek.SATURDAY;
-        } else if (sundayStart.equals("Start Time") ^ sundayEnd.equals("End Time")) {
+        } else if (sundayStart.equals(DEFAULT_START_STRING) ^ sundayEnd.equals(DEFAULT_END_STRING)) {
             invalidDay = DayOfWeek.SUNDAY;
         }
         

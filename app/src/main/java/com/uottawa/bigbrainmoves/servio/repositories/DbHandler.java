@@ -4,12 +4,10 @@ import android.util.Patterns;
 
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.models.Booking;
@@ -22,22 +20,16 @@ import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
-import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.enums.SignupResult;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.functions.BiConsumer;
-import io.reactivex.functions.Consumer;
 
 public class DbHandler extends GenericFirebaseRepository implements Repository {
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -380,7 +372,7 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
                                                               final String password,
                                                               final String displayName,
                                                               final AccountType typeSelected) {
-        return Observable.create(subscriber -> {
+        return Observable.create(subscriber ->
             // We make sure that a user does not exist with this username.
             // We will return true if the user exists, false otherwise in this observer.
             myRef.child(USERNAME_TO_EMAIL).child(username)
@@ -399,8 +391,8 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
                                 return;
                             subscriber.onError(new FirebaseException(dbError.getMessage()));
                         }
-                    });
-        }).flatMap(result -> {
+                    })
+        ).flatMap(result -> {
             // if the result is equal to false then
             if (result instanceof Boolean && result.equals(false)) {
                 return createAccount(email, username, password, displayName, typeSelected);
@@ -464,7 +456,7 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
      * @return RxJava observable containing whether or not the service type was successfully created.
      */
     public Observable<Boolean> createServiceTypeIfNotInDatabase(String serviceTypeName, double value) {
-        return Observable.create(subscriber -> {
+        return Observable.create(subscriber ->
             // We make sure that a user does not exist with this uid.
             myRef.child(SERVICE_TYPES).child(serviceTypeName)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -489,8 +481,8 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
                                 return;
                             subscriber.onError(new FirebaseException(dbError.getMessage()));
                         }
-                    });
-        });
+                    })
+        );
     }
 
     /**
@@ -511,35 +503,7 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
      */
     public Observable<Pair<ServiceType, Boolean>> listenForServiceTypeChanges() {
         return Observable.create(subscriber ->
-                myRef.child(SERVICE_TYPES).addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        ServiceType serviceType = dataSnapshot.getValue(ServiceType.class);
-                        subscriber.onNext(new Pair<>(serviceType, false));
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        ServiceType serviceType = dataSnapshot.getValue(ServiceType.class);
-                        subscriber.onNext(new Pair<>(serviceType, false));
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                        ServiceType serviceType = dataSnapshot.getValue(ServiceType.class);
-                        subscriber.onNext(new Pair<>(serviceType, true));
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        subscriber.onError(new FirebaseException(databaseError.getMessage()));
-                    }
-        }));
+                myRef.child(SERVICE_TYPES).addChildEventListener(getGenericChildEventListener(ServiceType.class, subscriber)));
     }
 
     /**
@@ -549,35 +513,7 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
     public Observable<Pair<Service, Boolean>> listenForServiceChanges() {
         return Observable.create(subscriber ->
                 myRef.child(PROVIDED_SERVICES).orderByChild("offeredDisabled").equalTo("truefalse")
-                .addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Service service = dataSnapshot.getValue(Service.class);
-                subscriber.onNext(new Pair<>(service, false));
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Service service = dataSnapshot.getValue(Service.class);
-                subscriber.onNext(new Pair<>(service, false));
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Service service = dataSnapshot.getValue(Service.class);
-                subscriber.onNext(new Pair<>(service, true));
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                subscriber.onError(new FirebaseException(databaseError.getMessage()));
-            }
-        }));
+                .addChildEventListener(getGenericChildEventListener(Service.class, subscriber)));
     }
 
     /**
@@ -732,7 +668,7 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
                             }
                             subber.onNext(services);
                             subber.onComplete();
-                        } , (subber) -> {
+                        } , subber -> {
                             // deal with no services case
                             ArrayList<Service> services = new ArrayList<>();
                             for (String serviceType : serviceTypes) {
@@ -853,7 +789,7 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        // TODO Integrate firebase crashlytics to log stuff like this.
                     }
                 });
     }
@@ -954,10 +890,10 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
             if (serviceOpt.isPresent()) {
                 Service service = serviceOpt.get();
                 if (isUpdate) {
-                    service.setTotalRatingSum(service.getTotalRatingSum() - oldRating + rating.getRating());
+                    service.setTotalRatingSum(service.getTotalRatingSum() - oldRating + rating.getRatingGiven());
                 } else {
                     service.setNumOfRatings(service.getNumOfRatings() + 1);
-                    service.setTotalRatingSum(service.getTotalRatingSum() + rating.getRating());
+                    service.setTotalRatingSum(service.getTotalRatingSum() + rating.getRatingGiven());
                 }
                 rating.setReviewDate(Calendar.getInstance().getTimeInMillis());
                 HashMap<String, Object> updateMap = new HashMap<>();
@@ -981,34 +917,6 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
         String serviceTypeProvider = service.getType() + service.getServiceProviderUser();
         return Observable.create(subscriber ->
                 myRef.child(RATINGS).orderByChild("serviceTypeProvider").equalTo(serviceTypeProvider)
-                        .addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Rating rating = dataSnapshot.getValue(Rating.class);
-                                subscriber.onNext(new Pair<>(rating, false));
-                            }
-
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Rating rating = dataSnapshot.getValue(Rating.class);
-                                subscriber.onNext(new Pair<>(rating, false));
-                            }
-
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                                Rating rating = dataSnapshot.getValue(Rating.class);
-                                subscriber.onNext(new Pair<>(rating, true));
-                            }
-
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                subscriber.onError(new FirebaseException(databaseError.getMessage()));
-                            }
-                        }));
+                        .addChildEventListener(getGenericChildEventListener(Rating.class, subscriber)));
     }
 }

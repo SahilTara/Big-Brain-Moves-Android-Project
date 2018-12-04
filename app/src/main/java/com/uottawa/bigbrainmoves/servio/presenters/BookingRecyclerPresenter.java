@@ -3,7 +3,6 @@ package com.uottawa.bigbrainmoves.servio.presenters;
 import com.uottawa.bigbrainmoves.servio.models.Booking;
 import com.uottawa.bigbrainmoves.servio.models.Rating;
 import com.uottawa.bigbrainmoves.servio.models.Service;
-import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.enums.BookingStatus;
 import com.uottawa.bigbrainmoves.servio.views.BookingRecyclerView;

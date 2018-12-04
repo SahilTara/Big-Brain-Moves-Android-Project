@@ -1,7 +1,6 @@
 package com.uottawa.bigbrainmoves.servio.presenters;
 
 
-import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
 import com.uottawa.bigbrainmoves.servio.util.enums.SignupResult;

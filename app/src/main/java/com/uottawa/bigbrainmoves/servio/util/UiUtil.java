@@ -6,10 +6,12 @@ import android.content.Intent;
 import com.uottawa.bigbrainmoves.servio.activities.AdminMainActivity;
 import com.uottawa.bigbrainmoves.servio.activities.MainActivity;
 import com.uottawa.bigbrainmoves.servio.activities.ServiceMainActivity;
-import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
 
 public class UiUtil {
+    private UiUtil() {
+        throw new IllegalStateException("UiUtil is a utility class not meant to be instantiated");
+    }
     public static Intent getIntentFromType(Context context, AccountType userType) {
         switch (userType) {
             case ADMIN:
