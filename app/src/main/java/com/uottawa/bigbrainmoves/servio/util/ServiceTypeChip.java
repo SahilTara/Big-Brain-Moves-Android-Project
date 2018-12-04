@@ -5,6 +5,8 @@ import android.net.Uri;
 
 import com.pchmn.materialchips.model.ChipInterface;
 
+import java.util.Objects;
+
 public class ServiceTypeChip implements ChipInterface {
     private final String info;
     private final String label;
@@ -40,5 +42,11 @@ public class ServiceTypeChip implements ChipInterface {
     @Override
     public boolean equals(Object object) {
         return object instanceof ServiceTypeChip && ((ServiceTypeChip) object).label.equals(label);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(label);
     }
 }
