@@ -97,10 +97,12 @@ public class TestViewProfilePresenter {
     public void testGetProfileInfo() {
         when(repository.getServicesProvidedByCurrentUser()).thenReturn(Observable.create(subscriber -> {
             subscriber.onNext(Collections.emptyList());
+            subscriber.onComplete();
         }));
 
         when(repository.getServicesProvidable(anyList())).thenReturn(Observable.create(subscriber -> {
             subscriber.onNext(Collections.emptyList());
+            subscriber.onComplete();
         }));
 
         ServiceProvider serviceProvider = mock(ServiceProvider.class);

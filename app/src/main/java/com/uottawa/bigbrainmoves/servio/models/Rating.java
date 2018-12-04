@@ -14,7 +14,7 @@ public class Rating {
     private String comment;
     private double ratingGiven;
     private Date reviewDate;
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.ENGLISH);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.ENGLISH);
 
     public Rating() {
         // Required for firebase

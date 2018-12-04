@@ -130,8 +130,6 @@ public class FindServicesPresenter {
                     @Override
                     public void onError(Throwable e) {
                         // want silence for this one.
-                        //TODO: Remove after debugging.
-                        e.printStackTrace();
                         disposable.dispose();
                         disposable = null;
                     }
@@ -154,8 +152,6 @@ public class FindServicesPresenter {
             @Override
             public void onError(Throwable e) {
                 // want silence for this one.
-                //TODO: Remove after debugging.
-                e.printStackTrace();
                 disposable.dispose();
                 disposable = null;
             }
