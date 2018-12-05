@@ -1,7 +1,6 @@
 package com.uottawa.bigbrainmoves.servio.models;
 
 import com.uottawa.bigbrainmoves.servio.util.enums.BookingStatus;
-import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 
 import java.util.Objects;
 
