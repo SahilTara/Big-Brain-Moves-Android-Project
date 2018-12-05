@@ -103,3 +103,26 @@ task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
     executionData = files("${buildDir}/jacoco/testDebugUnitTest.exec")
 }
 
+sonarqube {
+    properties {
+        property "sonar.projectKey", "SahilTara_Big-Brain-Moves-Android-Project"
+        property "sonar.projectName", "Big-Brain-Moves-Android-Project"
+        property "sonar.organization", "sahiltara-github"
+        property "sonar.projectVersion", "1.0"
+        property "sonar.exclusions", "robospice/**/*"
+        property "sonar.host.url", "https://sonarcloud.io"
+
+        property "sonar.sources", "src/main/java"
+        property "sonar.tests", "src/test/java, src/androidTest/java"
+
+        def unit = fileTree(dir: project.projectDir, includes: ['**/*.exec']).files
+        def ui = fileTree(dir: project.projectDir, includes: ['**/*.ec']).files
+        unit.addAll(ui)
+        def files = unit.join(", ")
+
+        property "sonar.jacoco.reportPaths", files
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.junit.reportsPath", "build/test-results/testDebugUnitTest"
+        property "sonar.android.lint.report", "build/reports/lint-results.xml"
+    }
+}
