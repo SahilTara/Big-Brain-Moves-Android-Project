@@ -3,6 +3,7 @@ package com.uottawa.bigbrainmoves.servio.activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -81,7 +83,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
     private ReadOnlyService service;
     private WeeklyAvailabilities availabilities;
     private Calendar selected = Calendar.getInstance();
-
+    private static final Pattern VALID_TIME = Pattern.compile("^(2[0-3]|[01]?[0-9]):([0-3]?[0])$");
     // The tag for the service object sent from a different activity.
     private static final String PARCELABLE_SERVICE_TAG = "service";
 
@@ -199,6 +201,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
         AlertDialog dialog = dialogBuilder.create();
         Window window = dialog.getWindow();
         Button btnOk = dialogView.findViewById(R.id.btnOk);
+        Button btnCall = dialogView.findViewById(R.id.btnCall);
         TextView phoneNum = dialogView.findViewById(R.id.providerPhoneNumber);
         TextView address = dialogView.findViewById(R.id.providerAddress);
         TextView company = dialogView.findViewById(R.id.providerCompany);
@@ -213,6 +216,10 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
             company.setText(serviceProvider.getCompanyName());
             description.setText(serviceProvider.getDescription());
 
+            btnCall.setOnClickListener(view -> {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + serviceProvider.getPhoneNumber()));
+                startActivity(intent);
+            });
             btnOk.setOnClickListener(listener -> dialog.dismiss());
 
             dialog.show();
@@ -239,7 +246,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
     }
 
     private void availabilitiesHelper(TextView timeView, String startTime, String endTime) {
-        if (startTime.matches("^(2[0-3]|[01]?[0-9]):([0-3]?[0])$")) {
+        if (VALID_TIME.matcher(startTime).matches()) {
             timeView.setText(String.format("%s~%s", startTime, endTime));
         } else {
             timeView.setText("None");

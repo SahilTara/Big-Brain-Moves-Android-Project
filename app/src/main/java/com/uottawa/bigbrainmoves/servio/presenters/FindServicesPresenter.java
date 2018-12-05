@@ -10,6 +10,8 @@ import com.uottawa.bigbrainmoves.servio.views.FindServicesView;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -24,7 +26,7 @@ public class FindServicesPresenter {
     private String time = "00:00";
     private String filterString = ".*()";
     private boolean filterByTime = false;
-    private static final String VALID_TIME_REGEX = "\\d{2}:\\d{2}";
+    private static final Pattern VALID_TIME = Pattern.compile("\\d{2}:\\d{2}");
     private DayOfWeek dayOfWeek = DayOfWeek.ANY;
 
     public FindServicesPresenter(FindServicesView view, Repository repository) {
@@ -43,7 +45,7 @@ public class FindServicesPresenter {
 
             @Override
             public void onNext(Pair<ServiceType, Boolean> result) {
-                view.displayLiveServicesInSearch(result.first, result.second);
+                view.displayLiveServicesInSearch(result.getFirst(), result.getSecond());
             }
 
             @Override
@@ -77,7 +79,7 @@ public class FindServicesPresenter {
 
             @Override
             public void onNext(Pair<Service, Boolean> result) {
-                view.displayLiveServices(result.first, result.second);
+                view.displayLiveServices(result.getFirst(), result.getSecond());
             }
 
             @Override
@@ -103,8 +105,8 @@ public class FindServicesPresenter {
     public void filterList(List<Service> services) {
 
 
-        Observer<HashMap<String, WeeklyAvailabilities>> hashmapObserver =
-                new Observer<HashMap<String, WeeklyAvailabilities>>() {
+        Observer<Map<String, WeeklyAvailabilities>> hashmapObserver =
+                new Observer<Map<String, WeeklyAvailabilities>>() {
             Disposable disposable;
 
             @Override
@@ -113,7 +115,7 @@ public class FindServicesPresenter {
             }
 
             @Override
-            public void onNext(HashMap<String, WeeklyAvailabilities> hashMap) {
+            public void onNext(Map<String, WeeklyAvailabilities> hashMap) {
                 Observer<List<Service>> serviceObserver = new Observer<List<Service>>() {
                     Disposable disposable;
 
@@ -178,7 +180,7 @@ public class FindServicesPresenter {
         boolean isAvailableMonday =  ((dayOfWeek.equals(DayOfWeek.MONDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(mondayStart) >= 0 // check if >= than start
                 && time.compareTo(mondayEnd) < 0) || !filterByTime) // less than end
-                && mondayStart.matches(VALID_TIME_REGEX));
+                && VALID_TIME.matcher(mondayStart).matches());
 
         String tuesdayStart = availabilities.getTuesdayStart();
         String tuesdayEnd = availabilities.getTuesdayEnd();
@@ -186,7 +188,7 @@ public class FindServicesPresenter {
         boolean isAvailableTuesday =  ((dayOfWeek.equals(DayOfWeek.TUESDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(tuesdayStart) >= 0 // check if >= than start
                 && time.compareTo(tuesdayEnd) < 0) || !filterByTime) // less than end
-                && tuesdayStart.matches(VALID_TIME_REGEX));
+                && VALID_TIME.matcher(tuesdayStart).matches());
 
         String wednesdayStart = availabilities.getWednesdayStart();
         String wednesdayEnd = availabilities.getWednesdayEnd();
@@ -194,7 +196,7 @@ public class FindServicesPresenter {
         boolean isAvailableWednesday =  ((dayOfWeek.equals(DayOfWeek.WEDNESDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(wednesdayStart) >= 0 // check if >= than start
                 && time.compareTo(wednesdayEnd) < 0) || !filterByTime) // less than end
-                && wednesdayStart.matches(VALID_TIME_REGEX));
+                && VALID_TIME.matcher(wednesdayStart).matches());
 
         String thursdayStart = availabilities.getThursdayStart();
         String thursdayEnd = availabilities.getThursdayEnd();
@@ -202,7 +204,7 @@ public class FindServicesPresenter {
         boolean isAvailableThursday =  ((dayOfWeek.equals(DayOfWeek.THURSDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(thursdayStart) >= 0 // check if >= than start
                 && time.compareTo(thursdayEnd) < 0) || !filterByTime) // less than end
-                && thursdayStart.matches(VALID_TIME_REGEX));
+                && VALID_TIME.matcher(thursdayStart).matches());
 
         String fridayStart = availabilities.getFridayStart();
         String fridayEnd = availabilities.getFridayEnd();
@@ -210,7 +212,7 @@ public class FindServicesPresenter {
         boolean isAvailableFriday =  ((dayOfWeek.equals(DayOfWeek.FRIDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(fridayStart) >= 0 // check if >= than start
                 && time.compareTo(fridayEnd) < 0) || !filterByTime) // less than end
-                && fridayStart.matches(VALID_TIME_REGEX));
+                && VALID_TIME.matcher(fridayStart).matches());
 
 
         String saturdayStart = availabilities.getSaturdayStart();
@@ -219,7 +221,7 @@ public class FindServicesPresenter {
         boolean isAvailableSaturday =  ((dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(saturdayStart) >= 0 // check if >= than start
                 && time.compareTo(saturdayEnd) < 0) || !filterByTime) // less than end
-                && saturdayStart.matches(VALID_TIME_REGEX));
+                && VALID_TIME.matcher(saturdayStart).matches());
 
         String sundayStart = availabilities.getSundayStart();
         String sundayEnd = availabilities.getSundayEnd();
@@ -227,7 +229,7 @@ public class FindServicesPresenter {
         boolean isAvailableSunday =  ((dayOfWeek.equals(DayOfWeek.SUNDAY) || dayOfWeek.equals(DayOfWeek.ANY))
                 && ((time.compareTo(sundayStart) >= 0 // check if >= than start
                 && time.compareTo(sundayEnd) < 0) || !filterByTime) // less than end
-                && sundayStart.matches(VALID_TIME_REGEX));
+                && VALID_TIME.matcher(sundayStart).matches());
 
         return isAvailableMonday || isAvailableTuesday || isAvailableWednesday || isAvailableThursday ||
                 isAvailableFriday || isAvailableSaturday || isAvailableSunday;

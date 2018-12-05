@@ -99,9 +99,9 @@ public class ManageAvailabilitiesActivity extends AppCompatActivity implements M
             button.setText(defaultTime);
 
             presenter.setTime(defaultTime, timeSlot);
-        }).setNegativeButton("Cancel", (dialog, which) -> {
-            dialog.dismiss();
-        }).show();
+        }).setNegativeButton("Cancel", (dialog, which) ->
+            dialog.dismiss()
+        ).show();
         return true;
     }
 
@@ -120,16 +120,16 @@ public class ManageAvailabilitiesActivity extends AppCompatActivity implements M
         timePickerDialog.setTimeInterval(1, 30);
         String buttonText = button.getText().toString();
         Pair<String, Boolean> timeRestriction = presenter.getTimeRestriction(button.getTag().toString());
-        String[] splitTimeRestriction = timeRestriction.first.split(":");
-        int hourRestrict = Integer.valueOf(splitTimeRestriction[0]);
-        int minRestrict = Integer.valueOf(splitTimeRestriction[1]);
+        String[] splitTimeRestriction = timeRestriction.getFirst().split(":");
+        int hourRestrict = Integer.parseInt(splitTimeRestriction[0]);
+        int minRestrict = Integer.parseInt(splitTimeRestriction[1]);
 
         if (buttonText.contains(":")) {
             String[] splitTimeHoursAndMin = buttonText.split(":");
-            int hour = Integer.valueOf(splitTimeHoursAndMin[0]);
-            int min = Integer.valueOf(splitTimeHoursAndMin[1]);
+            int hour = Integer.parseInt(splitTimeHoursAndMin[0]);
+            int min = Integer.parseInt(splitTimeHoursAndMin[1]);
             timePickerDialog.setInitialSelection(hour, min);
-            if (timeRestriction.second) {
+            if (timeRestriction.getSecond()) {
                 timePickerDialog.setMaxTime(new Timepoint(23, 30));
             } else {
                 timePickerDialog.setMinTime(new Timepoint(0, 0));
@@ -138,7 +138,7 @@ public class ManageAvailabilitiesActivity extends AppCompatActivity implements M
 
 
         // Starting restriction
-        if (timeRestriction.second) {
+        if (timeRestriction.getSecond()) {
             hourRestrict = (hourRestrict + ((minRestrict + 30) / 60)) % 24;
             minRestrict = (minRestrict + 30) % 60;
             timePickerDialog.setMinTime(new Timepoint(hourRestrict, minRestrict));

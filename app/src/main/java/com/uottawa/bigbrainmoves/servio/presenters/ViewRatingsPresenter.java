@@ -31,7 +31,7 @@ public class ViewRatingsPresenter {
 
             @Override
             public void onNext(Pair<Rating, Boolean> result) {
-                view.displayRatingUpdate(result.first, result.second);
+                view.displayRatingUpdate(result.getFirst(), result.getSecond());
             }
 
             @Override

@@ -30,7 +30,7 @@ public class ManageServiceTypesPresenter {
 
             @Override
             public void onNext(Pair<ServiceType, Boolean> result) {
-                view.displayServiceTypeUpdate(result.first, result.second);
+                view.displayServiceTypeUpdate(result.getFirst(), result.getSecond());
             }
 
             @Override

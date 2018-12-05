@@ -185,7 +185,7 @@ public class ViewProfileActivity extends AppCompatActivity implements ViewProfil
         if (offerable == null)
             offerable = Collections.emptyList();
 
-        offeredListAdapter = new ServicesOfferedListAdapter(offered, isEditing());
+        offeredListAdapter = new ServicesOfferedListAdapter(offered, isEditing(), this);
         offerableListAdapter = new ServicesOfferableListAdapter(offerable, isEditing());
 
         offeredListAdapter.setOtherAdapter(offerableListAdapter);
@@ -210,7 +210,7 @@ public class ViewProfileActivity extends AppCompatActivity implements ViewProfil
         provided.setHasFixedSize(true);
         providable.setHasFixedSize(true);
 
-        ServicesOfferedListAdapter offeredListAdapter = new ServicesOfferedListAdapter(offered, isEditing());
+        ServicesOfferedListAdapter offeredListAdapter = new ServicesOfferedListAdapter(offered, isEditing(), this);
         ServicesOfferableListAdapter offerableListAdapter = new ServicesOfferableListAdapter(offerable, isEditing());
 
         offeredListAdapter.setOtherAdapter(offerableListAdapter);

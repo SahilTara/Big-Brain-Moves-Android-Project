@@ -20,15 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ManageServiceTypesActivity extends AppCompatActivity implements ManageServiceTypesView  {
-
-    private ManageServiceTypesPresenter presenter;
     private final Repository repository = new DbHandler();
     private List<ServiceType> listOfServices = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_service_types);
-        presenter = new ManageServiceTypesPresenter(this, repository);
+        ManageServiceTypesPresenter presenter = new ManageServiceTypesPresenter(this, repository);
         presenter.listenForServiceTypeUpdates();
     }
 

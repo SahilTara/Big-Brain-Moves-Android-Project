@@ -32,6 +32,14 @@
             android:layout_height="32dp"
             android:layout_weight="1"
             android:gravity="center" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_weight="1.25"
+            android:text="Call" />
     </LinearLayout>
 
     <include layout="@layout/itemdivider" />

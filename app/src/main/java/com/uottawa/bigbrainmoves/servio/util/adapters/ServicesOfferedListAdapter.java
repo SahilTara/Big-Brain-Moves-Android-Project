@@ -1,14 +1,18 @@
 package com.uottawa.bigbrainmoves.servio.util.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.chip.Chip;
 import com.uottawa.bigbrainmoves.servio.R;
+import com.uottawa.bigbrainmoves.servio.activities.ViewRatingsActivity;
 import com.uottawa.bigbrainmoves.servio.models.Service;
 import com.uottawa.bigbrainmoves.servio.presenters.ServiceProviderRecyclerPresenter;
 import com.uottawa.bigbrainmoves.servio.views.ServiceProviderRecyclerView;
@@ -19,15 +23,19 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class ServicesOfferedListAdapter extends RecyclerView.Adapter<ServicesOfferedListAdapter.ViewHolder>
         implements ServiceProviderRecyclerView {
     private List<Service> services = new ArrayList<>();
     private boolean isEditMode;
     private ServiceProviderRecyclerPresenter presenter;
+    private Context context;
 
-    public ServicesOfferedListAdapter(List<Service> services, boolean isEditMode) {
+    public ServicesOfferedListAdapter(List<Service> services, boolean isEditMode, Context context) {
         this.services.addAll(services);
         this.isEditMode = isEditMode;
+        this.context = context;
     }
 
     public void setOtherAdapter(ServicesOfferableListAdapter other) {
@@ -68,9 +76,15 @@ public class ServicesOfferedListAdapter extends RecyclerView.Adapter<ServicesOff
 
     private void readOnlyMode(ViewHolder viewHolder, Service service) {
         viewHolder.titleText.setText(service.getType());
-        viewHolder.ratingText.setText(String.valueOf(service.getRating()));
+        viewHolder.ratingText.setText(String.valueOf(Math.round(service.getRating()*100)/100.0));
         viewHolder.chip.setCloseIconVisible(false);
 
+
+        viewHolder.btnViewRating.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ViewRatingsActivity.class);
+            intent.putExtra("service", service);
+            context.startActivity(intent);
+        });
         viewHolder.chip.setOnClickListener(view -> {
             view.setVisibility(View.GONE);
             viewHolder.infoCardLayout.setVisibility(View.VISIBLE);
@@ -110,11 +124,13 @@ public class ServicesOfferedListAdapter extends RecyclerView.Adapter<ServicesOff
         TextView ratingText;
         LinearLayout infoCardLayout;
         ImageButton closeButton;
+        Button btnViewRating;
         Chip chip;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             titleText = itemView.findViewById(R.id.cardTitleView);
             ratingText = itemView.findViewById(R.id.ratingView);
+            btnViewRating = itemView.findViewById(R.id.btnViewRatings);
             infoCardLayout = itemView.findViewById(R.id.infoCardLayout);
             closeButton = itemView.findViewById(R.id.imageButton);
             chip = itemView.findViewById(R.id.serviceOfferedChip);

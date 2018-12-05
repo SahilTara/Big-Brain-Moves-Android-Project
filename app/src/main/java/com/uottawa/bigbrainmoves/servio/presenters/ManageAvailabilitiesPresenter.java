@@ -22,6 +22,8 @@ public class ManageAvailabilitiesPresenter {
 
     private final ManageAvailabilitiesView view;
     private final Repository repository;
+    private static final String DEFAULT_START_STRING = "Start Time";
+    private static final String DEFAULT_END_STRING = "End Time";
 
     public ManageAvailabilitiesPresenter(ManageAvailabilitiesView view, Repository repository) {
         this.view = view;
@@ -122,72 +124,72 @@ public class ManageAvailabilitiesPresenter {
         switch (id) {
             case "MONDAY_START":
                 time = weeklyAvailabilities.getMondayEnd();
-                if (time.equals("End Time"))
+                if (time.equals(DEFAULT_END_STRING))
                     time = "23:30";
                 break;
             case "MONDAY_END":
                 time = weeklyAvailabilities.getMondayStart();
-                if (time.equals("Start Time"))
+                if (time.equals(DEFAULT_START_STRING))
                     time = "00:00";
                 break;
             case "TUESDAY_START":
                 time = weeklyAvailabilities.getTuesdayEnd();
-                if (time.equals("End Time"))
+                if (time.equals(DEFAULT_END_STRING))
                     time = "23:30";
                 break;
             case "TUESDAY_END":
                 time = weeklyAvailabilities.getTuesdayStart();
-                if (time.equals("Start Time"))
+                if (time.equals(DEFAULT_START_STRING))
                     time = "00:00";
                 break;
             case "WEDNESDAY_START":
                 time = weeklyAvailabilities.getWednesdayEnd();
-                if (time.equals("End Time"))
+                if (time.equals(DEFAULT_END_STRING))
                     time = "23:30";
                 break;
             case "WEDNESDAY_END":
                 time = weeklyAvailabilities.getWednesdayStart();
-                if (time.equals("Start Time"))
+                if (time.equals(DEFAULT_START_STRING))
                     time = "00:00";
                 break;
             case "THURSDAY_START":
                 time = weeklyAvailabilities.getThursdayEnd();
-                if (time.equals("End Time"))
+                if (time.equals(DEFAULT_END_STRING))
                     time = "23:30";
                 break;
             case "THURSDAY_END":
                 time = weeklyAvailabilities.getThursdayStart();
-                if (time.equals("Start Time"))
+                if (time.equals(DEFAULT_START_STRING))
                     time = "00:00";
                 break;
             case "FRIDAY_START":
                 time = weeklyAvailabilities.getFridayEnd();
-                if (time.equals("End Time"))
+                if (time.equals(DEFAULT_END_STRING))
                     time = "23:30";
                 break;
             case "FRIDAY_END":
                 time = weeklyAvailabilities.getFridayStart();
-                if (time.equals("Start Time"))
+                if (time.equals(DEFAULT_START_STRING))
                     time = "00:00";
                 break;
             case "SATURDAY_START":
                 time = weeklyAvailabilities.getSaturdayEnd();
-                if (time.equals("End Time"))
+                if (time.equals(DEFAULT_END_STRING))
                     time = "23:30";
                 break;
             case "SATURDAY_END":
                 time = weeklyAvailabilities.getSaturdayStart();
-                if (time.equals("Start Time"))
+                if (time.equals(DEFAULT_START_STRING))
                     time = "00:00";
                 break;
             case "SUNDAY_START":
                 time = weeklyAvailabilities.getSundayEnd();
-                if (time.equals("End Time"))
+                if (time.equals(DEFAULT_END_STRING))
                     time = "23:30";
                 break;
             case "SUNDAY_END":
                 time = weeklyAvailabilities.getSundayStart();
-                if (time.equals("Start Time"))
+                if (time.equals(DEFAULT_START_STRING))
                     time = "00:00";
                 break;
         }

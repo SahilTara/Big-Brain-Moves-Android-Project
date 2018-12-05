@@ -30,7 +30,7 @@ public class ViewBookingsPresenter {
 
             @Override
             public void onNext(Pair<Booking, Boolean> result) {
-                view.displayBookingUpdate(result.first, result.second);
+                view.displayBookingUpdate(result.getFirst(), result.getSecond());
             }
 
             @Override
