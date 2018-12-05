@@ -321,8 +321,8 @@ public class TestManageAvailabilitiesPresenter {
         when(availabilities.getSaturdayEnd()).thenReturn("End Time");
 
         Pair<String, Boolean> result = presenter.getTimeRestriction("SATURDAY_START");
-        assertEquals("Expected result to be 23:30 for a day with no end defined", result.first, "23:30");
-        assertFalse("Expected result for an ending restriction to be false", result.second);
+        assertEquals("Expected result to be 23:30 for a day with no end defined", result.getFirst(), "23:30");
+        assertFalse("Expected result for an ending restriction to be false", result.getSecond());
     }
 
     @Test
@@ -344,8 +344,8 @@ public class TestManageAvailabilitiesPresenter {
 
         Pair<String, Boolean> result = presenter.getTimeRestriction("SATURDAY_START");
         assertEquals("Expected result to be 20:00 for this day since the end is defined as that",
-                result.first, "20:00");
-        assertFalse("Expected result for an ending restriction to be false", result.second);
+                result.getFirst(), "20:00");
+        assertFalse("Expected result for an ending restriction to be false", result.getSecond());
     }
 
     @Test
@@ -366,8 +366,8 @@ public class TestManageAvailabilitiesPresenter {
         when(availabilities.getWednesdayStart()).thenReturn("Start Time");
 
         Pair<String, Boolean> result = presenter.getTimeRestriction("WEDNESDAY_END");
-        assertEquals("Expected result to be 00:00 for a day with no start defined", result.first, "00:00");
-        assertTrue("Expected result for an start restriction to be true", result.second);
+        assertEquals("Expected result to be 00:00 for a day with no start defined", result.getFirst(), "00:00");
+        assertTrue("Expected result for an start restriction to be true", result.getSecond());
     }
 
     @Test
@@ -389,8 +389,8 @@ public class TestManageAvailabilitiesPresenter {
 
         Pair<String, Boolean> result = presenter.getTimeRestriction("WEDNESDAY_END");
         assertEquals("Expected result to be 15:00 for this day since the start is defined to be that",
-                result.first, "15:00");
-        assertTrue("Expected result for an start restriction to be true", result.second);
+                result.getFirst(), "15:00");
+        assertTrue("Expected result for an start restriction to be true", result.getSecond());
     }
 
 
