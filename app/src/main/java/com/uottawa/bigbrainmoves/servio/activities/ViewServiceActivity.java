@@ -390,7 +390,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
     @Override
     public void displayInvalidTime() {
-        Toast.makeText(getApplicationContext(), text: "Time range must be at least 30 minutes!", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Time range must be at least 30 minutes!", Toast.LENGTH_LONG).show();
     }
 
     @Override
