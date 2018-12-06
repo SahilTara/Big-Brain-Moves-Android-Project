@@ -111,7 +111,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView  = inflater.inflate(R.layout.booking_dialog, null, false);
+        View dialogView  = inflater.inflate(R.layout.booking_dialog, null, false);T
 
         Button chooseDate = dialogView.findViewById(R.id.btnChooseDate);
 
@@ -402,7 +402,9 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
     @Override
     public void displayBookingCreated() {
-        //TODO ADD TOAST
+        Toast.makeText(getApplicationContext(),
+                "Successfully created booking.",
+                Toast.LENGTH_LONG).show();
 
     }
 
