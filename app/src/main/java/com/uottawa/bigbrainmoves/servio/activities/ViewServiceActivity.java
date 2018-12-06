@@ -111,7 +111,7 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView  = inflater.inflate(R.layout.booking_dialog, null, false);T
+        View dialogView  = inflater.inflate(R.layout.booking_dialog, null, false);
 
         Button chooseDate = dialogView.findViewById(R.id.btnChooseDate);
 
