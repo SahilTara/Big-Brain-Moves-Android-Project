@@ -410,7 +410,9 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
 
     @Override
     public void displayEmptyTime() {
-        //TODO ADD TOAST
+        Toast.makeText(getApplicationContext(),
+                "Please select an empty time for your booking!",
+                Toast.LENGTH_LONG).show();
 
     }
 
