@@ -20,6 +20,7 @@ https://github.com/dmytrodanylyk/android-process-button
 https://github.com/wdullaer/MaterialDateTimePicker  
 https://github.com/pchmn/MaterialChipsInput  
 https://github.com/ReactiveX/RxAndroid  
+https://github.com/JakeWharton/butterknife  
 
 ### Pretty standard  
 https://github.com/powermock/powermock  
@@ -33,8 +34,17 @@ password: admin123
 
 ## Service Provider Login 
 You can create your own but the marking scheme requires us to precreate one for you so,
-User: taservicetest
-password: password123
+User: bbb
+password: testing123  
+
+## Home Owner Login 
+You can create your own but the marking scheme requires us to precreate one for you so,
+User: ccc
+password: testing123  
 
 ## This Repo's Link (Useful for TAs)  
 https://github.com/SahilTara/Big-Brain-Moves-Android-Project
+
+## Used Code  
+For fixing asynchronous testing we used the following:  
+https://stackoverflow.com/questions/43356314/android-rxjava-2-junit-test-getmainlooper-in-android-os-looper-not-mocked-runt
