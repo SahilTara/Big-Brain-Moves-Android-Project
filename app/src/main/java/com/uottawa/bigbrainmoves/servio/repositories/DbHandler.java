@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import androidx.annotation.NonNull;
@@ -820,7 +821,7 @@ public class DbHandler extends GenericFirebaseRepository implements Repository {
      * an rxjava observable.
      * @return Hashmap containing username as key and availabilities as value in an RxJava Observable.
      */
-    public Observable<HashMap<String, WeeklyAvailabilities>> getAllAvailabilities() {
+    public Observable<Map<String, WeeklyAvailabilities>> getAllAvailabilities() {
         return availabilitiesRepository.getAllAvailabilities();
     }
 

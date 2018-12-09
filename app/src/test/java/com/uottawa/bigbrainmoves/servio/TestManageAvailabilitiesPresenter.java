@@ -1,12 +1,14 @@
 package com.uottawa.bigbrainmoves.servio;
 
 import com.uottawa.bigbrainmoves.servio.models.ServiceProvider;
+import com.uottawa.bigbrainmoves.servio.models.TimeSlot;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.presenters.ManageAvailabilitiesPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
+import com.uottawa.bigbrainmoves.servio.util.enums.TimeSlotEntryType;
 import com.uottawa.bigbrainmoves.servio.views.ManageAvailabilitiesView;
 
 import org.junit.Before;
@@ -20,6 +22,7 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.sql.Time;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +42,7 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -86,9 +90,8 @@ public class TestManageAvailabilitiesPresenter {
 
     @Test
     public void testGetAvailabilitiesDataError() {
-        when(repository.getAvailabilities()).thenReturn(Observable.create(subscriber -> {
-            subscriber.onError(new Exception("Test"));
-        }));
+        when(repository.getAvailabilities()).thenReturn(Observable.create(subscriber ->
+                subscriber.onError(new Exception("Test"))));
 
         presenter.getAvailabilities();
 
@@ -120,9 +123,11 @@ public class TestManageAvailabilitiesPresenter {
     }
 
     @Test
-    public void testSetTimeMonday() {
+    public void testSetTimeMondayStart() {
         WeeklyAvailabilities availabilities = mock(WeeklyAvailabilities.class);
         ServiceProvider serviceProvider = mock(ServiceProvider.class);
+
+        TimeSlot slot = mock(TimeSlot.class);
 
         mockStatic(CurrentAccount.class);
 
@@ -132,47 +137,19 @@ public class TestManageAvailabilitiesPresenter {
         when(currentAccount.getCurrentAccount())
                 .thenReturn(serviceProvider);
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
+        when(availabilities.getTimeSlotOnDay(any())).thenReturn(slot);
 
-        presenter.setTime("0:00", WeeklyAvailabilities.TimeSlot.MONDAY_START);
-        
-        verify(availabilities, atLeastOnce()).setMondayStart(anyString());
-        verify(availabilities, never()).setMondayEnd(anyString());
-        verify(availabilities, never()).setTuesdayStart(anyString());
-        verify(availabilities, never()).setTuesdayEnd(anyString());
-        verify(availabilities, never()).setWednesdayStart(anyString());
-        verify(availabilities, never()).setWednesdayEnd(anyString());
-        verify(availabilities, never()).setThursdayStart(anyString());
-        verify(availabilities, never()).setThursdayEnd(anyString());
-        verify(availabilities, never()).setFridayStart(anyString());
-        verify(availabilities, never()).setFridayEnd(anyString());
-        verify(availabilities, never()).setSaturdayStart(anyString());
-        verify(availabilities, never()).setSaturdayEnd(anyString());
-        verify(availabilities, never()).setSundayStart(anyString());
-        verify(availabilities, never()).setSundayEnd(anyString());
+        presenter.setTime("0:00", DayOfWeek.MONDAY, TimeSlotEntryType.START);
 
-        presenter.setTime("0:00", WeeklyAvailabilities.TimeSlot.MONDAY_END);
-
-        verify(availabilities, atLeastOnce()).setMondayStart(anyString());
-        verify(availabilities, atLeastOnce()).setMondayEnd(anyString());
-        verify(availabilities, never()).setTuesdayStart(anyString());
-        verify(availabilities, never()).setTuesdayEnd(anyString());
-        verify(availabilities, never()).setWednesdayStart(anyString());
-        verify(availabilities, never()).setWednesdayEnd(anyString());
-        verify(availabilities, never()).setThursdayStart(anyString());
-        verify(availabilities, never()).setThursdayEnd(anyString());
-        verify(availabilities, never()).setFridayStart(anyString());
-        verify(availabilities, never()).setFridayEnd(anyString());
-        verify(availabilities, never()).setSaturdayStart(anyString());
-        verify(availabilities, never()).setSaturdayEnd(anyString());
-        verify(availabilities, never()).setSundayStart(anyString());
-        verify(availabilities, never()).setSundayEnd(anyString());
-
+        verify(availabilities, atLeastOnce()).setTimeSlotOnDay(DayOfWeek.MONDAY, slot);
     }
 
     @Test
-    public void testSetTimeTuesday() {
+    public void testSetTimeMondayEnd() {
         WeeklyAvailabilities availabilities = mock(WeeklyAvailabilities.class);
         ServiceProvider serviceProvider = mock(ServiceProvider.class);
+
+        TimeSlot slot = mock(TimeSlot.class);
 
         mockStatic(CurrentAccount.class);
 
@@ -182,39 +159,12 @@ public class TestManageAvailabilitiesPresenter {
         when(currentAccount.getCurrentAccount())
                 .thenReturn(serviceProvider);
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
-        presenter.setTime("0:00", WeeklyAvailabilities.TimeSlot.TUESDAY_START);
+        when(availabilities.getTimeSlotOnDay(any())).thenReturn(slot);
 
-        verify(availabilities, never()).setMondayStart(anyString());
-        verify(availabilities, never()).setMondayEnd(anyString());
-        verify(availabilities, atLeastOnce()).setTuesdayStart(anyString());
-        verify(availabilities, never()).setTuesdayEnd(anyString());
-        verify(availabilities, never()).setWednesdayStart(anyString());
-        verify(availabilities, never()).setWednesdayEnd(anyString());
-        verify(availabilities, never()).setThursdayStart(anyString());
-        verify(availabilities, never()).setThursdayEnd(anyString());
-        verify(availabilities, never()).setFridayStart(anyString());
-        verify(availabilities, never()).setFridayEnd(anyString());
-        verify(availabilities, never()).setSaturdayStart(anyString());
-        verify(availabilities, never()).setSaturdayEnd(anyString());
-        verify(availabilities, never()).setSundayStart(anyString());
-        verify(availabilities, never()).setSundayEnd(anyString());
+        presenter.setTime("0:00", DayOfWeek.MONDAY, TimeSlotEntryType.END);
 
-        presenter.setTime("0:00", WeeklyAvailabilities.TimeSlot.TUESDAY_END);
+        verify(availabilities, atLeastOnce()).setTimeSlotOnDay(DayOfWeek.MONDAY, slot);
 
-        verify(availabilities, never()).setMondayStart(anyString());
-        verify(availabilities, never()).setMondayEnd(anyString());
-        verify(availabilities, atLeastOnce()).setTuesdayStart(anyString());
-        verify(availabilities, atLeastOnce()).setTuesdayEnd(anyString());
-        verify(availabilities, never()).setWednesdayStart(anyString());
-        verify(availabilities, never()).setWednesdayEnd(anyString());
-        verify(availabilities, never()).setThursdayStart(anyString());
-        verify(availabilities, never()).setThursdayEnd(anyString());
-        verify(availabilities, never()).setFridayStart(anyString());
-        verify(availabilities, never()).setFridayEnd(anyString());
-        verify(availabilities, never()).setSaturdayStart(anyString());
-        verify(availabilities, never()).setSaturdayEnd(anyString());
-        verify(availabilities, never()).setSundayStart(anyString());
-        verify(availabilities, never()).setSundayEnd(anyString());
     }
 
 
@@ -307,6 +257,7 @@ public class TestManageAvailabilitiesPresenter {
     public void testGetTimeRestrictionSaturdayStartNoEnd() {
         WeeklyAvailabilities availabilities = mock(WeeklyAvailabilities.class);
         ServiceProvider serviceProvider = mock(ServiceProvider.class);
+        TimeSlot slot = mock(TimeSlot.class);
 
         mockStatic(CurrentAccount.class);
 
@@ -318,9 +269,10 @@ public class TestManageAvailabilitiesPresenter {
                 .thenReturn(serviceProvider);
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
 
-        when(availabilities.getSaturdayEnd()).thenReturn("End Time");
+        when(availabilities.getTimeSlotOnDay(DayOfWeek.SATURDAY)).thenReturn(slot);
+        when(slot.getEndTime()).thenReturn("End Time");
 
-        Pair<String, Boolean> result = presenter.getTimeRestriction("SATURDAY_START");
+        Pair<String, Boolean> result = presenter.getTimeRestriction(DayOfWeek.SATURDAY, TimeSlotEntryType.START);
         assertEquals("Expected result to be 23:30 for a day with no end defined", result.getFirst(), "23:30");
         assertFalse("Expected result for an ending restriction to be false", result.getSecond());
     }
@@ -329,6 +281,7 @@ public class TestManageAvailabilitiesPresenter {
     public void testGetTimeRestrictionSaturdayStartWithEnd() {
         WeeklyAvailabilities availabilities = mock(WeeklyAvailabilities.class);
         ServiceProvider serviceProvider = mock(ServiceProvider.class);
+        TimeSlot slot = mock(TimeSlot.class);
 
         mockStatic(CurrentAccount.class);
 
@@ -340,58 +293,12 @@ public class TestManageAvailabilitiesPresenter {
                 .thenReturn(serviceProvider);
         when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
 
-        when(availabilities.getSaturdayEnd()).thenReturn("20:00");
+        when(availabilities.getTimeSlotOnDay(DayOfWeek.SATURDAY)).thenReturn(slot);
+        when(slot.getEndTime()).thenReturn("20:00");
 
-        Pair<String, Boolean> result = presenter.getTimeRestriction("SATURDAY_START");
+        Pair<String, Boolean> result = presenter.getTimeRestriction(DayOfWeek.SATURDAY, TimeSlotEntryType.START);
         assertEquals("Expected result to be 20:00 for this day since the end is defined as that",
                 result.getFirst(), "20:00");
         assertFalse("Expected result for an ending restriction to be false", result.getSecond());
     }
-
-    @Test
-    public void testGetTimeRestrictionWednesdayEndNoStart() {
-        WeeklyAvailabilities availabilities = mock(WeeklyAvailabilities.class);
-        ServiceProvider serviceProvider = mock(ServiceProvider.class);
-
-        mockStatic(CurrentAccount.class);
-
-        CurrentAccount currentAccount = mock(CurrentAccount.class);
-
-        when(CurrentAccount.getInstance())
-                .thenReturn(currentAccount);
-        when(currentAccount.getCurrentAccount())
-                .thenReturn(serviceProvider);
-        when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
-
-        when(availabilities.getWednesdayStart()).thenReturn("Start Time");
-
-        Pair<String, Boolean> result = presenter.getTimeRestriction("WEDNESDAY_END");
-        assertEquals("Expected result to be 00:00 for a day with no start defined", result.getFirst(), "00:00");
-        assertTrue("Expected result for an start restriction to be true", result.getSecond());
-    }
-
-    @Test
-    public void testGetTimeRestrictionWednesdayEndWithStart() {
-        WeeklyAvailabilities availabilities = mock(WeeklyAvailabilities.class);
-        ServiceProvider serviceProvider = mock(ServiceProvider.class);
-
-        mockStatic(CurrentAccount.class);
-
-        CurrentAccount currentAccount = mock(CurrentAccount.class);
-
-        when(CurrentAccount.getInstance())
-                .thenReturn(currentAccount);
-        when(currentAccount.getCurrentAccount())
-                .thenReturn(serviceProvider);
-        when(serviceProvider.getAvailabilities()).thenReturn(availabilities);
-
-        when(availabilities.getWednesdayStart()).thenReturn("15:00");
-
-        Pair<String, Boolean> result = presenter.getTimeRestriction("WEDNESDAY_END");
-        assertEquals("Expected result to be 15:00 for this day since the start is defined to be that",
-                result.getFirst(), "15:00");
-        assertTrue("Expected result for an start restriction to be true", result.getSecond());
-    }
-
-
 }

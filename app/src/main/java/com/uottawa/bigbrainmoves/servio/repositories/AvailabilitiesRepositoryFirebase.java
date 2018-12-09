@@ -8,9 +8,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
+import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilitiesDBO;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import androidx.annotation.NonNull;
@@ -27,7 +29,7 @@ public class AvailabilitiesRepositoryFirebase implements  AvailabilitiesReposito
         Account account = CurrentAccount.getInstance().getCurrentAccount();
         String username = account.getUsername();
 
-        myRef.child(AVAILABILITIES).child(username).setValue(availabilities);
+        myRef.child(AVAILABILITIES).child(username).setValue(new WeeklyAvailabilitiesDBO(availabilities));
     }
 
     @Override
@@ -45,8 +47,13 @@ public class AvailabilitiesRepositoryFirebase implements  AvailabilitiesReposito
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            Optional<WeeklyAvailabilities> availabilities = Optional
-                                    .ofNullable(dataSnapshot.getValue(WeeklyAvailabilities.class));
+                            WeeklyAvailabilitiesDBO weeklyAvailabilitiesDBO = dataSnapshot.getValue(WeeklyAvailabilitiesDBO.class);
+                            WeeklyAvailabilities weeklyAvailabilities = null;
+
+                            if (weeklyAvailabilitiesDBO != null)
+                                weeklyAvailabilities = weeklyAvailabilitiesDBO.convertToDomainObject();
+
+                            Optional<WeeklyAvailabilities> availabilities = Optional.ofNullable(weeklyAvailabilities);
 
                             subscriber.onNext(availabilities);
                             subscriber.onComplete();
@@ -68,7 +75,7 @@ public class AvailabilitiesRepositoryFirebase implements  AvailabilitiesReposito
      * an rxjava observable.
      * @return Hashmap containing username as key and availabilities as value in an RxJava Observable.
      */
-    public Observable<HashMap<String, WeeklyAvailabilities>> getAllAvailabilities() {
+    public Observable<Map<String, WeeklyAvailabilities>> getAllAvailabilities() {
         return Observable.create(subscriber -> {
             myRef.child(AVAILABILITIES).addListenerForSingleValueEvent(new ValueEventListener() {
                 //
@@ -83,10 +90,10 @@ public class AvailabilitiesRepositoryFirebase implements  AvailabilitiesReposito
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             String username = snapshot.getKey();
-                            WeeklyAvailabilities availabilities = snapshot.getValue(WeeklyAvailabilities.class);
+                            WeeklyAvailabilitiesDBO availabilitiesDBO = snapshot.getValue(WeeklyAvailabilitiesDBO.class);
 
-                            if (availabilities != null) {
-                                availabilitiesHashMap.put(username, availabilities);
+                            if (availabilitiesDBO != null) {
+                                availabilitiesHashMap.put(username, availabilitiesDBO.convertToDomainObject());
                             }
                         }
                         subscriber.onNext(availabilitiesHashMap);

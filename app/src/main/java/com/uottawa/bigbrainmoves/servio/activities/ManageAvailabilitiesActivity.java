@@ -9,20 +9,42 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.uottawa.bigbrainmoves.servio.R;
+import com.uottawa.bigbrainmoves.servio.models.TimeSlot;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.presenters.ManageAvailabilitiesPresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
+import com.uottawa.bigbrainmoves.servio.util.enums.TimeSlotEntryType;
 import com.uottawa.bigbrainmoves.servio.views.ManageAvailabilitiesView;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.Timepoint;
+
+import java.util.EnumMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class ManageAvailabilitiesActivity extends AppCompatActivity implements ManageAvailabilitiesView {
 
     ManageAvailabilitiesPresenter presenter;
     Repository repository = new DbHandler();
+    private static final Map<DayOfWeek, Pair<Integer, Integer>> dayToButtonIdMap = createDayToButtonIdMap();
+
+
+    private static Map<DayOfWeek, Pair<Integer, Integer>> createDayToButtonIdMap() {
+        Map<DayOfWeek, Pair<Integer, Integer>> map = new EnumMap<>(DayOfWeek.class);
+
+        map.put(DayOfWeek.MONDAY, new Pair<>(R.id.mondayStart, R.id.mondayEnd));
+        map.put(DayOfWeek.TUESDAY, new Pair<>(R.id.tuesdayStart, R.id.tuesdayEnd));
+        map.put(DayOfWeek.WEDNESDAY, new Pair<>(R.id.wednesdayStart, R.id.wednesdayEnd));
+        map.put(DayOfWeek.THURSDAY, new Pair<>(R.id.thursdayStart, R.id.thursdayEnd));
+        map.put(DayOfWeek.FRIDAY, new Pair<>(R.id.fridayStart, R.id.fridayEnd));
+        map.put(DayOfWeek.SATURDAY, new Pair<>(R.id.saturdayStart, R.id.saturdayEnd));
+        map.put(DayOfWeek.SUNDAY, new Pair<>(R.id.sundayStart, R.id.sundayEnd));
+
+        return map;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,13 +114,13 @@ public class ManageAvailabilitiesActivity extends AppCompatActivity implements M
             dialog.dismiss();
             Button button = (Button) view;
             String tag = (String)button.getTag();
+            Pair<DayOfWeek, TimeSlotEntryType> dayOfWeekAndType = tagConverter(tag);
 
-            WeeklyAvailabilities.TimeSlot timeSlot = WeeklyAvailabilities.TimeSlot.valueOf(tag);
-            String defaultTime = timeSlot.name().toLowerCase().contains("start") ? "Start Time" : "End Time";
+            String defaultTime = dayOfWeekAndType.getSecond() == TimeSlotEntryType.START ? "Start Time" : "End Time";
 
             button.setText(defaultTime);
 
-            presenter.setTime(defaultTime, timeSlot);
+            presenter.setTime(defaultTime, dayOfWeekAndType.getFirst(), dayOfWeekAndType.getSecond());
         }).setNegativeButton("Cancel", (dialog, which) ->
             dialog.dismiss()
         ).show();
@@ -109,17 +131,32 @@ public class ManageAvailabilitiesActivity extends AppCompatActivity implements M
         presenter.saveTimes();
     }
 
+    private Pair<DayOfWeek, TimeSlotEntryType> tagConverter(String tag) {
+        String[] dayAndTypePair = tag.split("_");
+
+        DayOfWeek day = DayOfWeek.valueOf(dayAndTypePair[0]);
+        TimeSlotEntryType type = TimeSlotEntryType.valueOf(dayAndTypePair[1]);
+
+        return new Pair<>(day, type);
+    }
+
+
     private void buildClock(Button button) {
+        Pair<DayOfWeek, TimeSlotEntryType> dayOfWeekAndType = tagConverter(button.getTag().toString());
+
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
                 (view, hourOfDay, minute, second) -> {
-                    button.setText(String.format("%02d:%02d", hourOfDay,minute));
-                    presenter.setTime(button.getText().toString(),
-                            WeeklyAvailabilities.TimeSlot.valueOf(button.getTag().toString()));
+                    button.setText(String.format(Locale.ENGLISH, "%02d:%02d", hourOfDay,minute));
+
+                    presenter.setTime(button.getText().toString(), dayOfWeekAndType.getFirst(),
+                            dayOfWeekAndType.getSecond());
                 }, true);
 
         timePickerDialog.setTimeInterval(1, 30);
         String buttonText = button.getText().toString();
-        Pair<String, Boolean> timeRestriction = presenter.getTimeRestriction(button.getTag().toString());
+        Pair<String, Boolean> timeRestriction = presenter.getTimeRestriction(dayOfWeekAndType.getFirst(),
+                dayOfWeekAndType.getSecond());
+
         String[] splitTimeRestriction = timeRestriction.getFirst().split(":");
         int hourRestrict = Integer.parseInt(splitTimeRestriction[0]);
         int minRestrict = Integer.parseInt(splitTimeRestriction[1]);
@@ -169,55 +206,21 @@ public class ManageAvailabilitiesActivity extends AppCompatActivity implements M
     @Override
     public void displayTimes(WeeklyAvailabilities weeklyAvailabilities) {
 
-        // Monday
-        Button btnMondayStart = findViewById(R.id.mondayStart);
-        btnMondayStart.setText(weeklyAvailabilities.getMondayStart());
 
-        Button btnMondayEnd = findViewById(R.id.mondayEnd);
-        btnMondayEnd.setText(weeklyAvailabilities.getMondayEnd());
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+            Pair<Integer, Integer> pairOfStartAndEndIds = dayToButtonIdMap.get(dayOfWeek);
 
-        // Tuesday
-        Button btnTuesdayStart = findViewById(R.id.tuesdayStart);
-        btnTuesdayStart.setText(weeklyAvailabilities.getTuesdayStart());
+            if (dayOfWeek == DayOfWeek.ANY || pairOfStartAndEndIds == null)
+                continue;
 
-        Button btnTuesdayEnd = findViewById(R.id.tuesdayEnd);
-        btnTuesdayEnd.setText(weeklyAvailabilities.getTuesdayEnd());
+            TimeSlot slot = weeklyAvailabilities.getTimeSlotOnDay(dayOfWeek);
 
-        // Wednesday
-        Button btnWednesdayStart = findViewById(R.id.wednesdayStart);
-        btnWednesdayStart.setText(weeklyAvailabilities.getWednesdayStart());
+            Button start = findViewById(pairOfStartAndEndIds.getFirst());
+            Button end = findViewById(pairOfStartAndEndIds.getSecond());
 
-        Button btnWednesdayEnd = findViewById(R.id.wednesdayEnd);
-        btnWednesdayEnd.setText(weeklyAvailabilities.getWednesdayEnd());
-
-        // Thursday
-        Button btnThursdayStart = findViewById(R.id.thursdayStart);
-        btnThursdayStart.setText(weeklyAvailabilities.getThursdayStart());
-
-        Button btnThursdayEnd = findViewById(R.id.thursdayEnd);
-        btnThursdayEnd.setText(weeklyAvailabilities.getThursdayEnd());
-
-        // Friday
-        Button btnFridayStart = findViewById(R.id.fridayStart);
-        btnFridayStart.setText(weeklyAvailabilities.getFridayStart());
-
-        Button btnFridayEnd = findViewById(R.id.fridayEnd);
-        btnFridayEnd.setText(weeklyAvailabilities.getFridayEnd());
-
-        // Saturday
-        Button btnSaturdayStart = findViewById(R.id.saturdayStart);
-        btnSaturdayStart.setText(weeklyAvailabilities.getSaturdayStart());
-
-        Button btnSaturdayEnd = findViewById(R.id.saturdayEnd);
-        btnSaturdayEnd.setText(weeklyAvailabilities.getSaturdayEnd());
-
-        // Sunday
-        Button btnSundayStart = findViewById(R.id.sundayStart);
-        btnSundayStart.setText(weeklyAvailabilities.getSundayStart());
-
-        Button btnSundayEnd = findViewById(R.id.sundayEnd);
-        btnSundayEnd.setText(weeklyAvailabilities.getSundayEnd());
-
+            start.setText(slot.getStartTime());
+            end.setText(slot.getEndTime());
+        }
     }
 
     @Override

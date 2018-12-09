@@ -7,10 +7,12 @@ import com.uottawa.bigbrainmoves.servio.models.ReadOnlyService;
 import com.uottawa.bigbrainmoves.servio.models.ReadOnlyServiceProvider;
 import com.uottawa.bigbrainmoves.servio.models.ServiceProvider;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
+import com.uottawa.bigbrainmoves.servio.models.TimeSlot;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.util.enums.BookingStatus;
+import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.views.ViewServiceView;
 
 import java.text.SimpleDateFormat;
@@ -169,34 +171,35 @@ public class ViewServicePresenter {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         String dateRepresentation = formatter.format(date.getTime());
 
+        //TODO CLEAN UP
         switch(date.get(Calendar.DAY_OF_WEEK)) {
             case Calendar.MONDAY:
-                startTime = availabilities.getMondayStart();
-                endTime = availabilities.getMondayEnd();
+                startTime = availabilities.getTimeSlotOnDay(DayOfWeek.MONDAY).getStartTime();
+                endTime = availabilities.getTimeSlotOnDay(DayOfWeek.MONDAY).getEndTime();
                 break;
             case Calendar.TUESDAY:
-                startTime = availabilities.getTuesdayStart();
-                endTime = availabilities.getTuesdayEnd();
+                startTime = availabilities.getTimeSlotOnDay(DayOfWeek.TUESDAY).getStartTime();
+                endTime = availabilities.getTimeSlotOnDay(DayOfWeek.TUESDAY).getEndTime();
                 break;
             case Calendar.WEDNESDAY:
-                startTime = availabilities.getWednesdayStart();
-                endTime = availabilities.getWednesdayEnd();
+                startTime = availabilities.getTimeSlotOnDay(DayOfWeek.WEDNESDAY).getStartTime();
+                endTime = availabilities.getTimeSlotOnDay(DayOfWeek.WEDNESDAY).getEndTime();
                 break;
             case Calendar.THURSDAY:
-                startTime = availabilities.getThursdayStart();
-                endTime = availabilities.getThursdayEnd();
+                startTime = availabilities.getTimeSlotOnDay(DayOfWeek.THURSDAY).getStartTime();
+                endTime = availabilities.getTimeSlotOnDay(DayOfWeek.THURSDAY).getEndTime();
                 break;
             case Calendar.FRIDAY:
-                startTime = availabilities.getFridayStart();
-                endTime = availabilities.getFridayEnd();
+                startTime = availabilities.getTimeSlotOnDay(DayOfWeek.FRIDAY).getStartTime();
+                endTime = availabilities.getTimeSlotOnDay(DayOfWeek.FRIDAY).getEndTime();
                 break;
             case Calendar.SATURDAY:
-                startTime = availabilities.getSaturdayStart();
-                endTime = availabilities.getSaturdayEnd();
+                startTime = availabilities.getTimeSlotOnDay(DayOfWeek.SATURDAY).getStartTime();
+                endTime = availabilities.getTimeSlotOnDay(DayOfWeek.SATURDAY).getEndTime();
                 break;
             case Calendar.SUNDAY:
-                startTime = availabilities.getSundayStart();
-                endTime = availabilities.getSundayEnd();
+                startTime = availabilities.getTimeSlotOnDay(DayOfWeek.SUNDAY).getStartTime();
+                endTime = availabilities.getTimeSlotOnDay(DayOfWeek.SUNDAY).getEndTime();
                 break;
             default:
                 // We only consider monday-sunday as days.

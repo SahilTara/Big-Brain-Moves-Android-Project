@@ -1,21 +1,15 @@
 package com.uottawa.bigbrainmoves.servio.repositories;
 
-import android.os.Parcelable;
-
 import com.uottawa.bigbrainmoves.servio.models.Account;
-import com.uottawa.bigbrainmoves.servio.models.Booking;
 import com.uottawa.bigbrainmoves.servio.models.Rating;
 import com.uottawa.bigbrainmoves.servio.models.ReadOnlyService;
 import com.uottawa.bigbrainmoves.servio.models.Service;
 import com.uottawa.bigbrainmoves.servio.models.ServiceProvider;
 import com.uottawa.bigbrainmoves.servio.models.ServiceType;
-import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
-import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.enums.SignupResult;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 

@@ -8,10 +8,8 @@ import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.views.FindServicesView;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -26,7 +24,6 @@ public class FindServicesPresenter {
     private String time = "00:00";
     private String filterString = ".*()";
     private boolean filterByTime = false;
-    private static final Pattern VALID_TIME = Pattern.compile("\\d{2}:\\d{2}");
     private DayOfWeek dayOfWeek = DayOfWeek.ANY;
 
     public FindServicesPresenter(FindServicesView view, Repository repository) {
@@ -146,7 +143,7 @@ public class FindServicesPresenter {
 
                 Observable.fromIterable(services).filter(service -> ((service.getRating() >= rating) &&
                         service.getType().matches(filterString) &&
-                        checkDayOfWeekAvailable(dayOfWeek, hashMap.get(service.getServiceProviderUser()))
+                        hashMap.get(service.getServiceProviderUser()).checkIfAvailable(dayOfWeek, time, filterByTime)
                 )).toList().toObservable().subscribe(serviceObserver);
 
             }
@@ -172,68 +169,6 @@ public class FindServicesPresenter {
                 .subscribe(hashmapObserver);
     }
 
-    private boolean checkDayOfWeekAvailable(DayOfWeek dayOfWeek, WeeklyAvailabilities availabilities) {
-        if (availabilities == null) return false;
-        String mondayStart = availabilities.getMondayStart();
-        String mondayEnd = availabilities.getMondayEnd();
-
-        boolean isAvailableMonday =  ((dayOfWeek.equals(DayOfWeek.MONDAY) || dayOfWeek.equals(DayOfWeek.ANY))
-                && ((time.compareTo(mondayStart) >= 0 // check if >= than start
-                && time.compareTo(mondayEnd) < 0) || !filterByTime) // less than end
-                && VALID_TIME.matcher(mondayStart).matches());
-
-        String tuesdayStart = availabilities.getTuesdayStart();
-        String tuesdayEnd = availabilities.getTuesdayEnd();
-
-        boolean isAvailableTuesday =  ((dayOfWeek.equals(DayOfWeek.TUESDAY) || dayOfWeek.equals(DayOfWeek.ANY))
-                && ((time.compareTo(tuesdayStart) >= 0 // check if >= than start
-                && time.compareTo(tuesdayEnd) < 0) || !filterByTime) // less than end
-                && VALID_TIME.matcher(tuesdayStart).matches());
-
-        String wednesdayStart = availabilities.getWednesdayStart();
-        String wednesdayEnd = availabilities.getWednesdayEnd();
-
-        boolean isAvailableWednesday =  ((dayOfWeek.equals(DayOfWeek.WEDNESDAY) || dayOfWeek.equals(DayOfWeek.ANY))
-                && ((time.compareTo(wednesdayStart) >= 0 // check if >= than start
-                && time.compareTo(wednesdayEnd) < 0) || !filterByTime) // less than end
-                && VALID_TIME.matcher(wednesdayStart).matches());
-
-        String thursdayStart = availabilities.getThursdayStart();
-        String thursdayEnd = availabilities.getThursdayEnd();
-
-        boolean isAvailableThursday =  ((dayOfWeek.equals(DayOfWeek.THURSDAY) || dayOfWeek.equals(DayOfWeek.ANY))
-                && ((time.compareTo(thursdayStart) >= 0 // check if >= than start
-                && time.compareTo(thursdayEnd) < 0) || !filterByTime) // less than end
-                && VALID_TIME.matcher(thursdayStart).matches());
-
-        String fridayStart = availabilities.getFridayStart();
-        String fridayEnd = availabilities.getFridayEnd();
-
-        boolean isAvailableFriday =  ((dayOfWeek.equals(DayOfWeek.FRIDAY) || dayOfWeek.equals(DayOfWeek.ANY))
-                && ((time.compareTo(fridayStart) >= 0 // check if >= than start
-                && time.compareTo(fridayEnd) < 0) || !filterByTime) // less than end
-                && VALID_TIME.matcher(fridayStart).matches());
-
-
-        String saturdayStart = availabilities.getSaturdayStart();
-        String saturdayEnd = availabilities.getSaturdayEnd();
-
-        boolean isAvailableSaturday =  ((dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.ANY))
-                && ((time.compareTo(saturdayStart) >= 0 // check if >= than start
-                && time.compareTo(saturdayEnd) < 0) || !filterByTime) // less than end
-                && VALID_TIME.matcher(saturdayStart).matches());
-
-        String sundayStart = availabilities.getSundayStart();
-        String sundayEnd = availabilities.getSundayEnd();
-
-        boolean isAvailableSunday =  ((dayOfWeek.equals(DayOfWeek.SUNDAY) || dayOfWeek.equals(DayOfWeek.ANY))
-                && ((time.compareTo(sundayStart) >= 0 // check if >= than start
-                && time.compareTo(sundayEnd) < 0) || !filterByTime) // less than end
-                && VALID_TIME.matcher(sundayStart).matches());
-
-        return isAvailableMonday || isAvailableTuesday || isAvailableWednesday || isAvailableThursday ||
-                isAvailableFriday || isAvailableSaturday || isAvailableSunday;
-    }
 
     public void setExtraFilters(List<Service> services, double rating, boolean filterByTime, String time, DayOfWeek dayOfWeek) {
         this.rating = rating;

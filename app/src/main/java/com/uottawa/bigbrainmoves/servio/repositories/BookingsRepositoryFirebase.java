@@ -1,7 +1,6 @@
 package com.uottawa.bigbrainmoves.servio.repositories;
 
 import com.google.firebase.FirebaseException;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -11,19 +10,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.uottawa.bigbrainmoves.servio.models.Account;
 import com.uottawa.bigbrainmoves.servio.models.Booking;
 import com.uottawa.bigbrainmoves.servio.models.ReadOnlyService;
-import com.uottawa.bigbrainmoves.servio.models.ServiceType;
-import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
 import com.uottawa.bigbrainmoves.servio.util.enums.AccountType;
-import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import io.reactivex.Observable;
 
 public class BookingsRepositoryFirebase extends GenericFirebaseRepository implements  BookingsRepository {

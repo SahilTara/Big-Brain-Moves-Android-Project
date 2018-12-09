@@ -18,10 +18,12 @@ import com.uottawa.bigbrainmoves.servio.R;
 import com.uottawa.bigbrainmoves.servio.models.ReadOnlyService;
 import com.uottawa.bigbrainmoves.servio.models.ReadOnlyServiceProvider;
 import com.uottawa.bigbrainmoves.servio.models.Service;
+import com.uottawa.bigbrainmoves.servio.models.TimeSlot;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.presenters.ViewServicePresenter;
 import com.uottawa.bigbrainmoves.servio.repositories.DbHandler;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
+import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.views.ViewServiceView;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -230,24 +232,24 @@ public class ViewServiceActivity extends AppCompatActivity implements ViewServic
     public void displayAvailabilities(WeeklyAvailabilities availabilities) {
         this.availabilities = availabilities;
 
-        availabilitiesHelper(mondayRangeTextView, availabilities.getMondayStart(), availabilities.getMondayEnd());
+        availabilitiesHelper(mondayRangeTextView, availabilities.getTimeSlotOnDay(DayOfWeek.MONDAY));
 
-        availabilitiesHelper(tuesdayRangeTextView, availabilities.getTuesdayStart(), availabilities.getTuesdayEnd());
+        availabilitiesHelper(tuesdayRangeTextView, availabilities.getTimeSlotOnDay(DayOfWeek.TUESDAY));
 
-        availabilitiesHelper(wednesdayRangeTextView, availabilities.getWednesdayStart(), availabilities.getWednesdayEnd());
+        availabilitiesHelper(wednesdayRangeTextView, availabilities.getTimeSlotOnDay(DayOfWeek.WEDNESDAY));
 
-        availabilitiesHelper(thursdayRangeTextView, availabilities.getThursdayStart(), availabilities.getThursdayEnd());
+        availabilitiesHelper(thursdayRangeTextView, availabilities.getTimeSlotOnDay(DayOfWeek.THURSDAY));
 
-        availabilitiesHelper(fridayRangeTextView, availabilities.getFridayStart(), availabilities.getFridayEnd());
+        availabilitiesHelper(fridayRangeTextView, availabilities.getTimeSlotOnDay(DayOfWeek.FRIDAY));
 
-        availabilitiesHelper(saturdayRangeTextView, availabilities.getSaturdayStart(), availabilities.getSaturdayEnd());
+        availabilitiesHelper(saturdayRangeTextView, availabilities.getTimeSlotOnDay(DayOfWeek.SATURDAY));
 
-        availabilitiesHelper(sundayRangeTextView, availabilities.getSundayStart(), availabilities.getSundayEnd());
+        availabilitiesHelper(sundayRangeTextView, availabilities.getTimeSlotOnDay(DayOfWeek.SUNDAY));
     }
 
-    private void availabilitiesHelper(TextView timeView, String startTime, String endTime) {
-        if (VALID_TIME.matcher(startTime).matches()) {
-            timeView.setText(String.format("%s~%s", startTime, endTime));
+    private void availabilitiesHelper(TextView timeView, TimeSlot slot) {
+        if (VALID_TIME.matcher(slot.getStartTime()).matches()) {
+            timeView.setText(String.format("%s~%s", slot.getStartTime(), slot.getEndTime()));
         } else {
             timeView.setText("None");
         }

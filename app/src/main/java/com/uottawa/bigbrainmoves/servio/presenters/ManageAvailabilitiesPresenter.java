@@ -1,15 +1,15 @@
 package com.uottawa.bigbrainmoves.servio.presenters;
 
 import com.uottawa.bigbrainmoves.servio.models.ServiceProvider;
+import com.uottawa.bigbrainmoves.servio.models.TimeSlot;
 import com.uottawa.bigbrainmoves.servio.models.WeeklyAvailabilities;
 import com.uottawa.bigbrainmoves.servio.repositories.Repository;
 import com.uottawa.bigbrainmoves.servio.util.CurrentAccount;
-import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
 import com.uottawa.bigbrainmoves.servio.util.Pair;
+import com.uottawa.bigbrainmoves.servio.util.enums.DayOfWeek;
+import com.uottawa.bigbrainmoves.servio.util.enums.TimeSlotEntryType;
 import com.uottawa.bigbrainmoves.servio.views.ManageAvailabilitiesView;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Optional;
 
 import io.reactivex.Observer;
@@ -80,19 +80,21 @@ public class ManageAvailabilitiesPresenter {
     /**
      * Given an id we extract the time we must set in the weekly availabilities object.
      * @param time the time to set to.
-     * @param timeSlot the timeSlot of the clicked object.
+     * @param day the day of the TimeSlot
+     * @param type the type of the time slot entry (Start/End)
      */
-    public void setTime(String time, WeeklyAvailabilities.TimeSlot timeSlot) {
+    public void setTime(String time, DayOfWeek day, TimeSlotEntryType type) {
         ServiceProvider provider = (ServiceProvider) CurrentAccount.getInstance().getCurrentAccount();
         WeeklyAvailabilities weeklyAvailabilities = provider.getAvailabilities();
+        TimeSlot timeSlot = weeklyAvailabilities.getTimeSlotOnDay(day);
 
-        try {
-            // Essentially invokes the right setter by using reflections
-            Method setter = weeklyAvailabilities.getClass().getMethod(timeSlot.getMethodName(), String.class);
-            setter.invoke(weeklyAvailabilities, time);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            // TODO: STOP SWALLOWING
+        if (type == TimeSlotEntryType.START) {
+            timeSlot.setStartTime(time);
+        } else if (type == TimeSlotEntryType.END) {
+            timeSlot.setEndTime(time);
         }
+
+        weeklyAvailabilities.setTimeSlotOnDay(day, timeSlot);
     }
 
     public void saveTimes() {
@@ -111,87 +113,28 @@ public class ManageAvailabilitiesPresenter {
 
     /**
      * gets the start or end time restriction of the day depending on the id passed.
-     * @param id the time slot about to be selected.
+     * @param dayOfWeek the day of the TimeSlot
+     * @param type the type of the time slot entry (Start/End)
      * @return a Pair containing the time as a string and whether it or not it is a start restriction.
      */
-    public Pair<String, Boolean> getTimeRestriction(String id) {
+    public Pair<String, Boolean> getTimeRestriction(DayOfWeek dayOfWeek, TimeSlotEntryType type) {
         ServiceProvider provider = (ServiceProvider) CurrentAccount.getInstance().getCurrentAccount();
         WeeklyAvailabilities weeklyAvailabilities = provider.getAvailabilities();
         String time = "";
+        boolean isStart = type == TimeSlotEntryType.END;
 
-        boolean isStart = !id.toLowerCase().contains("start");
+        TimeSlot slot = weeklyAvailabilities.getTimeSlotOnDay(dayOfWeek);
 
-        switch (id) {
-            case "MONDAY_START":
-                time = weeklyAvailabilities.getMondayEnd();
-                if (time.equals(DEFAULT_END_STRING))
-                    time = "23:30";
-                break;
-            case "MONDAY_END":
-                time = weeklyAvailabilities.getMondayStart();
-                if (time.equals(DEFAULT_START_STRING))
-                    time = "00:00";
-                break;
-            case "TUESDAY_START":
-                time = weeklyAvailabilities.getTuesdayEnd();
-                if (time.equals(DEFAULT_END_STRING))
-                    time = "23:30";
-                break;
-            case "TUESDAY_END":
-                time = weeklyAvailabilities.getTuesdayStart();
-                if (time.equals(DEFAULT_START_STRING))
-                    time = "00:00";
-                break;
-            case "WEDNESDAY_START":
-                time = weeklyAvailabilities.getWednesdayEnd();
-                if (time.equals(DEFAULT_END_STRING))
-                    time = "23:30";
-                break;
-            case "WEDNESDAY_END":
-                time = weeklyAvailabilities.getWednesdayStart();
-                if (time.equals(DEFAULT_START_STRING))
-                    time = "00:00";
-                break;
-            case "THURSDAY_START":
-                time = weeklyAvailabilities.getThursdayEnd();
-                if (time.equals(DEFAULT_END_STRING))
-                    time = "23:30";
-                break;
-            case "THURSDAY_END":
-                time = weeklyAvailabilities.getThursdayStart();
-                if (time.equals(DEFAULT_START_STRING))
-                    time = "00:00";
-                break;
-            case "FRIDAY_START":
-                time = weeklyAvailabilities.getFridayEnd();
-                if (time.equals(DEFAULT_END_STRING))
-                    time = "23:30";
-                break;
-            case "FRIDAY_END":
-                time = weeklyAvailabilities.getFridayStart();
-                if (time.equals(DEFAULT_START_STRING))
-                    time = "00:00";
-                break;
-            case "SATURDAY_START":
-                time = weeklyAvailabilities.getSaturdayEnd();
-                if (time.equals(DEFAULT_END_STRING))
-                    time = "23:30";
-                break;
-            case "SATURDAY_END":
-                time = weeklyAvailabilities.getSaturdayStart();
-                if (time.equals(DEFAULT_START_STRING))
-                    time = "00:00";
-                break;
-            case "SUNDAY_START":
-                time = weeklyAvailabilities.getSundayEnd();
-                if (time.equals(DEFAULT_END_STRING))
-                    time = "23:30";
-                break;
-            case "SUNDAY_END":
-                time = weeklyAvailabilities.getSundayStart();
-                if (time.equals(DEFAULT_START_STRING))
-                    time = "00:00";
-                break;
+        if (type == TimeSlotEntryType.START) {
+            time = slot.getEndTime();
+            if (time.equals(DEFAULT_END_STRING)) {
+                time = "23:30";
+            }
+        } else if (type == TimeSlotEntryType.END) {
+            time = slot.getStartTime();
+            if (time.equals(DEFAULT_START_STRING)) {
+                time = "00:00";
+            }
         }
 
         return new Pair<>(time, isStart);
